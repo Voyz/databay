@@ -100,7 +100,6 @@ autoapi_ignore = [
     # '*databay/__init__.py',
     '*test*',
     '*examples/*',
-    '*docs/*',
     '*misc/*',
     '*inlets/AlphavantageInlet.py',
     '*inlets/IexInlet.py',
