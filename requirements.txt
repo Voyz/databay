@@ -4,7 +4,4 @@ six==1.15.0
 tzlocal==2.1
 pymongo==3.10.1
 aiohttp==3.6.2
-motor==2.1.0
-alpha_vantage==2.2.0
-pandas==1.0.5
 schedule==0.6.0
