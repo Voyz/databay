@@ -19,30 +19,30 @@ table.docutils tr > td{
     padding: 0.45em 0.3em 0.45em 0.9em;
 }
 
-.rst-content dl.py.method[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) code.descname {
+html.writer-html5 .rst-content dl.py.method[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) code.descname {
     font-size: 115%!important;
     padding: 0 6px 0 4px;
 }
-.rst-content dl.py.method .prop{
+html.writer-html5 .rst-content dl.py.method .prop{
     color: #888;
     font-style: italic;
     /*padding-left: 16px;*/
     margin-bottom: 2px;
 }
 
-/*.rst-content dl.py.method[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) .property {*/
+/*html.writer-html5 .rst-content dl.py.method[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) .property {*/
 /*    display:none;*/
 /*}*/
 
-.rst-content dl.field-list p {
+html.writer-html5 .rst-content dl.field-list p {
     margin-bottom: 0px;
     /*margin-left: 20px;*/
 }
-/*.rst-content dl.field-list p:first-letter {*/
+/*html.writer-html5 .rst-content dl.field-list p:first-letter {*/
 /*    margin-left: -20px;*/
 /*}*/
 
-.rst-content dl.py.class[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) code.descname {
+html.writer-html5 .rst-content dl.py.class[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) code.descname {
     font-size: 115%!important;
     padding: 0 4px 0 0px;
 }
@@ -51,72 +51,72 @@ table.docutils tr > td{
     display:none;
 }
 
-.rst-content dl.field-list>dt {
+html.writer-html5 .rst-content dl.field-list>dt {
     font-weight:500;
     font-style: italic;
 }
 
-.rst-content dl.py.method>dd>p {
+html.writer-html5 .rst-content dl.py.method>dd>p {
     margin-bottom: 12px;
 }
-.rst-content dl.py.method>dd>p:empty {
+html.writer-html5 .rst-content dl.py.method>dd>p:empty {
     margin-bottom: 0;
 }
 
-.wy-menu.wy-menu-vertical a.reference.internal {
+html.writer-html5 .wy-menu.wy-menu-vertical a.reference.internal {
     font-size: 100%;
 }
 
-/*.wy-menu.wy-menu-vertical a.reference.internal.current {*/
+/*html.writer-html5 .wy-menu.wy-menu-vertical a.reference.internal.current {*/
 /*    font-size: 90%;*/
 /*}*/
 
-.rst-content a.reference.internal code {
+html.writer-html5 .rst-content a.reference.internal code {
     font-size: 90%;
 }
 
-.rst-content .default-value:before {
+html.writer-html5 .rst-content .default-value:before {
     /*content: '\A';*/
     /*white-space: pre;*/
 }
-/*.rst-content .default-value-section {*/
+/*html.writer-html5 .rst-content .default-value-section {*/
     /*margin-left: 20px;*/
 /*}*/
 
-.rst-content .default-value-section .default-value-label {
+html.writer-html5 .rst-content .default-value-section .default-value-label {
     font-style: italic;
 }
-.rst-content .default-value-section code.literal {
+html.writer-html5 .rst-content .default-value-section code.literal {
     color: #777;
 }
-/*.rst-content ul.simple li .default-value-section {*/
+/*html.writer-html5 .rst-content ul.simple li .default-value-section {*/
 /*    margin-bottom:6px;*/
 /*}*/
 
-.rst-content dl.py.class dl.field-list.simple dd ul.simple li:not(:last-child) {
+html.writer-html5 .rst-content dl.py.class dl.field-list.simple dd ul.simple li:not(:last-child) {
     margin-bottom:10px;
 }
 
-.rst-content dl.py.method>dd>p.decorated{
+html.writer-html5 .rst-content dl.py.method>dd>p.decorated{
     margin-bottom: 6px
 }
-.rst-content .decorated code.literal{
+html.writer-html5 .rst-content .decorated code.literal{
     color:#2980b9;
 }
-.rst-content .decorated code span.pre:before{
+html.writer-html5 .rst-content .decorated code span.pre:before{
     content:"@"
 }
 
 
-/*.rst-content dl.py.class p.full-class-path code{*/
-.rst-content dl.py p.full-class-path{
+/*html.writer-html5 .rst-content dl.py.class p.full-class-path code{*/
+html.writer-html5 .rst-content dl.py p.full-class-path{
     /*background-color: #2980b9;*/
     font-size: 15px;
     color: #888;
     margin-bottom: 18px;
 }
 
-.rst-content dl.py p + dl.field-list.simple{
+html.writer-html5 .rst-content dl.py p + dl.field-list.simple{
     margin-top: 18px;
 }
 

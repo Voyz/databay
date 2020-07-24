@@ -72,6 +72,7 @@ import sphinx_rtd_theme
 # html_theme = 'f5_sphinx_theme'
 # html_theme = 'zerovm-sphinx-theme'
 
+import sphinx_rtd_theme
 
 extensions.append("sphinx_rtd_theme")
 
