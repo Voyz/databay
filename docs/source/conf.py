@@ -96,17 +96,15 @@ autoapi_dirs = [
     # '../../databay',
     '../../databay',
 ]
-autoapi_ignore = [
-    # '*databay/__init__.py',
-    '*test*',
-    '*examples/*',
-    '*misc/*',
-    '*inlets/AlphavantageInlet.py',
-    '*inlets/IexInlet.py',
-    '*outlets/PrintOutlet.py',
-    '*outlets/CsvOutlet.py',
-    '*config.py',
-  ]
+# autoapi_ignore = [
+#     # '*databay/__init__.py',
+#     '*test*',
+#     '*examples/*',
+#     '*misc/*',
+#     '*outlets/PrintOutlet.py',
+#     '*outlets/CsvOutlet.py',
+#     '*config.py',
+#   ]
 autoapi_options = [ 'members', 'undoc-members', 'xprivate-members', 'show-inheritance', 'show-module-summary', 'special-members', 'ximported-members']
 autoapi_python_class_content = 'both'
 autoapi_keep_files = True
