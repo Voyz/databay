@@ -35,7 +35,6 @@ Every 5 seconds this snippet will pull data from a test URL, and write it to a M
 
    introduction
    extending
-   scheduling
    examples
    api/databay/index
    _modules/index

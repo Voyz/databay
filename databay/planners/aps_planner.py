@@ -61,8 +61,17 @@ class APSPlanner(BasePlanner):
     def _on_exception(self, event):
         if event.code is EVENT_JOB_ERROR:
             try:
+                # It would be amazing if we could print the entire Link, but APS serialises Link.transfer to a string and that's all we have from Job's perspective.
                 extra_info = f'\n\nRaised when executing {self._scheduler.get_job(event.job_id)}'
-                raise type(event.exception)(str(event.exception) + f'{extra_info}').with_traceback(event.exception.__traceback__)
+                exception_message = str(event.exception) + f'{extra_info}'
+                traceback = event.exception.__traceback__
+
+                try:
+                    raise type(event.exception)(exception_message).with_traceback(traceback)
+                except TypeError as type_exception:
+                    # Some custom exceptions won't let you use the common constructor and will throw an error on initialisation. We catch these and just throw a generic RuntimeError.
+                    if 'required positional argument' in str(type_exception):
+                        raise Exception(exception_message).with_traceback(traceback) from None
             except Exception as e:
                 _LOGGER.error(e, exc_info=True)
 

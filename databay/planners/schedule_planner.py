@@ -151,9 +151,16 @@ class SchedulePlanner(BasePlanner):
                     for exc_info in self._exc_info:
                         ex = exc_info[0][1]
                         extra_info = f'\n\nRaised when executing {exc_info[1]}'
+                        exception_message = str(ex) + f'{extra_info}'
+                        traceback = ex.__traceback__
 
                         try: # weird try/catch in order to get whole traceback into logger
-                            raise type(ex)(str(ex) + f'{extra_info}').with_traceback(ex.__traceback__)
+                            try:
+                                raise type(ex)(exception_message).with_traceback(traceback)
+                            except TypeError as type_exception:
+                                # Some custom exceptions won't let you use the common constructor and will throw an error on initialisation. We catch these and just throw a generic RuntimeError.
+                                if 'required positional argument' in str(type_exception):
+                                    raise RuntimeError(exception_message).with_traceback(traceback) from None
                         except Exception as e:
                             if self._catch_exceptions:
                                 _LOGGER.exception(e)

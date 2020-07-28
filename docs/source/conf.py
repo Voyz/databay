@@ -105,7 +105,7 @@ autoapi_ignore = [
     # '/*test*/',
     '*examples/*',
     '*misc/*',
-    '*outlets/PrintOutlet.py',
+    '*outlets/print_outlet.py',
     '*outlets/CsvOutlet.py',
     '*config.py',
   ]

@@ -16,7 +16,7 @@ In Databay, data transfer is expressed with three components:
 
 Scheduling is implemented using third party libraries, exposed through the :any:`BasePlanner` interface. Currently two BasePlanner interfaces are available - using |APS|_ (:any:`APSPlanner`) and Schedule_ (:any:`SchedulePlanner`).
 
-A simple example:
+:ref:`A simple example <simple-usage>`:
 
 .. code-block:: python
 

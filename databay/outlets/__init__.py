@@ -1,3 +1,3 @@
 from databay.outlets.mongo_outlet import MongoOutlet
-from databay.outlets.PrintOutlet import PrintOutlet
+from databay.outlets.print_outlet import PrintOutlet
 from databay.outlets.CsvOutlet import CsvOutlet

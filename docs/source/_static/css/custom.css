@@ -168,3 +168,7 @@ html.writer-html5 .rst-content dl.py p + dl.field-list.simple{
     margin-top: 0;
     border-top: none;
 }
+
+.rst-content .highlight-python + .highlight-python {
+    margin-top: -10px;
+}
