@@ -63,13 +63,13 @@ html.writer-html5 .rst-content dl.py.method>dd>p:empty {
     margin-bottom: 0;
 }
 
-html.writer-html5 .wy-menu.wy-menu-vertical a.reference.internal {
+html.writer-html5 .wy-menu.wy-menu-vertical .toctree-l3 a.reference.internal {
     font-size: 100%;
 }
 
-/*html.writer-html5 .wy-menu.wy-menu-vertical a.reference.internal.current {*/
-/*    font-size: 90%;*/
-/*}*/
+html.writer-html5 .wy-menu.wy-menu-vertical .toctree-l3 a.reference.internal.current {
+    font-size: 100%;
+}
 
 html.writer-html5 .rst-content a.reference.internal code {
     font-size: 90%;

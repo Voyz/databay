@@ -7,9 +7,9 @@ In order to handle your custom data production and consumption in Databay, you n
 .. toctree::
     :maxdepth: 5
 
-    _extending/extending_inlets
-    _extending/extending_outlets
-    _extending/extending_base_planner
+    extending/extending_inlets
+    extending/extending_outlets
+    extending/extending_base_planner
 
 ..
     .. include:: ./_extending/extending_inlets.rst

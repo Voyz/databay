@@ -19,4 +19,4 @@ Databay provides two built-in :any:`BasePlanner` implementations based on two po
 
 While they differ in the method of scheduling, threading and exception handling, they both cover a reasonable variety of scheduling scenarios. Please refer to their appropriate documentation for more details on the difference between the two.
 
-You can easily use a different scheduling library of your choice by extending the :any:`BasePlanner` class and implementing the link scheduling and unscheduling yourself.
+You can easily use a different scheduling library of your choice by extending the :any:`BasePlanner` class and implementing the link scheduling and unscheduling yourself. See :any:`Extending BasePlanner <extending/extending_base_planner>` for more.

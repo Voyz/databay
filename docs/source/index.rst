@@ -6,6 +6,7 @@ Databay
 
    introduction
    extending
+   scheduling
    examples
    api/databay/index
 
