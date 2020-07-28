@@ -180,7 +180,7 @@ def populate_modules(_, fqp):
         with open(source_code_filepath, 'w') as f:
             f.write(source_code_contents)
 
-    if fqp in modules_complete.keys():
+    if fqp in modules_complete:
         return None
     else:
         modules_complete[fqp] = True

@@ -36,7 +36,7 @@ Such outlet is ready to be added to a link and used in Databay.
     planner.add_link(link)
     planner.start()
 
-Above setup will print all records transferred by that link.
+Above setup will print all records transferred by that link (:ref:`See full example <basic-outlet>`).
 
 Each push call is provided with an :any:`Update` object as one of parameters. It contains the name of the governing link (if specified) and an incremental integer index. Use the :code:`str(update)` to get a formatted string of that update.
 
