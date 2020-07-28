@@ -49,7 +49,7 @@ Databay API Reference
   :maxdepth: 2
 
 {% for subpackage in visible_subpackages %}
-   >> {{ subpackage.short_name|replace("databay.","") }} <{{ subpackage.short_name }}/index.rst>
+   - {{ subpackage.short_name|replace("databay.","") }} <{{ subpackage.short_name }}/index.rst>
 {% endfor %}
 {% endif %}
 {% endblock %}

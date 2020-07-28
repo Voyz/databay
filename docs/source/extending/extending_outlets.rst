@@ -1,3 +1,5 @@
+.. _extending_outlets:
+
 Extending Outlets
 =================
 
@@ -36,6 +38,7 @@ Such outlet is ready to be added to a link and used in Databay.
 
 Above setup will print all records transferred by that link.
 
+Each push call is provided with an :any:`Update` object as one of parameters. It contains the name of the governing link (if specified) and an incremental integer index. Use the :code:`str(update)` to get a formatted string of that update.
 
 Consuming Records
 ^^^^^^^^^^^^^^^^^
@@ -119,3 +122,10 @@ You may implement asynchronous data consumption by defining :any:`Outlet.push` a
         async def push(self, records, update):
             async_results = await some_async_code(records)
             await asyncio.sleep(1)
+
+----
+
+.. rubric:: Next Steps
+
+#. Learn about extending :ref:`Inlets <extending_inlets>`.
+#. See the :any:`Examples <../examples>`

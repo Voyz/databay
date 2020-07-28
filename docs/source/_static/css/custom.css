@@ -158,3 +158,13 @@ html.writer-html5 .rst-content dl.py p + dl.field-list.simple{
 .rst-content .section:not(:last-child) {
     margin-bottom: 60px;
 }
+
+.section#databay-api-reference .toctree-wrapper.compound:first-of-type{
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border-bottom: none;
+}
+.section#databay-api-reference .toctree-wrapper.compound:last-of-type{
+    margin-top: 0;
+    border-top: none;
+}

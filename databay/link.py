@@ -13,23 +13,23 @@ _LOGGER = logging.getLogger('databay.Link')
 
 class Update():
     """
-    Data structure representing one Link transfer run
+    Data structure representing one Link transfer.
     """
     def __init__(self, name:str, index:int):
         """
 
         :type name: str
-        :param name: Human readable identifier of the link, see: :class:`Link`
+        :param name: Human readable identifier of the link, see: :class:`Link`.
 
         :type index: int
-        :param index: Integer identifier of the current transfer
+        :param index: Integer identifier of the current transfer.
         """
         self.name = name
         self.index = index
 
     def __repr__(self):
         """
-        Provides the formatted transfer string
+        Provides the formatted transfer string.
 
         :returns: "{name}.{index}"
         """

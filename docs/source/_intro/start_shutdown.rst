@@ -4,11 +4,7 @@ Start and shutdown
 .. rubric::
     Start
 
-To begin scheduling links you need to call :any:`start <BasePlanner.start>` on the planner you're using.
-
-Both :any:`APSPlanner` and :any:`SchedulePlanner` handle :any:`start <BasePlanner.start>` as a synchronous blocking function.
-
-To run :any:`start <BasePlanner.start>` without blocking the current thread, wrap its call within a new thread or a process:
+To begin scheduling links you need to call :any:`start <BasePlanner.start>` on the planner you're using. Both :any:`APSPlanner` and :any:`SchedulePlanner` handle :any:`start <BasePlanner.start>` as a synchronous blocking function. To run :any:`start <BasePlanner.start>` without blocking the current thread, wrap its call within a new thread or a process:
 
 .. code-block:: python
 

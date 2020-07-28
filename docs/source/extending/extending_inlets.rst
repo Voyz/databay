@@ -1,5 +1,7 @@
 .. _async_keyword: https://docs.python.org/3/library/asyncio-task.html#coroutines
 
+.. _extending_inlets:
+
 Extending Inlets
 ================
 
@@ -38,6 +40,8 @@ Such inlet is ready to be added to a link and used in Databay.
     planner.start()
 
 Above setup will produce a random integer every 5 seconds.
+
+Each pull call is provided with an :any:`Update` object as a parameter. It contains the name of the governing link (if specified) and an incremental integer index. Use the :code:`str(update)` to get a formatted string of that update.
 
 Creating records
 ^^^^^^^^^^^^^^^^
@@ -183,3 +187,10 @@ Running such concrete test will execute a variety of test cases that ensure your
 * Calling :any:`pull` method.
 
 Since :any:`InletTester` will call pull on your inlet, you may want to mock some functionality of your inlet in order to separate testing of your inlet logic from external code.
+
+----
+
+.. rubric:: Next Steps
+
+#. Learn about extending :ref:`Outlets <extending_outlets>`.
+#. See the :any:`Examples <../examples>`

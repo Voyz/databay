@@ -11,7 +11,8 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
-import sys
+from setuptools import find_packages
+from pkgutil import iter_modules
 # sys.path.insert(0, os.path.abspath('../..'))
 # sys.path.insert(0, os.path.abspath('../../databay'))
 
@@ -34,12 +35,14 @@ pygments_style = 'sphinx'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.coverage',
-    'sphinx.ext.autosummary',
-    'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
+    # 'sphinx.ext.autodoc',
+    'sphinx.ext.coverage',
+    # 'sphinx.ext.autosummary',
+    'sphinx.ext.intersphinx',
 ]
+
+# autosummary_generate = True
 
 intersphinx_mapping = {
     'sphinx': ('https://www.sphinx-doc.org/en/master/', None),
@@ -123,14 +126,82 @@ SKIP_FULL = {'databay.link.Link._run',
 SKIP_SUFFIXES = {"_LOGGER"}
 
 def maybe_skip_member(app, what, name, obj, skip, options):
+    should_skip = skip
     for s in SKIP_SUFFIXES:
-        if s in name: return True
+        if s in name:
+            should_skip = True
+            break
 
-    return name in SKIP_FULL or skip
+    should_skip = name in SKIP_FULL or should_skip
+
+    if not should_skip and what == 'module':
+        populate_modules(None, name)
+
+    return should_skip
+
+
+
+def find_modules(path):
+    package_name = path.replace('../', '').replace('\\', '.')
+    modules = set()
+
+    for info in iter_modules([path]):
+        if not info.ispkg:
+            modules.add(package_name + '.' + info.name)
+
+
+    for pkg in find_packages(path):
+        ms = find_modules(os.path.join(path, pkg))
+        modules.update(ms)
+
+    return modules
+
+# modules = find_modules('../../databay')
+
+this_filedir = os.path.dirname(os.path.abspath(__file__))
+
+source_code_filepath = os.path.join(this_filedir, '_modules', 'index.rst')
+source_code_contents = """
+.. _source_code:
+
+Source Code
+===========
+
+.. toctree::
+  :maxdepth: 1
+
+"""
+
+modules_complete = {}
+
+def populate_modules(_, fqp):
+    if len(modules_complete) == 0 :
+        # init the index file
+        with open(source_code_filepath, 'w') as f:
+            f.write(source_code_contents)
+
+    if fqp in modules_complete.keys():
+        return None
+    else:
+        modules_complete[fqp] = True
+
+    chunks = fqp.split('.')
+    dirs = chunks[:-1]
+    module = chunks[-1]
+    filename =  module+'.rst'
+    filepath = os.path.abspath(os.path.join(this_filedir, '_modules', *dirs, filename))
+    dir = os.path.dirname(filepath)
+    os.makedirs(dir, exist_ok=True)
+    with open(filepath, 'w') as f:
+        f.write(f'{module}\n{"-"*len(module)}')
+
+    # if len(dirs) > 1:
+    with open(source_code_filepath, 'a') as f:
+        f.write(f'  {module} <{fqp.replace(".", "/")}>\n')
+
+    return None
+
 
 def setup(app):
     app.connect("autoapi-skip-member", maybe_skip_member)
     app.add_css_file('css/custom.css')
-
-
-# extensions.append('sphinx_paramlinks')

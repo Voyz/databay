@@ -1,9 +1,9 @@
 Extending BasePlanner
 =====================
 
-Databay comes with two implementations of BasePlanner - :any:`APSPlanner` and :any:`SchedulePlanner`. If you require custom scheduling functionality outside of these two interfaces, you can create your own implementation of :any:`BasePlanner`. Have a look at the two existing implementations for reference.
+Databay comes with two implementations of BasePlanner - :any:`APSPlanner` and :any:`SchedulePlanner`. If you require custom scheduling functionality outside of these two interfaces, you can create your own implementation of :any:`BasePlanner`. Have a look at the two existing implementations for reference: `APSPlanner <../_modules/databay/planners/aps_planner.html>`_ and `SchedulePlanner <../_modules/databay/planners/schedule_planner.html>`_.
 
-To extend the :any:`BasePlanner` you need to provide a way of executing :any:`Link.transfer` method repeatedly by implementing the following four functions. Note that all of these functions are private since they are called internally by BasePlanner and should not be executed directly.
+To extend the :any:`BasePlanner` you need to provide a way of executing :any:`Link.transfer` method repeatedly by implementing the following four methods. Note that all of these functions are private since they are called internally by BasePlanner and should not be executed directly.
 
 .. contents::
     :local:
@@ -79,3 +79,10 @@ Example from :any:`APSPlanner._shutdown_planner`:
 
     def _shutdown_planner(self, wait:bool=True):
         self._scheduler.shutdown(wait=wait)
+
+
+----
+
+.. rubric:: active
+
+Apart from extending the necessary methods described above, you may optionally implement the :any:`active` property. It should return a boolean value indicating whether the scheduler is currently running. This function is exposed for your convenience and is not used by Databay.

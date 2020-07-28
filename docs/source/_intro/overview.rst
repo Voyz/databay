@@ -1,7 +1,7 @@
 Overview
 --------
 
-Databay is an interface for scheduled data transfer.
+Databay is a Python interface for scheduled data transfer.
 
 Its primary purpose is to facilitate transfer of (any) data from A to B, on a scheduled interval.
 
@@ -23,7 +23,7 @@ A simple example:
     # Create an inlet, outlet and a link.
     http_inlet = HttpInlet('https://some.test.url.com/')
     mongo_outlet = MongoOutlet('databay', 'test_collection')
-    link = Link(http_inlet, mongo_outlet, timedelta(seconds=5))
+    link = Link(http_inlet, mongo_outlet, datetime.timedelta(seconds=5))
 
     # Create a planner, add the link and start scheduling.
     planner = APSPlanner()
@@ -32,4 +32,4 @@ A simple example:
 
 Every 5 seconds this snippet will pull data from a test URL, and write it to a MongoDB.
 
-While Databay comes with a handful of built-in inlets and outlets, its strength lies in extendability. To use Databay in your project, create concrete implementations of :any:`Inlet` and :any:`Outlet` classes that handle the data production and consumption functionality you require. Databay will then make sure data can repeatedly flow between the inlets and outlets you create. Extending :any:`Inlets <Inlet>` and :any:`Outlets <Outlet>` is easy and has a wide range of customization. Head over to :any:`Extending Databay <extending>` section for a detailed explanation.
+While Databay comes with a handful of built-in inlets and outlets, its strength lies in extendability. To use Databay in your project, create concrete implementations of :any:`Inlet` and :any:`Outlet` classes that handle the data production and consumption functionality you require. Databay will then make sure data can repeatedly flow between the inlets and outlets you create. :ref:`Extending Inlets <extending_inlets>` and :ref:`extending Outlets <extending_outlets>` is easy and has a wide range of customization. Head over to :any:`Extending Databay <extending>` section for a detailed explanation.
