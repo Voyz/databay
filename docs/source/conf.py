@@ -105,8 +105,9 @@ autoapi_ignore = [
     # '/*test*/',
     '*examples/*',
     '*misc/*',
+    '*inlets/random_int_inlet.py',
     '*outlets/print_outlet.py',
-    '*outlets/CsvOutlet.py',
+    '*outlets/csv_outlet.py',
     '*config.py',
   ]
 autoapi_options = [ 'members', 'undoc-members', 'xprivate-members', 'show-inheritance', 'show-module-summary', 'special-members', 'ximported-members']

@@ -4,12 +4,10 @@
 
 import asyncio
 import threading
-import time
 from abc import ABC, abstractmethod
-from typing import Union, List
+from typing import List
 
 from databay import Record
-from databay.errors import ImplementationError
 
 
 
@@ -99,6 +97,10 @@ class Inlet(ABC):
         return Record(payload=payload, metadata=full_metadata)
 
     def try_start(self):
+        """
+        Wrapper around on_start call that will ensure it only gets executed once.
+        """
+
         should_on_start = False
 
         with self._thread_lock:
@@ -119,6 +121,10 @@ class Inlet(ABC):
         pass
 
     def try_shutdown(self):
+        """
+        Wrapper around on_shutdown call that will ensure it only gets executed once.
+        """
+
         should_on_shutdown = False
 
         with self._thread_lock:
@@ -148,9 +154,6 @@ class Inlet(ABC):
         """
         return self._active
 
-    # @active.setter
-    # def active(self, active):
-    #     self._active = active
 
     def __repr__(self):
         return '%s(metadata:%s)' % (self.__class__.__name__, self.metadata)

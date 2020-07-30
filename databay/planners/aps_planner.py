@@ -9,7 +9,6 @@ from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.schedulers.base import STATE_RUNNING
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.interval import IntervalTrigger
-from pytz import utc
 
 from databay.base_planner import BasePlanner
 from databay import Link
@@ -54,7 +53,7 @@ class APSPlanner(BasePlanner):
         executors = {'default': ThreadPoolExecutor(threads), **executors_override}
         job_defaults = {'coalesce': False, 'max_instances': threads, **job_defaults_override}
 
-        self._scheduler = BlockingScheduler(executors=executors, job_defaults=job_defaults, timezone=utc)
+        self._scheduler = BlockingScheduler(executors=executors, job_defaults=job_defaults, timezone='UTC')
         # self._scheduler = BackgroundScheduler(executors=executors, job_defaults=job_defaults, timezone=utc)
         self._scheduler.add_listener(self._on_exception, EVENT_JOB_ERROR)
 

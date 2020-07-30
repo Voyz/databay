@@ -35,7 +35,7 @@ html.writer-html5 .rst-content dl.py.method .prop{
 /*}*/
 
 html.writer-html5 .rst-content dl.field-list p {
-    margin-bottom: 0px;
+    margin-bottom: 0;
     /*margin-left: 20px;*/
 }
 /*html.writer-html5 .rst-content dl.field-list p:first-letter {*/
@@ -44,7 +44,7 @@ html.writer-html5 .rst-content dl.field-list p {
 
 html.writer-html5 .rst-content dl.py.class[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) code.descname {
     font-size: 115%!important;
-    padding: 0 4px 0 0px;
+    padding: 0 4px 0 0;
 }
 
 .sig-prename.descclassname{

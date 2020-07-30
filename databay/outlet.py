@@ -7,7 +7,6 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from databay import Record
-from databay.errors import ImplementationError
 
 class Outlet(ABC):
     """
@@ -48,6 +47,10 @@ class Outlet(ABC):
         raise NotImplementedError()
 
     def try_start(self):
+        """
+        Wrapper around on_start call that will ensure it only gets executed once.
+        """
+
         should_on_start = False
 
         with self._thread_lock:
@@ -68,6 +71,10 @@ class Outlet(ABC):
         pass
 
     def try_shutdown(self):
+        """
+        Wrapper around on_shutdown call that will ensure it only gets executed once.
+        """
+
         should_on_shutdown = False
 
         with self._thread_lock:

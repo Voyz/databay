@@ -1,3 +1,4 @@
+
 class Record():
     """
     Data structure representing the data passed between inlets and outlets.
