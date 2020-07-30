@@ -1,10 +1,18 @@
 from distutils.core import setup
+
+from setuptools import find_packages
+
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setup(
     name = 'databay',
-    packages = ['databay'],
-    version = '0.1.0',
+    packages = find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests", "examples", "docs", "out", "dist"]),
+    version = '0.1.0-alpha.1',
     license='CC0 1.0',
     description = 'Databay is a Python interface for scheduled data transfer. It facilitates transfer of (any) data from A to B, on a scheduled interval.',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     author = 'Voy Zan',
     author_email = 'voy1982@yahoo.co.uk',
     url = 'https://github.com/Voyz/databay',
@@ -18,7 +26,6 @@ setup(
         'Development Status :: 3 - Alpha',      # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Build Tools',
-        'License :: OSI Approved :: CREATIVE COMMONS 1 UNIVERSAL',
         'Programming Language :: Python :: 3.7',
     ],
 )

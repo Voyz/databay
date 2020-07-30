@@ -17,5 +17,5 @@ from databay.base_planner import BasePlanner
 from databay import inlets
 from databay import outlets
 from databay import planners
-from databay.misc import inlet_tester
+from databay import misc
 
