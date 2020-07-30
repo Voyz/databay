@@ -13,8 +13,12 @@ class RandomIntInlet(Inlet):
 
 random_int_inlet = RandomIntInlet()
 
-link = Link(random_int_inlet, PrintOutlet(only_payload=True),
-            interval=timedelta(seconds=5), name='random_ints')
+print_outlet = PrintOutlet(only_payload=True)
+
+link = Link(random_int_inlet,
+            print_outlet,
+            interval=timedelta(seconds=5),
+            name='random_ints')
 
 planner = SchedulePlanner()
 planner.add_link(link)

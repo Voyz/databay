@@ -50,9 +50,7 @@ def ensure_connection(fn):
 
 class MongoOutlet(Outlet):
     """
-    Outlet for pushing data into a MongoDB instance.
-
-    Pushes are executed synchronously.
+    Outlet for pushing data into a MongoDB instance. Pushes are executed synchronously.
 
     Record metadata supported:
 

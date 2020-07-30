@@ -1,4 +1,4 @@
-Key concepts
+Key Concepts
 =============
 .. |APS| replace:: Advanced Python Scheduler
 .. _APS: https://apscheduler.readthedocs.io/en/stable/index.html

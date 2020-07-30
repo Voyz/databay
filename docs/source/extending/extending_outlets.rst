@@ -71,7 +71,7 @@ To prevent name clashes between various outlets' metadata, it is recommended to 
 .. rst-class:: mb-s
 Incorrect:
 
-.. rst-class:: small-code-block
+.. rst-class:: highlight-small
 .. code-block:: python
 
     CSV_FILE = 'CSV_FILE'
@@ -79,7 +79,7 @@ Incorrect:
 .. rst-class:: mb-s
 Correct:
 
-.. rst-class:: small-code-block
+.. rst-class:: highlight-small
 .. code-block:: python
 
     CSV_FILE = 'CsvOutlet.CSV_FILE'

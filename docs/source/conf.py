@@ -118,7 +118,9 @@ autoapi_python_use_implicit_namespaces = True
 
 SKIP_FULL = {'databay.link.Link._run',
              'databay.base_planner.BasePlanner._links',
+             'databay.inlets.HttpInlet',
              'databay.inlet.Inlet.__repr__',
+             'databay.outlets.MongoOutlet',
              'databay.outlet.Outlet.__init__',
              'databay.outlet.Outlet.__repr__',
              'databay.planners.aps_planner.APSPlanner.__repr__',
@@ -202,6 +204,7 @@ def populate_modules(_, fqp):
 
     return None
 
+extensions.append('sphinx_copybutton')
 
 def setup(app):
     app.connect("autoapi-skip-member", maybe_skip_member)

@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from databay import Link
-from databay.inlets.random_int_inlet import RandomIntInlet
+from databay.inlets import RandomIntInlet
 from databay.outlet import Outlet
 from databay.planners import SchedulePlanner
 from databay.record import Record

@@ -1,16 +1,5 @@
 Databay
-==============
-
-`Databay on GitHub <https://github.com/Voyz/databay>`_
-------------------------------------------------------
-
-..
-    .. autosummary::
-        :toctree: _autosummary
-        :recursive:
-
-        databay
-
+=======
 
 .. container:: text-block
 
@@ -19,11 +8,25 @@ Databay
     It facilitates transfer of (any) data from A to B, on a scheduled interval.
 
 
+`GitHub Page <https://github.com/Voyz/databay>`_
+------------------------------------------------
 
-* :ref:`Overview <overview>` - Learn what is Databay
-* :any:`Examples <examples>` - See Databay in use
-* :any:`Extending Databay <extending>` - Extend Databay's inlets and outlets
-* :any:`API Reference <api/databay/index>` - Read the API documentation
+..
+    .. autosummary::
+        :toctree: _autosummary
+        :recursive:
+
+        databay
+
+.. code-block:: python
+
+    pip install databay
+
+
+* :ref:`Overview <overview>` - Learn what is Databay.
+* :any:`Examples <examples>` - See Databay in use.
+* :any:`Extending Databay <extending>` - Use Databay in your project.
+* :any:`API Reference <api/databay/index>` - Read the API documentation.
 
 
 .. rst-class:: mb-s

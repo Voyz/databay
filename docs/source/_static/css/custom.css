@@ -182,7 +182,7 @@ html.writer-html5 .rst-content dl.py p + dl.field-list.simple{
     margin-bottom:4px;
 }
 
-.rst-content .small-code-block .highlight pre {
+.rst-content .highlight-small .highlight pre {
     padding-top: 4px;
     padding-bottom: 4px;
 }
@@ -196,3 +196,47 @@ html.writer-html5 .rst-content dl.py p + dl.field-list.simple{
 /*    margin-block-end: 0.83em;*/
 /*    margin-top: 60px;*/
 /*}*/
+
+.copybtn {
+    line-height: 1em;
+}
+
+
+.rst-content .tutorial-block p,
+.rst-content .tutorial-block ol {
+    margin-bottom: 10px;
+}
+
+.rst-content .tutorial-block .highlight-python {
+    margin-bottom: 18px;
+}
+
+.tutorial-block ol.arabic ::marker {
+    font-weight: 700;
+    display:none;
+    visibility: hidden;
+}
+
+.tutorial-block {
+    counter-reset: li
+}
+
+.rst-content .tutorial-block ol.arabic,
+.rst-content .tutorial-block ol.arabic li{
+    list-style: none;
+}
+
+.tutorial-block ol.arabic li::before {
+    content: "Step " counter(li) ".";
+    font-weight: 700;
+    display: inline-block;
+    /*width: 1em;*/
+    margin-left: -24px;
+    margin-right: 4px;
+}
+
+li {counter-increment: li}
+
+.tutorial-block ol.arabic p:first-of-type{
+    display: inline-block;
+}
