@@ -1,0 +1,1 @@
+"%HOME%\.virtualenvs\databay\Scripts\activate.bat"
