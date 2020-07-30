@@ -71,7 +71,7 @@ html.writer-html5 .wy-menu.wy-menu-vertical .toctree-l3 a.reference.internal.cur
     font-size: 100%;
 }
 
-html.writer-html5 .rst-content a.reference.internal code {
+html.writer-html5 .rst-content a.reference code {
     font-size: 90%;
 }
 
@@ -131,6 +131,10 @@ html.writer-html5 .rst-content dl.py p + dl.field-list.simple{
     border: 1px solid #eaedf0;
 }
 
+.toctree-wrapper.compound:empty, .contents.local.topic:empty{
+    display: none;
+}
+
 .toctree-wrapper.compound ul, .contents.local.topic ul{
     margin-bottom: 0;
 }
@@ -172,3 +176,23 @@ html.writer-html5 .rst-content dl.py p + dl.field-list.simple{
 .rst-content .highlight-python + .highlight-python {
     margin-top: -10px;
 }
+
+
+.rst-content .mb-s {
+    margin-bottom:4px;
+}
+
+.rst-content .small-code-block .highlight pre {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.rst-content .text-block p + p{
+    margin-top: -24px;
+}
+
+/*.rst-content .topic .topic-title {*/
+/*    font-size: 150%;*/
+/*    margin-block-end: 0.83em;*/
+/*    margin-top: 60px;*/
+/*}*/

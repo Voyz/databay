@@ -1,12 +1,13 @@
+.. _overview:
+
 Overview
 --------
 
-Databay is a Python interface for scheduled data transfer.
+.. container:: text-block
 
-Its primary purpose is to facilitate transfer of (any) data from A to B, on a scheduled interval.
+    Databay is a Python interface for scheduled data transfer.
 
-..
-  It provides an infrastructure for defining a repeating transfer of data between inputs and outputs.
+    It facilitates transfer of (any) data from A to B, on a scheduled interval.
 
 In Databay, data transfer is expressed with three components:
 

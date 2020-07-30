@@ -14,6 +14,7 @@ class RandomIntInlet(Inlet):
 
 
 class PrintOutlet(Outlet):
+    # Whether records should be printed or skipped
     SHOULD_PRINT = 'PrintOutlet.SHOULD_PRINT'
 
     async def push(self, records:[Record], update):

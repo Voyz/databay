@@ -38,7 +38,7 @@ Such outlet is ready to be added to a link and used in Databay.
 
 Above setup will print all records transferred by that link (:ref:`See full example <basic-outlet>`).
 
-Each push call is provided with an :any:`Update` object as one of parameters. It contains the name of the governing link (if specified) and an incremental integer index. Use the :code:`str(update)` to get a formatted string of that update.
+Each push call is provided with an :any:`Update` object as one of parameters. It contains the name of the governing link (if specified) and an incremental integer index. Use the :code:`str(update)` to get a formatted string of that update. See :any:`Transfer Update <transfer-update>` for more.
 
 Consuming Records
 ^^^^^^^^^^^^^^^^^
@@ -66,12 +66,30 @@ Metadata
 
 Your outlet can be built to behave differently depending on the metadata carried by the records. Metadata is attached to each record when inlets produce data. When creating an outlet it is up to you to ensure the expected metadata and its effects are clearly documented.
 
-To prevent name clashes between various outlets' metadata, it is recommended to implement non-string keys expected by your outlet.
+To prevent name clashes between various outlets' metadata, it is recommended to include outlet name in the keys expected by your outlet.
+
+.. rst-class:: mb-s
+Incorrect:
+
+.. rst-class:: small-code-block
+.. code-block:: python
+
+    CSV_FILE = 'CSV_FILE'
+
+.. rst-class:: mb-s
+Correct:
+
+.. rst-class:: small-code-block
+.. code-block:: python
+
+    CSV_FILE = 'CsvOutlet.CSV_FILE'
 
 .. code-block:: python
 
     class CsvOutlet(Outlet):
-        CSV_FILE = object()
+
+        # Name of csv file to write records to.
+        CSV_FILE = 'CsvOutlet.CSV_FILE'
 
         def push(self, records:[Record], update):
             for record in records:

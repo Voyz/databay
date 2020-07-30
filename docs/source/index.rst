@@ -12,29 +12,52 @@ Databay
         databay
 
 
-Databay is a Python interface for scheduled data transfer.
+.. container:: text-block
 
-Its primary purpose is to facilitate transfer of (any) data from A to B, on a scheduled interval. Read more about :any:`key concepts <introduction>` of Databay or see the :any:`examples <examples>` to get started.
+    Databay is a Python interface for scheduled data transfer.
+
+    It facilitates transfer of (any) data from A to B, on a scheduled interval.
+
+
+
+* :ref:`Overview <overview>` - Learn what is Databay
+* :any:`Examples <examples>` - See Databay in use
+* :any:`Extending Databay <extending>` - Extend Databay's inlets and outlets
+* :any:`API Reference <api/databay/index>` - Read the API documentation
+
+
+.. rst-class:: mb-s
+:ref:`A simple example <simple-usage>`:
 
 .. code-block:: python
 
-    # Create an inlet, outlet and a link.
-    http_inlet = HttpInlet('https://some.test.url.com/')
-    mongo_outlet = MongoOutlet('databay', 'test_collection')
-    link = Link(http_inlet, mongo_outlet, datetime.timedelta(seconds=5))
 
-    # Create a planner, add the link and start scheduling.
+    # Data producer
+    inlet = HttpInlet('https://some.test.url.com/')
+
+    # Data consumer
+    outlet = MongoOutlet('databay', 'test_collection')
+
+    # Data transfer between the two
+    link = Link(inlet, outlet, datetime.timedelta(seconds=5))
+
+    # Start scheduling
     planner = APSPlanner()
     planner.add_link(link)
     planner.start()
 
 Every 5 seconds this snippet will pull data from a test URL, and write it to a MongoDB.
 
-.. toctree::
-   :maxdepth: 1
+----
 
-   introduction
-   extending
-   examples
-   api/databay/index
-   _modules/index
+.. rubric:: Explore this documentation:
+
+.. toctree::
+    :maxdepth: 1
+
+    introduction
+    extending
+    examples
+    api/databay/index
+    _modules/index
+    GitHub Page <https://github.com/Voyz/databay>
