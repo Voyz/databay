@@ -1,1 +1,0 @@
-"C:\Users\voyz\.virtualenvs\databay\Scripts\activate.bat"
