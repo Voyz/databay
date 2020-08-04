@@ -1,32 +1,26 @@
-import random
 from datetime import timedelta
 
-from databay import Link, Inlet
+from databay import Link
+from databay.inlets import RandomIntInlet
 from databay.outlet import Outlet
 from databay.planners import SchedulePlanner
 from databay.record import Record
 
+class ConditionalPrintOutlet(Outlet):
 
-class RandomIntInlet(Inlet):
-
-    def pull(self, update):
-        return random.randint(0, 100)
-
-
-class PrintOutlet(Outlet):
     # Whether records should be printed or skipped
-    SHOULD_PRINT = 'PrintOutlet.SHOULD_PRINT'
+    SHOULD_PRINT = 'ConditionalPrintOutlet.SHOULD_PRINT'
 
-    async def push(self, records:[Record], update):
+    def push(self, records:[Record], update):
         for record in records:
             if record.metadata.get(self.SHOULD_PRINT):
                 print(update, record)
 
 
-random_int_inlet_on = RandomIntInlet(metadata={PrintOutlet.SHOULD_PRINT: True})
-random_int_inlet_off = RandomIntInlet(metadata={PrintOutlet.SHOULD_PRINT: False})
+random_int_inlet_on = RandomIntInlet(metadata={ConditionalPrintOutlet.SHOULD_PRINT: True})
+random_int_inlet_off = RandomIntInlet(metadata={ConditionalPrintOutlet.SHOULD_PRINT: False})
 
-print_outlet = PrintOutlet()
+print_outlet = ConditionalPrintOutlet()
 
 link = Link([random_int_inlet_on, random_int_inlet_off],
             print_outlet,

@@ -135,8 +135,8 @@ html.writer-html5 .rst-content dl.py p + dl.field-list.simple{
 }
 
 .rst-content .viewcode-back, .rst-content .viewcode-link {
-    /*padding-left: 14px;*/
-    padding-left: 0;
+    padding-left: 4px;
+    /*padding-left: 0;*/
 }
 
 .toctree-wrapper.compound, .contents.local.topic {
@@ -235,11 +235,11 @@ html.writer-html5 .rst-content dl.py p + dl.field-list.simple{
 
 .rst-content .tutorial-block p,
 .rst-content .tutorial-block ol {
-    margin-bottom: 10px;
+    margin-bottom: 16px;
 }
 
 .rst-content .tutorial-block .highlight-python {
-    margin-bottom: 18px;
+    margin-bottom: 28px;
 }
 
 .tutorial-block ol.arabic ::marker {
@@ -253,23 +253,29 @@ html.writer-html5 .rst-content dl.py p + dl.field-list.simple{
 }
 
 .rst-content .tutorial-block ol.arabic,
-.rst-content .tutorial-block ol.arabic li{
+.rst-content .tutorial-block ol.arabic > li{
     list-style: none;
+    margin-left: 0;
 }
 
-.tutorial-block ol.arabic li::before {
+.tutorial-block ol.arabic > li::before {
     content: "Step " counter(li) ".";
     font-weight: 700;
     display: inline-block;
     /*width: 1em;*/
-    margin-left: -24px;
+    /*margin-left: -24px;*/
     margin-right: 4px;
 }
 
-li {counter-increment: li}
+.tutorial-block ol.arabic > li {
+    counter-increment: li
+}
 
+.tutorial-block ol.arabic:first-of-type{
+    margin-top:36px;
+}
 .tutorial-block ol.arabic p:first-of-type{
-    display: inline-block;
+    display: inline;
 }
 
 .tutorial-block {
@@ -362,9 +368,10 @@ html.writer-html5 .rst-content .section dl.exception:not(:first-of-type)
     margin-top: 56px;
 }
 
-.rst-content dl.py dt>span:last-of-type:not(:last-child) {
-    margin-right:12px;
-}
+/*.rst-content dl.py dt>a.reference.external:last-of-type:not(:last-child),*/
+/*.rst-content dl.py dt>span:last-of-type:not(:last-child) + a.reference.internal {*/
+/*    margin-left:12px;*/
+/*}*/
 
 /* fis for MS Edge breaking on the copybutton*/
 @supports (-ms-ime-align:auto) {

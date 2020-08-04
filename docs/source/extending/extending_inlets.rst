@@ -160,6 +160,7 @@ Additionally, each record is supplied with a special :code:`__inlet__` metadata 
     RandomIntInlet(metadata={})
 
 
+.. _local_metadata:
 
 Local metadata
 ^^^^^^^^^^^^^^

@@ -7,29 +7,33 @@ Simple usage
 
     #. Create an inlet for data production:
 
+    .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/simple_usage.py
         :language: python
         :lines: 9
 
     #. Create an outlet for data consumption:
 
+    .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/simple_usage.py
         :language: python
         :lines: 10
 
     #. Add the two to a link that will handle data transfer between them:
 
+    .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/simple_usage.py
         :language: python
         :lines: 11-12
 
     #. Create a planner, add the link and start scheduling:
 
+    .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/simple_usage.py
         :language: python
         :lines: 15-17
 
-    Full code:
+    Full example:
 
     .. literalinclude:: ../../examples/simple_usage.py
         :language: python

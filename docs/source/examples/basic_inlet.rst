@@ -26,7 +26,7 @@ Basic Inlet
         :language: python
         :lines: 18-21
 
-    Full code:
+    Full example:
 
     .. literalinclude:: ../../examples/basic_inlet.py
         :language: python

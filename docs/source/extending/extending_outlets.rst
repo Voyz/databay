@@ -65,11 +65,7 @@ By default a copy of records is provided to outlets in order to prevent accident
 Metadata
 ^^^^^^^^
 
-Your outlet can be built to behave differently depending on the metadata carried by the records. Metadata is attached to each record when inlets produce data.
-
-.. todo: create a simple example of usage without using advanced keys
-
-.. todo: make this the stuff below a separate section about being responsible and creating right keys
+Your outlet can be built to behave differently depending on the metadata carried by the records. Metadata is attached to each record when inlets produce data. Learn more about the difference between :ref:`Global metadata <global_metadata>` and :ref:`Local metadata <local_metadata>`.
 
 When creating an outlet it is up to you to ensure the expected metadata and its effects are clearly documented. To prevent name clashes between various outlets' metadata, it is recommended to include outlet name in the keys expected by your outlet.
 
@@ -108,6 +104,8 @@ Correct:
 
     random_int_inletA = RandomIntInlet(metadata={CsvOutlet.CSV_FILE: 'cat'})
     random_int_inletB = RandomIntInlet(metadata={CsvOutlet.CSV_FILE: 'dog'})
+
+.. image:: ../_static/images/databay_metadata_csv.png
 
 Start and shutdown
 ^^^^^^^^^^^^^^^^^^
