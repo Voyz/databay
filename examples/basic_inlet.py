@@ -1,9 +1,9 @@
-import random
-
-from databay import Inlet, Link
+from databay import Link
 from databay.outlets import PrintOutlet
 from databay.planners import SchedulePlanner
 from datetime import timedelta
+from databay import Inlet
+import random
 
 class RandomIntInlet(Inlet):
 

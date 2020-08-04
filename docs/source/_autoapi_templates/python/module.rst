@@ -10,7 +10,7 @@
 
 .. |default| raw:: html
 
-    <div class="default-value-section"> <span class="default-value-label">Default:</span>
+    <div class="default-value-section"> <span class="default-value-label">Default:</span></div>
 
 .. |decorated| raw:: html
 

@@ -101,7 +101,7 @@ class Outlet(ABC):
         the governing link to :code:`True` on start and to :code:`False` on shutdown.
         |default| :code:`False`
 
-        :rtype: :class:`bool`
+        :rtype: bool
         """
 
         return self._active

@@ -21,3 +21,7 @@ You can find all examples in the GitHub repository in the `Examples folder <http
 
 .. _basic-metadata:
 .. include:: examples/basic_metadata.rst
+
+.. todo: add more complex examples of metadata, outlet, and utilising the system for something actually meaningful
+.. todo: add examples with multiple inlets and outlets
+.. todo: add examples with multiple links

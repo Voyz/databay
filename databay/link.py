@@ -193,7 +193,7 @@ class Link():
 
     def set_job(self, job): # pragma: no cover
         """
-        :type job: :class:`Any`
+        :type job: Any
         :param job: specify the job this link is executed with.
         """
         self._job = job
@@ -211,11 +211,10 @@ class Link():
     @property
     def name(self) -> str:
         """
-        The human readable identifier of this link.
-        |default| :code:`''`
+        The human readable identifier of this link. |default| :code:`''`
 
         :returns: Name of this link
-        :rtype: :class:`str`
+        :rtype: str
         """
         return self._name
 

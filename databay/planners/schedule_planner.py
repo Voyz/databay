@@ -39,7 +39,7 @@ class SchedulePlanner(BasePlanner):
             links with interval smaller than this value will raise a :any:`ScheduleIntervalError`.
             |default| :code:`1.0`
 
-        :type catch_exceptions: :class:`bool`
+        :type catch_exceptions: bool
         :param catch_exceptions: Whether exceptions should be caught or halt the planner. |default| :code:`False`
         """
 
@@ -79,7 +79,7 @@ class SchedulePlanner(BasePlanner):
         """
         Destroy the existing thread pool if one exists.
 
-        :type wait: :class:`bool`
+        :type wait: bool
         :param wait: whether to wait for the existing thread pool to shut down.
         """
 
@@ -176,7 +176,7 @@ class SchedulePlanner(BasePlanner):
         """
         Stop this planner. Links will stop being scheduled after calling this method
 
-        :type wait: :class:`bool`
+        :type wait: bool
         :param wait: Whether to wait until all currently executing jobs have finished.
             |default| :code:`True`
         """

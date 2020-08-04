@@ -14,32 +14,30 @@ To implement custom data production you need to extend the :any:`Inlet` class, o
 Simple example
 ^^^^^^^^^^^^^^
 
-.. code-block:: python
+.. container:: tutorial-block
 
-    import random
-    from databay import Inlet
+    #. Extend the :any:`Inlet` class, returning produced data from the :any:`pull` method:
 
-    class RandomIntInlet(Inlet):
+    .. rst-class:: highlight-small
+    .. literalinclude:: ../../../examples/basic_inlet.py
+        :language: python
+        :lines: 5-11
 
-        def pull(self, update):
-            return random.randint(0, 100)
+    #. Instantiate it:
 
-Such inlet is ready to be added to a link and used in Databay.
+    .. rst-class:: highlight-small
+    .. literalinclude:: ../../../examples/basic_inlet.py
+        :language: python
+        :lines: 14
 
-.. code-block:: python
+    #. Add it to a link and start scheduling:
 
-    from databay import Link
-    from databay.planners import APSPlanner
-    from datetime import timedelta
+    .. rst-class:: highlight-small
+    .. literalinclude:: ../../../examples/basic_inlet.py
+        :language: python
+        :lines: 18-25
 
-    random_int_inlet = RandomIntInlet()
-    link = Link(random_int_inlet, [...some outlets...], interval=timedelta(seconds=5))
-
-    planner = APSPlanner()
-    planner.add_link(link)
-    planner.start()
-
-Above setup will produce a random integer every 5 seconds (:ref:`See full example <basic-inlet>`).
+    Above setup will produce a random integer every 5 seconds (:ref:`See full example <basic-inlet>`).
 
 Each pull call is provided with an :any:`Update` object as a parameter. It contains the name of the governing link (if specified) and an incremental integer index. Use the :code:`str(update)` to get a formatted string of that update. See :any:`Transfer Update <transfer-update>` for more.
 
@@ -57,21 +55,102 @@ Data produced by inlets is wrapped in :any:`Record` objects before being passed 
             record = self.new_record(payload=new_integer)
             return record
 
+Producing multiple records
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+During one transfer you may produce multiple data entities within the :any:`Inlet.pull` method. Returning a :any:`list` is an indication that multiple records are being produced at once, in which case each element of the :any:`list` will be turned into a :any:`Record`. Any return type other than :any:`list` (eg. :any:`tuple`, :any:`set`, :any:`dict`) will be considered as one :any:`Record`.
+
+.. rst-class:: mb-s
+Returning a :any:`list`, producing two records:
+
+.. rst-class:: highlight-small
+.. code-block:: python
+
+    def pull(self, update):
+
+        # produces two records
+        return [random.randint(0, 50), random.randint(0, 100)]
+
+.. rst-class:: mb-s
+Returning a :any:`set`, producing one record:
+
+.. rst-class:: highlight-small
+.. code-block:: python
+
+    def pull(self, update):
+
+        # produces one records
+        return {random.randint(0, 50), random.randint(0, 100)}
+
+Same is true when explicitly creating multiple records within :any:`pull` and returning these.
+
+.. code-block:: python
+
+    def pull(self, update):
+        first_record = self.new_record(random.randint(0, 50))
+        second_record = self.new_record(random.randint(0, 100))
+
+        return [first_record, second_record]
+
+If you wish for one record to contain a :any:`list` of data that doesn't get broken down to multiple records, you can either create the record yourself passing the :any:`list` as payload or return a nested :any:`list`:
+
+.. code-block:: python
+
+    def pull(self, update):
+        r1 = random.randint(0, 50)
+        r2 = random.randint(0, 100)
+
+        return self.new_record(payload=[r1, r2])
+
+    # or
+    ...
+
+    def pull(self, update):
+        r1 = random.randint(0, 50)
+        r2 = random.randint(0, 100)
+
+        return [[r1, r2]]
 
 .. _global_metadata:
 
 Global metadata
 ^^^^^^^^^^^^^^^
 
-Inlets can attach metadata to records that can later be used by outlets. When constructing an :any:`Inlet` instance you can provide a metadata dictionary, a copy of which will be attached to all records produced by that :any:`Inlet` instance.
+:any:`Inlet` can attach custom metadata to all records it produces. Metadata's intended use is to provide additional context to records when they are consumed by outlets. To do so, when constructing an :any:`Inlet` pass a metadata dictionary, a copy of which will be attached to all records produced by that :any:`Inlet` instance.
 
 .. code-block:: python
 
-    random_cat_inlet = RandomIntInlet(metadata={'type': 'cat'})
-    # produces Record(metadata={'type': 'cat'})
+    random_cat_inlet = RandomIntInlet(metadata={'animal': 'cat'})
+    # produces Record(metadata={'animal': 'cat'})
 
-    random_parrot_inlet = RandomIntInlet(metadata={'type': 'parrot'})
-    # produces Record(metadata={'type': 'parrot'})
+    random_parrot_inlet = RandomIntInlet(metadata={'animal': 'parrot'})
+    # produces Record(metadata={'animal': 'parrot'})
+
+Metadata dictionary is independent from the inlet that it is given to. Inlet should not modify the metadata or read it; instead inlets should expect all setup parameters to be provided as arguments on construction.
+
+.. rst-class:: mb-s
+Incorrect:
+
+.. rst-class::highlight-small
+.. code-block:: python
+
+    def MyInlet():
+        def __init__(self, metadata):
+            self.should_do_stuff = metadata.get('should_do_stuff')
+
+.. rst-class:: mb-s
+Correct:
+
+.. rst-class::highlight-small
+.. code-block:: python
+
+    def MyInlet():
+        def __init__(self, should_do_stuff, *args, **kwargs):
+            super().__init__(*args, **kwargs) # metadata dict gets passed and stored here
+            self.should_do_stuff = should_do_stuff
+
+Metadata supported by each outlet differs and is dependant on the particular outlet implementation. Please refer to specific outlet documentation for more information on metadata expected.
+
 
 Additionally, each record is supplied with a special :code:`__inlet__` metadata entry containing string representation of the inlet that produced it.
 
@@ -80,14 +159,13 @@ Additionally, each record is supplied with a special :code:`__inlet__` metadata 
     >>> record.metadata['__inlet__']
     RandomIntInlet(metadata={})
 
-The metadata required by each outlet differs and is dependant on the particular outlet implementation. Please refer to specific outlet documentation for more information on metadata supported.
+
 
 Local metadata
 ^^^^^^^^^^^^^^
 
-Apart from specifying :ref:`global_metadata`, you may also attach local per-record metadata. This can be done by providing a metadata dictionary when creating a record using :any:`Inlet.new_record` method.
+Apart providing an inlet with :ref:`global_metadata` that will be same for all records, you may also attach local per-record metadata that can vary for each record. This can be done inside of the :any:`pull` method by specifying a metadata dictionary when creating a record using :any:`Inlet.new_record` method.
 
-Note that local metadata will override global metadata if same metadata is specified globally and locally.
 
 .. code-block:: python
 
@@ -95,36 +173,19 @@ Note that local metadata will override global metadata if same metadata is speci
 
         def pull(self, update):
             new_integer = random.randint(0, 100)
-            record = self.new_record(payload=new_integer, metadata={'random_cap': 100})
+
+            if new_integer > 50:
+                animal = 'cat'
+            else:
+                animal = 'parrot'
+
+            record = self.new_record(payload=new_integer, metadata={'animal': animal})
             return record
 
+Note that local metadata will override global metadata if same metadata is specified globally and locally.
 
 
-Producing multiple records
-^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-On each transfer you may return single or multiple data entities from the :any:`Inlet.pull` method.
-
-.. code-block:: python
-
-    class TwoRandomIntsInlet(Inlet):
-
-        def pull(self, update):
-            return [random.randint(0, 50), random.randint(0, 100)]
-
-Same is true when explicitly producing multiple records.
-
-.. code-block:: python
-
-    class TwoRandomIntsInlet(Inlet):
-
-        def pull(self, update):
-            first_new_integer = random.randint(0, 50)
-            second_new_integer = random.randint(0, 100)
-
-            first_record = self.new_record(payload=first_new_integer, metadata={'random_cap': 50})
-            second_record = self.new_record(payload=second_new_integer, metadata={'random_cap': 100})
-            return [first_record, second_record]
 
 
 Start and shutdown

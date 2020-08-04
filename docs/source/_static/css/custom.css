@@ -1,8 +1,11 @@
 
+body {
+    font-family: Roboto, "Noto Sans", "Noto Sans JP", "Noto Sans KR", "Noto Naskh Arabic", "Noto Sans Thai", "Noto Sans Hebrew", "Noto Sans Bengali", sans-serif;
+}
 
 .py.class{
-    margin-top: 40px;
-    padding-bottom: 40px;
+    /*margin-top: 40px;*/
+    /*padding-bottom: 40px;*/
 }
 
 .py.method{
@@ -20,7 +23,6 @@ table.docutils tr > td{
 }
 
 html.writer-html5 .rst-content dl.py.method[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) code.descname {
-    font-size: 115%!important;
     padding: 0 6px 0 4px;
 }
 html.writer-html5 .rst-content dl.py.method .prop{
@@ -42,7 +44,7 @@ html.writer-html5 .rst-content dl.field-list p {
 /*    margin-left: -20px;*/
 /*}*/
 
-html.writer-html5 .rst-content dl.py.class[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) code.descname {
+html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) code.descname {
     font-size: 115%!important;
     padding: 0 4px 0 0;
 }
@@ -73,6 +75,7 @@ html.writer-html5 .wy-menu.wy-menu-vertical .toctree-l3 a.reference.internal.cur
 
 html.writer-html5 .rst-content a.reference code {
     font-size: 90%;
+    line-height: 1;
 }
 
 html.writer-html5 .rst-content .default-value:before {
@@ -83,12 +86,17 @@ html.writer-html5 .rst-content .default-value:before {
     /*margin-left: 20px;*/
 /*}*/
 
+html.writer-html5 .rst-content .default-value-section {
+    display: inline-block;
+}
+
 html.writer-html5 .rst-content .default-value-section .default-value-label {
     font-style: italic;
 }
-html.writer-html5 .rst-content .default-value-section code.literal {
-    color: #777;
-}
+
+/*html.writer-html5 .rst-content .default-value-section + code.literal {*/
+/*    color: #777;*/
+/*}*/
 /*html.writer-html5 .rst-content ul.simple li .default-value-section {*/
 /*    margin-bottom:6px;*/
 /*}*/
@@ -100,9 +108,9 @@ html.writer-html5 .rst-content dl.py.class dl.field-list.simple dd ul.simple li:
 html.writer-html5 .rst-content dl.py.method>dd>p.decorated{
     margin-bottom: 6px
 }
-html.writer-html5 .rst-content .decorated code.literal{
-    color:#2980b9;
-}
+/*html.writer-html5 .rst-content .decorated code.literal{*/
+/*    color:#2980b9;*/
+/*}*/
 html.writer-html5 .rst-content .decorated code span.pre:before{
     content:"@"
 }
@@ -239,4 +247,120 @@ li {counter-increment: li}
 
 .tutorial-block ol.arabic p:first-of-type{
     display: inline-block;
+}
+
+.tutorial-block {
+    margin-bottom:16px;
+}
+
+.rst-content h2{
+    font-size: 140%;
+}
+
+.rst-content code.literal, .rst-content tt.literal {
+    /*color: #2980b9;*/
+    color: hsl(198, 18%, 20%);
+    font-family: Roboto Mono,monospace;
+    font-weight: 500 !important;
+    background: hsl(200, 10%, 94%);
+}
+
+code,
+.rst-content code,
+.rst-content tt {
+    /*background: #f1f2f3;*/
+    /*background: hsl(210, 8%, 94%);*/
+
+    /*border: 1px solid #eaedf0;*/
+    border:none;
+    border-radius: 3px;
+    padding: 1px 3px;
+    font-size: 90%;
+}
+.rst-content code.xref,
+.rst-content tt.xref{
+    /*color: #2980b9;*/
+    /*color: #1967d2;*/
+    background: hsl(200, 10%, 95%);
+    color: hsl(204, 95%, 44%);
+}
+
+/*.rst-content div[class^=highlight] pre {*/
+/*    font-family: Roboto Mono,monospace;*/
+/*}*/
+
+.rst-content .toctree-wrapper>p.caption, h1, h2, h3, h4, h5, h6, legend {
+    font-family: inherit;
+}
+
+a.reference.internal:not(:first-child) code {
+    margin: 0 2px;
+}
+
+.admonition a.reference code {
+    background: white;
+}
+
+html.writer-html5 .rst-content table.docutils td>p{
+    font-size: 1rem;
+    line-height: 24px;
+}
+
+.rst-content table.docutils td {
+    white-space: normal;
+    word-break: break-word;
+}
+
+.rst-content table.docutils:not(.field-list) tr:nth-child(2n-1) td {
+    background: transparent;
+}
+.rst-content table.docutils tr td:first-child code.xref {
+    background: transparent;
+}
+
+.wy-table-responsive {
+    margin-bottom: 56px;
+}
+
+html.writer-html5 .rst-content .section dl.class,
+html.writer-html5 .rst-content .section dl.function,
+html.writer-html5 .rst-content .section dl.exception
+{
+    margin-top: 56px;
+}
+
+@supports (-ms-ime-align:auto) {
+
+    .rst-content div[class^=highlight] div[class^=highlight], .rst-content pre.literal-block div[class^=highlight] {
+        overflow: hidden;
+    }
+}
+@media only screen and (max-width: 480px){
+    .rst-content dl dd {
+        margin: 0 0 12px 0;
+    }
+
+    html.writer-html5 .rst-content dl.field-list, html.writer-html5 .rst-content dl.footnote {
+        display: block;
+    }
+
+    .rst-content .field-list.simple dt.field-odd,
+    .rst-content .field-list.simple dt.field-even {
+        padding-left: 0;
+        margin-bottom: 12px;
+        margin-top: 24px;
+    }
+
+    .rst-content .field-list.simple dd.field-odd,
+    .rst-content .field-list.simple dd.field-even {
+        margin-left: 12px;
+    }
+
+    html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) dt {
+        width: 100%;
+    }
+
+    html.writer-html5 .rst-content table.docutils td {
+        padding: 4px;
+    }
 }

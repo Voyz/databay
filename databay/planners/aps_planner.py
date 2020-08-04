@@ -30,16 +30,16 @@ class APSPlanner(BasePlanner):
     def __init__(self, threads:int=30, executors_override:dict=None, job_defaults_override:dict=None, catch_exceptions:bool=False):
         """
 
-        :type threads: :class:`int`
+        :type threads: int
         :param threads: Number of threads available for job execution. Each link will be run on a separate thread job. |default| :code:`30`
 
-        :type executors_override: :class:`dict`
+        :type executors_override: dict
         :param executors_override: Overrides for executors option of `APS configuration <configuring-scheduler_>`__ |default| :code:`None`
 
-        :type job_defaults_override: :class:`dict`
+        :type job_defaults_override: dict
         :param job_defaults_override: Overrides for job_defaults option of `APS configuration <configuring-scheduler_>`__  |default| :code:`None`
 
-        :type catch_exceptions: :class:`bool`
+        :type catch_exceptions: bool
         :param catch_exceptions: Whether exceptions should be caught or halt the planner. |default| :code:`False`
         """
 
@@ -116,7 +116,7 @@ class APSPlanner(BasePlanner):
 
     def pause(self):
         """
-        Pause this planner. Calls :any:`APS Scheduler.pause() <apscheduler.schedulers.base.BaseScheduler.pause>`
+        Pause this planner. Calls :any:`APScheduler.pause() <apscheduler.schedulers.base.BaseScheduler.pause>`
         """
         _LOGGER.info('Pausing %s' % str(self))
         self._scheduler.pause()
@@ -124,7 +124,7 @@ class APSPlanner(BasePlanner):
 
     def resume(self):
         """
-        Resume this planner. Calls :any:`APS Scheduler.resume() <apscheduler.schedulers.base.BaseScheduler.resume>`
+        Resume this planner. Calls :any:`APScheduler.resume() <apscheduler.schedulers.base.BaseScheduler.resume>`
         """
         _LOGGER.info('Resuming %s' % str(self))
         self._scheduler.resume()
@@ -132,9 +132,9 @@ class APSPlanner(BasePlanner):
 
     def shutdown(self, wait:bool=True):
         """
-        Shutdown this planner. Calls :any:`APS Scheduler.shutdown() <apscheduler.schedulers.base.BaseScheduler.shutdown>`
+        Shutdown this planner. Calls :any:`APScheduler.shutdown() <apscheduler.schedulers.base.BaseScheduler.shutdown>`
 
-        :type wait: :class:`bool`
+        :type wait: bool
         :param wait: Whether to wait until all currently executing jobs have finished.
             |default| :code:`True`
         """
@@ -142,9 +142,9 @@ class APSPlanner(BasePlanner):
 
     def _shutdown_planner(self, wait:bool=True):
         """
-        Shutdown this planner. Calls :any:`APS Scheduler.shutdown() <apscheduler.schedulers.base.BaseScheduler.shutdown>`
+        Shutdown this planner. Calls :any:`APScheduler.shutdown() <apscheduler.schedulers.base.BaseScheduler.shutdown>`
 
-        :type wait: :class:`bool`
+        :type wait: bool
         :param wait: Whether to wait until all currently executing jobs have finished.
             |default| :code:`True`
         """
@@ -157,7 +157,7 @@ class APSPlanner(BasePlanner):
 
 
         :return: State of this planner
-        :rtype: :any:`bool`
+        :rtype: bool
         """
         return self._scheduler.state == STATE_RUNNING
 

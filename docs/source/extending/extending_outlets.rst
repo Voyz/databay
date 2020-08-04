@@ -14,7 +14,7 @@ Simple example
 
 .. code-block:: python
 
-    from databay import Outlet
+    from databay import Outletto
 
     class PrintOutlet(Outlet):
 
@@ -43,7 +43,8 @@ Each push call is provided with an :any:`Update` object as one of parameters. It
 Consuming Records
 ^^^^^^^^^^^^^^^^^
 
-Outlets are provided with a list of all records produced by all inlets of the governing link. Each :any:`Record` contains two fields:
+
+Outlets are provided with a :any:`list` of all records produced by all inlets of the governing link. Each :any:`Record` contains two fields:
 
 1. :any:`Record.payload` - data stored in the record.
 2. :any:`Record.metadata` - metadata attached to the record
@@ -56,17 +57,21 @@ Outlets are provided with a list of all records produced by all inlets of the go
 
         def push(self, records, update):
             for record in records:
-                if 'should_print' in record.metadata and record.metadata['should_print'] == True:
-                    print(f'Record data: {record.payload} with metadata: {record.metadata}')
+                if record.metadata.get('should_print', False):
+                    print(record.payload)
 
-By default a copy of records is provided to outlets in order to prevent accidental data corruption. You can disable this mechanism by passing :code:`copy_records=False` when constructing a link, in which case same list will be provided to all outlets. Ensure you aren't modifying the records or their underlying data in your :any:`Outlet.push` method.
+By default a copy of records is provided to outlets in order to prevent accidental data corruption. You can disable this mechanism by passing :code:`copy_records=False` when constructing a link, in which case same :any:`list` will be provided to all outlets. Ensure you aren't modifying the records or their underlying data in your :any:`Outlet.push` method.
 
 Metadata
 ^^^^^^^^
 
-Your outlet can be built to behave differently depending on the metadata carried by the records. Metadata is attached to each record when inlets produce data. When creating an outlet it is up to you to ensure the expected metadata and its effects are clearly documented.
+Your outlet can be built to behave differently depending on the metadata carried by the records. Metadata is attached to each record when inlets produce data.
 
-To prevent name clashes between various outlets' metadata, it is recommended to include outlet name in the keys expected by your outlet.
+.. todo: create a simple example of usage without using advanced keys
+
+.. todo: make this the stuff below a separate section about being responsible and creating right keys
+
+When creating an outlet it is up to you to ensure the expected metadata and its effects are clearly documented. To prevent name clashes between various outlets' metadata, it is recommended to include outlet name in the keys expected by your outlet.
 
 .. rst-class:: mb-s
 Incorrect:
@@ -94,18 +99,15 @@ Correct:
         def push(self, records:[Record], update):
             for record in records:
                 if self.CSV_FILE in record.metadata:
-                    csv_file = record.metadata[self.CSV_FILE]
-                else:
-                    csv_file = 'default.csv'
+                    csv_file = record.metadata[self.CSV_FILE] + '.csv'
 
-                ...
-                # write to csv_file specified
-
+                    ...
+                    # write to csv_file specified
 
     ...
 
-    random_int_inletA = RandomIntInlet(metadata={CsvOutlet.CSV_FILE: 'cat.csv'})
-    random_int_inletB = RandomIntInlet(metadata={CsvOutlet.CSV_FILE: 'dog.csv'})
+    random_int_inletA = RandomIntInlet(metadata={CsvOutlet.CSV_FILE: 'cat'})
+    random_int_inletB = RandomIntInlet(metadata={CsvOutlet.CSV_FILE: 'dog'})
 
 Start and shutdown
 ^^^^^^^^^^^^^^^^^^

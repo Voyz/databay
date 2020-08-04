@@ -1,9 +1,11 @@
+
+
 Databay
 =======
 
 .. container:: text-block
 
-    Databay is a Python interface for scheduled data transfer.
+    Databay is a Python interface for **scheduled data transfer**.
 
     It facilitates transfer of (any) data from A to B, on a scheduled interval.
 
@@ -64,3 +66,7 @@ Every 5 seconds this snippet will pull data from a test URL, and write it to a M
     api/databay/index
     _modules/index
     GitHub Page <https://github.com/Voyz/databay>
+
+
+.. todo: add filters
+.. todo: add translators

@@ -93,7 +93,7 @@ class MongoOutlet(Outlet):
         :type records: list[:any:`Record`]
         :param records: Records to be grouped
         :return: Grouped records
-        :rtype: Dict[:class:`str`, :any:`Record`]
+        :rtype: Dict[str, :any:`Record`]
         """
         collections = {}
 
@@ -149,11 +149,11 @@ class MongoOutlet(Outlet):
         """
         Connect to the specified database. Returns True if already connected to the specified database. Disconnects from any existing databases if specified database is different.
 
-        :type database_name: :class:`str`
+        :type database_name: str
         :param database_name: Name of the database to connect to. |default| :code:`None` (Connects to default database name if not specified`)
 
         :return: Returns True if already connected to the database specified.
-        :rtype: :class:`bool`
+        :rtype: bool
 
         """
         if database_name is None:
@@ -197,7 +197,7 @@ class MongoOutlet(Outlet):
         """
         Get a collection from the database.
 
-        :type collection: :class:`str`
+        :type collection: str
         :param collection: Collection to acquire from the database.
 
         :rises: :any:`MongoCollectionNotFound` if collection is not found in the database.
@@ -219,7 +219,7 @@ class MongoOutlet(Outlet):
 
         Add a collection to the database.
 
-        :type collection: :class:`str`
+        :type collection: str
         :param collection: Collection name to add
         """
         self._db.create_collection(str(collection))
