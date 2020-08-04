@@ -340,4 +340,4 @@ class Link():
         :returns: Link(name:%s, inlets:%s, outlets:%s, interval:%s)
         """
 
-        return 'Link(name:%s, inlets:%s, outlets:%s, interval:%s)' % (self.name, self.inlets, self.outlets, self.interval)
+        return 'Link(name:\'%s\', inlets:%s, outlets:%s, interval:%s)' % (self.name, self.inlets, self.outlets, self.interval)

@@ -155,7 +155,14 @@ class Inlet(ABC):
 
 
     def __repr__(self):
-        return '%s(metadata:%s)' % (self.__class__.__name__, self.metadata)
+        s = "%s(" % (self.__class__.__name__)
+
+        if self.metadata:
+            s += 'metadata:%s' % self.metadata
+
+        s += ')'
+
+        return s
 
 
 
