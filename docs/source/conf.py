@@ -113,7 +113,10 @@ autoapi_ignore = [
 autoapi_options = [ 'members', 'undoc-members', 'xprivate-members', 'show-inheritance', 'show-module-summary', 'special-members', 'ximported-members']
 autoapi_python_class_content = 'both'
 autoapi_keep_files = True
-autoapi_generate_api_docs = False
+
+if not os.getenv('READTHEDOCS'):
+    autoapi_generate_api_docs = False
+
 autoapi_python_use_implicit_namespaces = True
 
 
