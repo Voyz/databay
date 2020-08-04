@@ -26,9 +26,9 @@ html.writer-html5 .rst-content dl.py.method[class]:not(.option-list):not(.field-
     padding: 0 6px 0 0;
 }
 
-html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) .property {
-    padding-right: 12px;
-}
+/*html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) .property {*/
+/*    padding-right: 12px;*/
+/*}*/
 
 html.writer-html5 .rst-content dl.py.method .prop{
     color: #888;
@@ -135,7 +135,8 @@ html.writer-html5 .rst-content dl.py p + dl.field-list.simple{
 }
 
 .rst-content .viewcode-back, .rst-content .viewcode-link {
-    padding-left: 14px;
+    /*padding-left: 14px;*/
+    padding-left: 0;
 }
 
 .toctree-wrapper.compound, .contents.local.topic {
@@ -361,6 +362,10 @@ html.writer-html5 .rst-content .section dl.exception:not(:first-of-type)
     margin-top: 56px;
 }
 
+.rst-content dl.py dt>span:last-of-type:not(:last-child) {
+    margin-right:12px;
+}
+
 /* fis for MS Edge breaking on the copybutton*/
 @supports (-ms-ime-align:auto) {
 
@@ -395,6 +400,9 @@ html.writer-html5 .rst-content .section dl.exception:not(:first-of-type)
         width: 100%;
         line-height: 24px;
     }
+    html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) code.descname {
+        font-size: 100% !important;
+    }
 
     html.writer-html5 .rst-content table.docutils tr {
         margin-bottom: 12px;
@@ -426,5 +434,9 @@ html.writer-html5 .rst-content .section dl.exception:not(:first-of-type)
 
     .rst-content dl dt .headerlink:after{
         visibility: visible;
+    }
+
+    .rst-content dl.py dt .viewcode-link {
+        font-size: 100%;
     }
 }
