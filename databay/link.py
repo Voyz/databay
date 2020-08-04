@@ -123,7 +123,7 @@ class Link():
         :type inlets: :any:`Inlet` or list[:any:`Inlet`]
         :param inlets: inlets to remove from this link
 
-        :raises: :any:`InvalidNodeError` if this link doesn't contain any the inlets being removed.
+        :raises: :any:`InvalidNodeError` if this link doesn't contain any of the inlets being removed.
         """
         if not isinstance(inlets, list):
             inlets = [inlets]
@@ -170,7 +170,7 @@ class Link():
         :type outlets: :any:`Outlet` or list[:any:`Outlet`]
         :param outlets: outlets to remove from this link
 
-        :raises: :any:`InvalidNodeError` if this link doesn't contain any the outlets being removed.
+        :raises: :any:`InvalidNodeError` if this link doesn't contain any of the outlets being removed.
         """
         if not isinstance(outlets, list):
             outlets = [outlets]

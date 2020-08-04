@@ -10,7 +10,7 @@
 
 .. |default| raw:: html
 
-    <div class="default-value-section"> <span class="default-value-label">Default:</span></div>
+    <div class="default-value-section"><span class="default-value-label">Default:</span></div>
 
 .. |decorated| raw:: html
 
@@ -88,7 +88,8 @@ Databay API Reference
 
 {% block classes scoped %}
 
-Contents
+.. rst-class:: mb-l mt-xxxx
+Contents:
 
 .. autoapisummary::
    :nosignatures:

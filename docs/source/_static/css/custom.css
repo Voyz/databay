@@ -23,8 +23,13 @@ table.docutils tr > td{
 }
 
 html.writer-html5 .rst-content dl.py.method[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) code.descname {
-    padding: 0 6px 0 4px;
+    padding: 0 6px 0 0;
 }
+
+html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) .property {
+    padding-right: 12px;
+}
+
 html.writer-html5 .rst-content dl.py.method .prop{
     color: #888;
     font-style: italic;
@@ -54,7 +59,7 @@ html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(
 }
 
 html.writer-html5 .rst-content dl.field-list>dt {
-    font-weight:500;
+    font-weight:400;
     font-style: italic;
 }
 
@@ -122,6 +127,7 @@ html.writer-html5 .rst-content dl.py p.full-class-path{
     font-size: 15px;
     color: #888;
     margin-bottom: 18px;
+    word-break: break-word;
 }
 
 html.writer-html5 .rst-content dl.py p + dl.field-list.simple{
@@ -188,6 +194,22 @@ html.writer-html5 .rst-content dl.py p + dl.field-list.simple{
 
 .rst-content .mb-s {
     margin-bottom:4px;
+}
+.rst-content .mb-m {
+    margin-bottom:8px;
+}
+.rst-content .mb-l {
+    margin-bottom:12px;
+}
+
+.rst-content .mt-xx {
+    margin-top:20px;
+}
+.rst-content .mt-xxx {
+    margin-top:24px;
+}
+.rst-content .mt-xxxx {
+    margin-top:28px;
 }
 
 .rst-content .highlight-small .highlight pre {
@@ -291,6 +313,7 @@ code,
 
 .rst-content .toctree-wrapper>p.caption, h1, h2, h3, h4, h5, h6, legend {
     font-family: inherit;
+    word-break: break-word;
 }
 
 a.reference.internal:not(:first-child) code {
@@ -301,6 +324,10 @@ a.reference.internal:not(:first-child) code {
     background: white;
 }
 
+html.writer-html5 .rst-content table.docutils {
+    border:none;
+
+}
 html.writer-html5 .rst-content table.docutils td>p{
     font-size: 1rem;
     line-height: 24px;
@@ -309,6 +336,7 @@ html.writer-html5 .rst-content table.docutils td>p{
 .rst-content table.docutils td {
     white-space: normal;
     word-break: break-word;
+    border-left: none;
 }
 
 .rst-content table.docutils:not(.field-list) tr:nth-child(2n-1) td {
@@ -319,22 +347,29 @@ html.writer-html5 .rst-content table.docutils td>p{
 }
 
 .wy-table-responsive {
-    margin-bottom: 56px;
+    margin-bottom: 36px;
 }
 
-html.writer-html5 .rst-content .section dl.class,
-html.writer-html5 .rst-content .section dl.function,
-html.writer-html5 .rst-content .section dl.exception
+html.writer-html5 .rst-content .section dl.class:not(:first-of-type),
+html.writer-html5 .rst-content .section dl.function:not(:first-of-type),
+html.writer-html5 .rst-content .section dl.exception:not(:first-of-type)
 {
     margin-top: 56px;
 }
 
+.rst-content footer {
+    margin-top: 56px;
+}
+
+/* fis for MS Edge breaking on the copybutton*/
 @supports (-ms-ime-align:auto) {
 
     .rst-content div[class^=highlight] div[class^=highlight], .rst-content pre.literal-block div[class^=highlight] {
         overflow: hidden;
     }
 }
+
+/* fixes for phone-size screens*/
 @media only screen and (max-width: 480px){
     .rst-content dl dd {
         margin: 0 0 12px 0;
@@ -358,9 +393,38 @@ html.writer-html5 .rst-content .section dl.exception
 
     html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) dt {
         width: 100%;
+        line-height: 24px;
     }
 
+    html.writer-html5 .rst-content table.docutils tr {
+        margin-bottom: 12px;
+    }
     html.writer-html5 .rst-content table.docutils td {
-        padding: 4px;
+        padding: 0;
+        display: table-row;
+    }
+    html.writer-html5 .rst-content table.docutils td:first-child {
+        border-bottom: none;
+    }
+    html.writer-html5 .rst-content table.docutils td:nth-child(2) p {
+        padding-bottom: 12px;
+    }
+    html.writer-html5 .rst-content table.docutils td:first-child p {
+        padding-top: 12px;
+        padding-bottom:12px;
+    }
+    .rst-content table.docutils tr td:first-child code.xref {
+        padding: 0;
+    }
+
+    .rst-content h1 {
+        font-size: 145%;
+    }
+    .rst-content h2 {
+        font-size: 125%;
+    }
+
+    .rst-content dl dt .headerlink:after{
+        visibility: visible;
     }
 }
