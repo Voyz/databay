@@ -15,7 +15,8 @@ File Outlet
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/file_outlet.py
         :language: python
-        :lines: 9-12
+        :start-at: class FileOutlet
+        :end-at: FILE_MODE =
 
 
     #. We expect :code:`default_filepath` and :code:`default_file_mode` to be provided when constructing this outlet.
@@ -23,40 +24,46 @@ File Outlet
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/file_outlet.py
         :language: python
-        :lines: 14-21
+        :start-at: def __init__(
+        :end-at: self.default_file_mode =
 
     #. Implement :code:`push` method, looping over all record and reading their metadata.
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/file_outlet.py
         :language: python
-        :lines: 23-26
+        :start-at: def push(
+        :end-at: file_mode =
 
     #. Write the record according to the :code:`filepath` and :code:`file_mode` found.
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/file_outlet.py
         :language: python
-        :lines: 28-29
+        :start-at: with open(
+        :end-at: f.write(
 
     #. Instantiate :code:`FileOutlet` and :any:`RandomIntInlet` provided with a metadata dictionary.
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/file_outlet.py
         :language: python
-        :lines: 32-37
+        :start-at: metadata =
+        :end-at: file_outlet = FileOutlet
 
+    #. Create link, add to planner and schedule.
 
-    Full example:
-
+    .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/file_outlet.py
         :language: python
+        :start-at: link = Link
+        :end-at: planner.start
 
-    Produces :code:`outputs/random_ints.txt` file:
+    Creates :code:`outputs/random_ints.txt` file:
 
     .. rst-class:: highlight-small
     .. code-block:: none
-        
+
         1
         76
         52
@@ -68,3 +75,8 @@ File Outlet
         70
         74
         ...
+
+    Full example:
+
+    .. literalinclude:: ../../examples/file_outlet.py
+        :language: python

@@ -10,47 +10,68 @@ Simple usage
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/simple_usage.py
         :language: python
-        :lines: 9
+        :start-at: http_inlet = HttpInlet
+        :end-at: http_inlet = HttpInlet
 
     #. Create an outlet for data consumption:
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/simple_usage.py
         :language: python
-        :lines: 10
+        :start-at: mongo_outlet = MongoOutlet
+        :end-at: mongo_outlet = MongoOutlet
 
     #. Add the two to a link that will handle data transfer between them:
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/simple_usage.py
         :language: python
-        :lines: 11-12
+        :start-at: link = Link
+        :end-at: name='http_to_mongo'
 
     #. Create a planner, add the link and start scheduling:
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/simple_usage.py
         :language: python
-        :lines: 15-17
+        :start-at: planner =
+        :end-at: planner.start
 
-    Full example:
+    #. (Optional) In this example we configured the databay logger to display all messages. By default only :code:`WARNING` and above will be printed.
 
+    .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/simple_usage.py
         :language: python
+        :start-at: .getLogger('databay')
+        :end-at: .getLogger('databay')
+    ..
 
-    Produces:
+        Databay's logger has the following signature:
+
+        .. rst-class:: highlight-small
+        .. code-block:: python
+
+           %Y-%m-%d %H:%M:%S|levelname| message (logger name)
+
+           eg.
+           2020-07-30 19:51:41.318|D| http_to_mongo.0 transfer (databay.Link)
+
+
+    Output:
 
     .. rst-class:: highlight-small
     .. code-block:: python
 
         >>> 2020-07-30 19:51:36.313|I| Added link: Link(name:http_to_mongo, inlets:[HttpInlet(metadata:{})], outlets:[MongoOutlet()], interval:0:00:05) (databay.BasePlanner)
         >>> 2020-07-30 19:51:36.314|I| Starting APSPlanner(threads:30) (databay.BasePlanner)
+
         >>> 2020-07-30 19:51:41.318|D| http_to_mongo.0 transfer (databay.Link)
         >>> 2020-07-30 19:51:41.318|I| http_to_mongo.0 pulling https://jsonplaceholder.typicode.com/todos/1 (databay.HttpInlet)
         >>> 2020-07-30 19:51:42.182|I| http_to_mongo.0 received https://jsonplaceholder.typicode.com/todos/1 (databay.HttpInlet)
         >>> 2020-07-30 19:51:42.188|I| http_to_mongo.0 insert [{'userId': 1, 'id': 1, 'title': 'delectus aut autem', 'completed': False}] (databay.MongoOutlet)
         >>> 2020-07-30 19:51:42.191|I| http_to_mongo.0 written [{'userId': 1, 'id': 1, 'title': 'delectus aut autem', 'completed': False, '_id': ObjectId('5f22c25ea7aca516ec3fcf38')}] (databay.MongoOutlet)
         >>> 2020-07-30 19:51:42.191|D| http_to_mongo.0 done (databay.Link)
+
         >>> 2020-07-30 19:51:46.318|D| http_to_mongo.1 transfer (databay.Link)
         >>> 2020-07-30 19:51:46.318|I| http_to_mongo.1 pulling https://jsonplaceholder.typicode.com/todos/1 (databay.HttpInlet)
         >>> 2020-07-30 19:51:46.358|I| http_to_mongo.1 received https://jsonplaceholder.typicode.com/todos/1 (databay.HttpInlet)
@@ -58,3 +79,56 @@ Simple usage
         >>> 2020-07-30 19:51:46.361|I| http_to_mongo.1 written [{'userId': 1, 'id': 1, 'title': 'delectus aut autem', 'completed': False, '_id': ObjectId('5f22c262a7aca516ec3fcf39')}] (databay.MongoOutlet)
         >>> 2020-07-30 19:51:46.362|D| http_to_mongo.1 done (databay.Link)
         ...
+
+
+
+    Above log can be read as follows:
+
+    * At first the planner adds the link provided and starts scheduling:
+
+        .. rst-class:: highlight-small
+        .. code-block:: python
+
+            Added link: Link(name:http_to_mongo, inlets:[HttpInlet(metadata:{})], outlets:[MongoOutlet()], interval:0:00:05)
+            Starting APSPlanner(threads:30)
+
+    * Once scheduling starts, link will log the beginning and end of each transfer:
+
+        Note the :code:`http_to_mongo.0` at the beginning of the message. This is printing the :any:`Update` object that represents each individual transfer executed by tha    t particular link. :code:`http_to_mongo` is the name of the link, while :code:`0` represents the index of the transfer.
+
+        .. rst-class:: highlight-small
+        .. code-block:: python
+
+            http_to_mongo.0 transfer
+
+    * Then :any:`HttpInlet` logs its data generation:
+
+        .. rst-class:: highlight-small
+        .. code-block:: python
+
+                http_to_mongo.0 pulling https://jsonplaceholder.typicode.com/todos/1
+                http_to_mongo.0 received https://jsonplaceholder.typicode.com/todos/1
+
+    * Followed by :any:`MongoOutlet` logging its data consumption:
+
+        .. rst-class:: highlight-small
+        .. code-block:: python
+
+            http_to_mongo.0 insert [{'userId': 1, 'id': 1, 'title': 'delectus aut autem', 'completed': False}]
+            http_to_mongo.0 written [{'userId': 1, 'id': 1, 'title': 'delectus aut
+
+
+    * Finally, link logs completing its first transfer:
+
+        .. rst-class:: highlight-small
+        .. code-block:: python
+
+            http_to_mongo.0 done
+
+
+
+    Full example:
+
+    .. literalinclude:: ../../examples/simple_usage.py
+        :language: python
+

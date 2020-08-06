@@ -10,31 +10,34 @@ Basic asynchronous
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/basic_asynchronous.py
         :language: python
-        :lines: 12-23
+        :start-at: class RandomIntInlet
+        :end-at: return r
 
     #. Create an asynchronous outlet. Note that one asynchronous wait will be simulated for each record consumed.
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/basic_asynchronous.py
         :language: python
-        :lines: 25-42
+        :start-at: class PrintOutlet
+        :end-at: _LOGGER.debug(
 
     #. Instantiate three asynchronous inlets and one asynchronous outlet.
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/basic_asynchronous.py
         :language: python
-        :lines: 44-52
+        :start-at: random_int_inletA =
+        :end-at: name='async'
 
     #. Add to planner and schedule.
 
     .. rst-class:: highlight-small
-    .. code-block:: python
+    .. literalinclude:: ../../examples/basic_asynchronous.py
+        :language: python
+        :start-at: planner =
+        :end-at: planner.start
 
-        planner = SchedulePlanner(link)
-        planner.start()
-
-    Produces:
+    Output:
 
     .. rst-class:: highlight-small
     .. code-block:: python

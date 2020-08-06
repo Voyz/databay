@@ -19,6 +19,8 @@ Key Concepts
 .. include:: ./_intro/exception_handling.rst
 .. include:: ./_intro/motivation.rst
 
+.. todo: logs
+
 
 ----
 

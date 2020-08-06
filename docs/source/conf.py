@@ -116,7 +116,7 @@ autoapi_keep_files = True
 
 if not os.getenv('READTHEDOCS'):
     autoapi_generate_api_docs = False
-    autoapi_generate_api_docs = True
+    # autoapi_generate_api_docs = True
 
 autoapi_python_use_implicit_namespaces = True
 

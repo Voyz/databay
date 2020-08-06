@@ -8,6 +8,7 @@ from databay import Inlet
 import random
 
 _LOGGER = logging.getLogger('databay.basic_asynchronous')
+logging.getLogger('databay').setLevel(logging.DEBUG)
 
 class RandomIntInlet(Inlet):
 

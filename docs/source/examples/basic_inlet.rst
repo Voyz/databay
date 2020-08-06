@@ -10,23 +10,34 @@ Basic Inlet
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/basic_inlet.py
         :language: python
-        :lines: 8-11
+        :start-at: class RandomIntInlet
+        :end-at: return random
 
     #. Instantiate it:
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/basic_inlet.py
         :language: python
-        :lines: 14
+        :start-at: RandomIntInlet()
+        :end-at: RandomIntInlet()
 
     #. Add it to a link:
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/basic_inlet.py
         :language: python
-        :lines: 18-21
+        :start-at: link = Link
+        :end-at: name='random_ints'
 
-    Produces:
+    #. Add to planner and schedule.
+
+    .. rst-class:: highlight-small
+    .. literalinclude:: ../../examples/basic_inlet.py
+        :language: python
+        :start-at: planner =
+        :end-at: planner.start
+
+    Output:
 
     .. rst-class:: highlight-small
     .. code-block:: python
@@ -35,6 +46,8 @@ Basic Inlet
         >>> random_ints.1 61
         >>> random_ints.2 5
         >>> ...
+
+    On each transfer :code:`RandomIntInlet` produces a random integer.
 
     Full example:
 

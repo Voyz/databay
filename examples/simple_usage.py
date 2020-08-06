@@ -1,9 +1,12 @@
 import datetime
+import logging
 
 from databay import Link
 from databay.inlets import HttpInlet
 from databay.outlets import MongoOutlet
 from databay.planners import APSPlanner
+
+logging.getLogger('databay').setLevel(logging.DEBUG)
 
 # Create an inlet, outlet and a link.
 http_inlet = HttpInlet('https://aajsonplaceholder.typicode.com/todos/1')

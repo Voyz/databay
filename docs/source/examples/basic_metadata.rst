@@ -12,35 +12,42 @@ Basic metadata
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/basic_metadata.py
         :language: python
-        :lines: 9-12
+        :start-at: class ConditionalPrintOutlet
+        :end-at: SHOULD_PRINT =
 
     #. Implement :code:`push` method, looping over all records and printing them if :code:`ConditionalPrintOutlet.SHOULD_PRINT` is set:
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/basic_metadata.py
         :language: python
-        :lines: 14-17
+        :start-at: def push
+        :end-at: print(update
 
     #. Instantiate two inlets, one that always prints, other that never prints:
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/basic_metadata.py
         :language: python
-        :lines: 20-21
+        :start-at: random_int_inlet_on =
+        :end-at: random_int_inlet_off =
 
     #. Instantiate :code:`ConditionalPrintOutlet` and add all nodes to a link
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/basic_metadata.py
         :language: python
-        :lines: 23-28
+        :start-at: print_outlet =
+        :end-at: name='should_print_metadata'
 
-    Full example:
+    #. Add to planner and schedule.
 
+    .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/basic_metadata.py
         :language: python
+        :start-at: planner =
+        :end-at: planner.start
 
-    Produces:
+    Output:
 
     .. rst-class:: highlight-small
     .. code-block:: python
@@ -49,3 +56,10 @@ Basic metadata
         >>> should_print_metadata.1 Record(payload=14, metadata={'PrintOutlet.SHOULD_PRINT': True, '__inlet__': "RandomIntInlet(metadata:{'PrintOutlet.SHOULD_PRINT': True})"})
         >>> should_print_metadata.2 Record(payload=54, metadata={'PrintOutlet.SHOULD_PRINT': True, '__inlet__': "RandomIntInlet(metadata:{'PrintOutlet.SHOULD_PRINT': True})"})
         >>> ...
+
+    On each transfer :code:`ConditionalPrintOutlet` prints records incoming only from the :code:`random_int_inlet_on` that was constructed with global metadata enabling printing.
+
+    Full example:
+
+    .. literalinclude:: ../../examples/basic_metadata.py
+        :language: python

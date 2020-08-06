@@ -12,7 +12,8 @@ Weather Inlet
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/weather_inlet.py
         :language: python
-        :lines: 10-19
+        :start-at: from databay.inlet
+        :end-at: self.city_name = city_name
 
 
     #. Implement :any:`pull` method, starting by creating the OpenWeatherMap URL using the :code:`api_key` and :code:`city_name` provided.
@@ -20,36 +21,42 @@ Weather Inlet
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/weather_inlet.py
         :language: python
-        :lines: 21-24
+        :start-at: def pull(
+        :end-at: f'appid={
 
     #. Make a request to OpenWeatherMap using :any:`urllib.request`.
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/weather_inlet.py
         :language: python
-        :lines: 26
+        :start-at: urllib.request.
+        :end-at: urllib.request.
 
     #. Parse the response and return produced data.
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/weather_inlet.py
         :language: python
-        :lines: 28-29
+        :start-at: formatted =
+        :end-at: return formatted
 
     #. Instantiate :code:`WeatherInlet`.
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/weather_inlet.py
         :language: python
-        :lines: 32-33
+        :start-at: api_key = os.environ.get
+        :end-at: weather_inlet = WeatherInlet
 
+    #. Create link, add it to planner and schedule.
 
-    Full example:
-
+    .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/weather_inlet.py
         :language: python
+        :start-at: link = Link
+        :end-at: planner.start
 
-    Produces:
+    Output:
 
     .. rst-class:: highlight-small
     .. code-block:: python
@@ -58,3 +65,11 @@ Weather Inlet
         >>> bangkok_weather.1 light rain
         >>> bangkok_weather.2 light rain
         >>> ...
+
+    On each transfer :code:`WeatherInlet` makes a request to OpenWeatherMap API and returns a description of the weather in selected city.
+
+    Full example:
+
+    .. literalinclude:: ../../examples/weather_inlet.py
+        :language: python
+

@@ -14,4 +14,4 @@ def initialise():
     default_logger = logging.getLogger('databay')
     default_logger.addHandler(stream_handler)
 
-    logging.getLogger('databay').setLevel(logging.DEBUG)
+    logging.getLogger('databay').setLevel(logging.WARNING)
