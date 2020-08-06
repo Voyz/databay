@@ -15,7 +15,7 @@ In Databay, data transfer is expressed with three components:
 * :any:`Outlets <Outlet>` - for data consumption.
 * :any:`Links <Link>` - for handling the data transit between inlets and outlets.
 
-Scheduling is implemented using third party libraries, exposed through the :any:`BasePlanner` interface. Currently two BasePlanner interfaces are available - using |APS|_ (:any:`APSPlanner`) and Schedule_ (:any:`SchedulePlanner`).
+Scheduling is implemented using third party libraries, exposed through the :any:`BasePlanner` interface. Currently two BasePlanner implementations are available - using |APS|_ (:any:`APSPlanner`) and Schedule_ (:any:`SchedulePlanner`).
 
 :ref:`A simple example <simple-usage>`:
 

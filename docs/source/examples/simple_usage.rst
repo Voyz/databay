@@ -37,24 +37,13 @@ Simple usage
         :start-at: planner =
         :end-at: planner.start
 
-    #. (Optional) In this example we configured the databay logger to display all messages. By default only :code:`WARNING` and above will be printed.
+    #. (Optional) In this example the databay logger is configured to display all messages. See :ref:`Logging <logging>` for more information.
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/simple_usage.py
         :language: python
         :start-at: .getLogger('databay')
         :end-at: .getLogger('databay')
-    ..
-
-        Databay's logger has the following signature:
-
-        .. rst-class:: highlight-small
-        .. code-block:: python
-
-           %Y-%m-%d %H:%M:%S|levelname| message (logger name)
-
-           eg.
-           2020-07-30 19:51:41.318|D| http_to_mongo.0 transfer (databay.Link)
 
 
     Output:

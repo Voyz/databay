@@ -21,21 +21,24 @@ Simple example
     .. rst-class:: highlight-small
     .. literalinclude:: ../../../examples/basic_inlet.py
         :language: python
-        :lines: 5-11
+        :start-at: class RandomIntInlet
+        :end-at: return random
 
     #. Instantiate it:
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../../examples/basic_inlet.py
         :language: python
-        :lines: 14
+        :start-at: RandomIntInlet()
+        :end-at: RandomIntInlet()
 
     #. Add it to a link and start scheduling:
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../../examples/basic_inlet.py
         :language: python
-        :lines: 18-25
+        :start-at: link = Link
+        :end-at: planner.start
 
     Above setup will produce a random integer every 5 seconds (:ref:`See full example <basic-inlet>`).
 

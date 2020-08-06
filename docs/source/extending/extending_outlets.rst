@@ -12,30 +12,33 @@ To implement custom data consumption you need to extend the :any:`Outlet` class 
 Simple example
 ^^^^^^^^^^^^^^
 
-.. code-block:: python
+.. container:: tutorial-block
 
-    from databay import Outletto
+    #. Extend the :any:`Outlet` class, printing the incoming data in the :any:`push` method:
 
-    class PrintOutlet(Outlet):
+    .. rst-class:: highlight-small
+    .. literalinclude:: ../../../examples/basic_outlet.py
+        :language: python
+        :start-at: class PrintOutlet
+        :end-at: print(update,
 
-        def push(self, records, update):
-            print(records)
+    #. Instantiate it:
 
-Such outlet is ready to be added to a link and used in Databay.
+    .. rst-class:: highlight-small
+    .. literalinclude:: ../../../examples/basic_outlet.py
+        :language: python
+        :start-at: print_outlet = PrintOutlet
+        :end-at: print_outlet = PrintOutlet
 
-.. code-block:: python
+    #. Add it to a link and and schedule:
 
-    from databay import Link
-    from databay.planners import APSPlanner
-    from datetime import timedelta
+    .. rst-class:: highlight-small
+    .. literalinclude:: ../../../examples/basic_outlet.py
+        :language: python
+        :start-at: link = Link(
+        :end-at: planner.start
 
-    print_outlet = PrintOutlet()
-    link = Link([...some inlets...], print_outlet, interval=timedelta(seconds=5))
-
-    planner = APSPlanner(link)
-    planner.start()
-
-Above setup will print all records transferred by that link (:ref:`See full example <basic-outlet>`).
+    Above setup will print all records transferred by that link (:ref:`See full example <basic-outlet>`).
 
 Each push call is provided with an :any:`Update` object as one of parameters. It contains the name of the governing link (if specified) and an incremental integer index. Use the :code:`str(update)` to get a formatted string of that update. See :any:`Transfer Update <transfer-update>` for more.
 
