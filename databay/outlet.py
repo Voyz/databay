@@ -13,6 +13,9 @@ from typing import List
 
 from databay import Record
 
+class metadata(str):
+    pass
+
 class Outlet(ABC):
     """
     Abstract class representing an output of the data stream.

@@ -105,9 +105,9 @@ autoapi_ignore = [
     # '/*test*/',
     '*examples/*',
     '*misc/*',
-    '*inlets/random_int_inlet.py',
-    '*outlets/print_outlet.py',
-    '*outlets/csv_outlet.py',
+    # '*inlets/random_int_inlet.py',
+    # '*outlets/print_outlet.py',
+    # '*outlets/csv_outlet.py',
     '*config.py',
   ]
 autoapi_options = [ 'members', 'undoc-members', 'xprivate-members', 'show-inheritance', 'show-module-summary', 'xspecial-members', 'ximported-members']
@@ -116,7 +116,7 @@ autoapi_keep_files = True
 
 if not os.getenv('READTHEDOCS'):
     autoapi_generate_api_docs = False
-    # autoapi_generate_api_docs = True
+    autoapi_generate_api_docs = True
 
 autoapi_python_use_implicit_namespaces = True
 
@@ -124,6 +124,7 @@ autoapi_python_use_implicit_namespaces = True
 SKIP_FULL = {'databay.link.Link._run',
              'databay.base_planner.BasePlanner._links',
              'databay.inlets.HttpInlet',
+             'databay.outlet.metadata',
              # 'databay.inlet.Inlet.__repr__',
              'databay.outlets.MongoOutlet',
              # 'databay.outlet.Outlet.__init__',
@@ -210,6 +211,7 @@ def populate_modules(_, fqp):
     return None
 
 extensions.append('sphinx_copybutton')
+
 
 def setup(app):
     app.connect("autoapi-skip-member", maybe_skip_member)

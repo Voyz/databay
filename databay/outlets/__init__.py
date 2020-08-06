@@ -8,3 +8,4 @@ else:
 
 from databay.outlets.print_outlet import PrintOutlet
 from databay.outlets.csv_outlet import CsvOutlet
+from databay.outlets.null_outlet import NullOutlet

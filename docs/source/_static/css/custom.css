@@ -372,6 +372,18 @@ html.writer-html5 .rst-content .section dl.exception:not(:first-of-type)
 /*.rst-content dl.py dt>span:last-of-type:not(:last-child) + a.reference.internal {*/
 /*    margin-left:12px;*/
 /*}*/
+html.writer-html5 .rst-content .section-metadata {
+    margin: 36px 0;
+}
+
+html.writer-html5 .rst-content .section-metadata dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple).py.attribute {
+    margin-left: 24px;
+}
+
+html.writer-html5 .rst-content .section-metadata dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple).py.attribute dt {
+    background-color: #fae024;
+    border-left-color: #e2cb20;
+}
 
 /* fis for MS Edge breaking on the copybutton*/
 @supports (-ms-ime-align:auto) {

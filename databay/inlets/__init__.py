@@ -7,3 +7,4 @@ else:
         raise ImportError('aiohttp dependency is required for HttpInlet. Fix by running: pip install databay[HttpInlet]')
 
 from databay.inlets.random_int_inlet import RandomIntInlet
+from databay.inlets.null_inlet import NullInlet

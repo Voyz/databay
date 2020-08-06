@@ -44,6 +44,8 @@ Simple example
 
 Each pull call is provided with an :any:`Update` object as a parameter. It contains the name of the governing link (if specified) and an incremental integer index. Use the :code:`str(update)` to get a formatted string of that update. See :any:`Transfer Update <transfer-update>` for more.
 
+Your inlet may skip producing data by returning an empty :any:`list`.
+
 Creating records
 ^^^^^^^^^^^^^^^^
 

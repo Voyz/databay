@@ -14,6 +14,11 @@ Source Code
   outlet <databay/outlet>
   record <databay/record>
   http_inlet <databay/inlets/http_inlet>
+  null_inlet <databay/inlets/null_inlet>
+  random_int_inlet <databay/inlets/random_int_inlet>
+  csv_outlet <databay/outlets/csv_outlet>
   mongo_outlet <databay/outlets/mongo_outlet>
+  null_outlet <databay/outlets/null_outlet>
+  print_outlet <databay/outlets/print_outlet>
   aps_planner <databay/planners/aps_planner>
   schedule_planner <databay/planners/schedule_planner>

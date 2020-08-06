@@ -21,9 +21,9 @@ class Run_App():
         # planner = APSPlanner()
         planner = SchedulePlanner(refresh_interval=0.5)
 
-        # alphavantage_inlet = AlphavantageInlet(key='9TZBJ8V9EMEES2WN', symbol='TSLA', interval='1min', metadata={'mongodb_collection': 'alpha_prices'})
+        # alphavantage_inlet = AlphavantageInlet(key='9TZBJ8V9EMEES2WN', symbol='TSLA', interval='1min', metadata={'MONGODB_COLLECTION': 'alpha_prices'})
         http_inlet = HttpInlet('https://jsonplaceholder.typicode.com/todos/1')
-        http_inlet2 = HttpInlet('https://postman-echo.com/get?foo1=bar1&foo2=bar2', metadata={'mongodb_collection': 'test_collection2', 'csv_file': 'output_02.csv'})
+        http_inlet2 = HttpInlet('https://postman-echo.com/get?foo1=bar1&foo2=bar2', metadata={'MONGODB_COLLECTION': 'test_collection2', 'csv_file': 'output_02.csv'})
 
         print_outlet = PrintOutlet()
         mongo_outlet = MongoOutlet('databay', 'test_collection')

@@ -5,7 +5,7 @@ from typing import List
 from pymongo import MongoClient
 from pymongo.database import Database
 
-from databay.outlet import Outlet
+from databay.outlet import Outlet, metadata
 from databay import Record
 
 _LOGGER = logging.getLogger('databay.MongoOutlet')
@@ -52,11 +52,11 @@ class MongoOutlet(Outlet):
     """
     Outlet for pushing data into a MongoDB instance. Pushes are executed synchronously.
 
-    Record metadata supported:
-
-    - :code:`mongodb_collection` - name of collection to write to.
-
     """
+
+    MONGODB_COLLECTION:metadata = 'MongoOutlet.MONGODB_COLLECTION'
+    """ Name of collection to write to. """
+
     def __init__(self, database_name:str='databay', collection:str='default_collection', host:str=None, port:str=None, *args, **kwargs):
         """
 
@@ -65,7 +65,7 @@ class MongoOutlet(Outlet):
             |default| :code:`'databay'`
 
         :type collection: str
-        :param collection: Global name of the collection to write to. This can be overwritten by records' metadata.mongodb_collection parameter.
+        :param collection: Global name of the collection to write to. This can be overwritten by records' metadata.MONGODB_COLLECTION parameter.
             |default| :code:`'default_collection'`
 
         :type host: str
@@ -98,9 +98,7 @@ class MongoOutlet(Outlet):
         collections = {}
 
         for record in records:
-            collection_name = self.collection
-            if 'mongodb_collection' in record.metadata:
-                collection_name = record.metadata['mongodb_collection']
+            collection_name = record.metadata.get('MONGODB_COLLECTION', self.collection)
 
             if collection_name not in collections: collections[collection_name] = []
 
