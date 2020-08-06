@@ -21,6 +21,5 @@ link = Link(random_int_inlet,
             interval=timedelta(seconds=2),
             name='print_outlet')
 
-planner = SchedulePlanner()
-planner.add_link(link)
+planner = SchedulePlanner(link)
 planner.start()

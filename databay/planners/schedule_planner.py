@@ -1,11 +1,14 @@
 """
-.. seealso:: :any:`BasePlanner` for remaining interface of this planner.
+.. seealso::
+    * :ref:`Scheduling <scheduling>` to learn more about scheduling in Databay.
+    * :any:`BasePlanner` for remaining interface of this planner.
 """
 
 import logging
 import threading
 import time
 from concurrent import futures
+from typing import List, Union
 
 import schedule
 
@@ -27,8 +30,13 @@ class SchedulePlanner(BasePlanner):
 
     """
 
-    def __init__(self, threads:int=30, refresh_interval:float=1.0, catch_exceptions:bool=False):
+    def __init__(self, links:Union[Link, List[Link]]=None, threads:int=30, refresh_interval:float=1.0, catch_exceptions:bool=False):
         """
+
+        :type links: :any:`Link` or list[:any:`Link`]
+        :param links: Links that should be added and scheduled.
+            |default| :code:`None`
+
         :type threads: :class:`int`
         :param threads: Number of threads to use.
             |default| :code:`30`
@@ -40,13 +48,13 @@ class SchedulePlanner(BasePlanner):
             |default| :code:`1.0`
 
         :type catch_exceptions: bool
-        :param catch_exceptions: Whether exceptions should be caught or halt the planner. |default| :code:`False`
+        :param catch_exceptions: Whether exceptions should be caught or halt the planner.
+            |default| :code:`False`
         """
-
-        super().__init__()
+        self._refresh_interval = refresh_interval
+        super().__init__(links)
         self._running = False
         self._threads = threads
-        self._refresh_interval = refresh_interval
         self._thread_pool = None
         self._exc_info = []
         self._exc_lock = threading.Lock()
@@ -131,6 +139,8 @@ class SchedulePlanner(BasePlanner):
         Start this planner. Links will start being scheduled based on their intervals
         after calling this method. Creates a new thread pool if one doesn't
         already exist.
+
+        See :ref:`Start and Shutdown <start_shutdown>` to learn more about starting and shutdown.
         """
 
         super().start()
@@ -149,12 +159,12 @@ class SchedulePlanner(BasePlanner):
             if len(self._exc_info) > 0:
                 with self._exc_lock:
                     for exc_info in self._exc_info:
-                        ex = exc_info[0][1]
-                        extra_info = f'\n\nRaised when executing {exc_info[1]}'
-                        exception_message = str(ex) + f'{extra_info}'
-                        traceback = ex.__traceback__
-
                         try: # weird try/catch in order to get whole traceback into logger
+                            ex = exc_info[0][1]
+                            extra_info = f'\n\nRaised when executing {exc_info[1]}'
+                            exception_message = str(ex) + f'{extra_info}'
+                            traceback = ex.__traceback__
+
                             try:
                                 raise type(ex)(exception_message).with_traceback(traceback)
                             except TypeError as type_exception:
@@ -162,10 +172,12 @@ class SchedulePlanner(BasePlanner):
                                 if 'required positional argument' in str(type_exception):
                                     raise RuntimeError(exception_message).with_traceback(traceback) from None
                         except Exception as e:
-                            if self._catch_exceptions:
-                                _LOGGER.exception(e)
-                            else:
-                                raise e
+                            # if self._catch_exceptions:
+                            _LOGGER.exception(e)
+                            if not self._catch_exceptions and self.running:
+                            # else:
+                                self.shutdown(False)
+                                # raise e
 
                     self._exc_info = []
 
@@ -175,6 +187,8 @@ class SchedulePlanner(BasePlanner):
     def shutdown(self, wait:bool=True):
         """
         Stop this planner. Links will stop being scheduled after calling this method
+
+        See :ref:`Start and Shutdown <start_shutdown>` to learn more about starting and shutdown.
 
         :type wait: bool
         :param wait: Whether to wait until all currently executing jobs have finished.
@@ -192,7 +206,7 @@ class SchedulePlanner(BasePlanner):
         Whether this planner is currently running. If there are links transferring this may be set before all transfers are complete. Changed by calls to :any:`start` and :any:`shutdown`.
 
         :return: State of this planner
-        :rtype: :any:`bool`
+        :rtype: bool
         """
         return self._running
 

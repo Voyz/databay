@@ -26,11 +26,6 @@ Basic Inlet
         :language: python
         :lines: 18-21
 
-    Full example:
-
-    .. literalinclude:: ../../examples/basic_inlet.py
-        :language: python
-
     Produces:
 
     .. rst-class:: highlight-small
@@ -40,3 +35,9 @@ Basic Inlet
         >>> random_ints.1 61
         >>> random_ints.2 5
         >>> ...
+
+    Full example:
+
+    .. literalinclude:: ../../examples/basic_inlet.py
+        :language: python
+

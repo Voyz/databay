@@ -27,8 +27,7 @@ Scheduling is implemented using third party libraries, exposed through the :any:
     link = Link(http_inlet, mongo_outlet, datetime.timedelta(seconds=5))
 
     # Create a planner, add the link and start scheduling.
-    planner = APSPlanner()
-    planner.add_link(link)
+    planner = APSPlanner(link)
     planner.start()
 
 Every 5 seconds this snippet will pull data from a test URL, and write it to a MongoDB.

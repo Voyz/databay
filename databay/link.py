@@ -13,7 +13,7 @@ _LOGGER = logging.getLogger('databay.Link')
 
 class Update():
     """
-    Data structure representing one Link transfer.
+    Data structure representing one Link transfer. When converted to string returns :code:`{name}.{index}`
     """
     def __init__(self, name:str, index:int):
         """
@@ -221,6 +221,8 @@ class Link():
     def transfer(self):
         """
         Execute one transfer on this link. This will run through all inlets querying them for data, then pass that data to all outlets.
+
+        See :ref:`Link transfer <link_transfer>` to learn more about the transfer.
         """
         asyncio.run(self._run())
 

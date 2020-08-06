@@ -29,12 +29,12 @@ class Run_App():
         mongo_outlet = MongoOutlet('databay', 'test_collection')
         csv_outlet = CsvOutlet('output_01.csv')
 
-        # planner.add_link(Link([http_inlet2, http_inlet2, http_inlet2, http_inlet], [csv_outlet], timedelta(seconds=2)))
-        planner.add_link(Link([http_inlet], [mongo_outlet], timedelta(seconds=1), name='first'))
-        planner.add_link(Link([http_inlet2, http_inlet2, http_inlet2], [mongo_outlet], timedelta(seconds=5), name='second'))
-        planner.add_link(Link([], [], timedelta(seconds=1.5)))
-        # planner.add_link(Link([alphavantage_inlet], [mongo_outlet], timedelta(seconds=5)))
-        # planner.add_link(Link([iex_inlet], [mongo_outlet], timedelta(seconds=5)))
+        # planner.add_links(Link([http_inlet2, http_inlet2, http_inlet2, http_inlet], [csv_outlet], timedelta(seconds=2)))
+        planner.add_links(Link([http_inlet], [mongo_outlet], timedelta(seconds=1), name='first'))
+        planner.add_links(Link([http_inlet2, http_inlet2, http_inlet2], [mongo_outlet], timedelta(seconds=5), name='second'))
+        planner.add_links(Link([], [], timedelta(seconds=1.5)))
+        # planner.add_links(Link([alphavantage_inlet], [mongo_outlet], timedelta(seconds=5)))
+        # planner.add_links(Link([iex_inlet], [mongo_outlet], timedelta(seconds=5)))
         planner.start()
 
         # th = Thread(target=planner.start)

@@ -51,6 +51,5 @@ link = Link([random_int_inletA, random_int_inletB, random_int_inletC],
             interval=timedelta(seconds=2),
             name='async')
 
-planner = SchedulePlanner()
-planner.add_link(link)
+planner = SchedulePlanner(link)
 planner.start()

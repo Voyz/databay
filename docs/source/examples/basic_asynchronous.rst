@@ -31,8 +31,7 @@ Basic asynchronous
     .. rst-class:: highlight-small
     .. code-block:: python
 
-        planner = SchedulePlanner()
-        planner.add_link(link)
+        planner = SchedulePlanner(link)
         planner.start()
 
     Produces:

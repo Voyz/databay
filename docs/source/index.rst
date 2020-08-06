@@ -47,8 +47,7 @@ Databay
     link = Link(inlet, outlet, datetime.timedelta(seconds=5))
 
     # Start scheduling
-    planner = APSPlanner()
-    planner.add_link(link)
+    planner = APSPlanner(link)
     planner.start()
 
 Every 5 seconds this snippet will pull data from a test URL, and write it to a MongoDB.

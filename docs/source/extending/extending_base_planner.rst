@@ -1,3 +1,5 @@
+.. _extending_base_planner:
+
 Extending BasePlanner
 =====================
 
@@ -16,11 +18,11 @@ To extend the :any:`BasePlanner` you need to provide a way of executing :any:`Li
 _schedule
 ^^^^^^^^^
 
-Schedule a :any:`Link`. This method runs whenever :any:`add_link` is called and should not be executed directly. It should accept a link and add the :any:`Link.transfer` method to the scheduling system you're using. Note that you do not need to store the link in your planner - BasePlanner will automatically store it under :any:`BasePlanner.links` when :any:`add_link` is called. It isn't required for the scheduling to be already running when :code:`_schedule` is called.
+Schedule a :any:`Link`. This method runs whenever :any:`add_links` is called and should not be executed directly. It should accept a link and add the :any:`Link.transfer` method to the scheduling system you're using. Note that you do not need to store the link in your planner - BasePlanner will automatically store it under :any:`BasePlanner.links` when :any:`add_links` is called. It isn't required for the scheduling to be already running when :code:`_schedule` is called.
 
 Each link comes with a :any:`datetime.timedelta` interval providing the frequency at which its :any:`Link.transfer` method should be run. Use :any:`Link.interval` and schedule according to the interval specified.
 
-If the scheduler you're using utilises some form of task-managing job objects, you must assign these to the link being scheduled using :any:`Link.set_job`. This is to ensure the job can be correctly destroyed later when :any:`remove_link <BasePlanner.remove_link>` is called.
+If the scheduler you're using utilises some form of task-managing job objects, you must assign these to the link being scheduled using :any:`Link.set_job`. This is to ensure the job can be correctly destroyed later when :any:`remove_links <BasePlanner.remove_links>` is called.
 
 Example from :any:`APSPlanner._schedule`:
 
@@ -37,7 +39,7 @@ Example from :any:`APSPlanner._schedule`:
 _unschedule
 ^^^^^^^^^^^
 
-Unschedule a :any:`Link`. This method runs whenever :any:`remove_link` is called and should not be executed directly. It should accept a link and remove it from the scheduling system you're using. Note that you do not need to remove the link from your planner - BasePlanner will automatically remove that link from :any:`BasePlanner.links` when :any:`remove_link` is called. It isn't required for the scheduling to be already stopped when :code:`_unschedule` is called.
+Unschedule a :any:`Link`. This method runs whenever :any:`remove_links` is called and should not be executed directly. It should accept a link and remove it from the scheduling system you're using. Note that you do not need to remove the link from your planner - BasePlanner will automatically remove that link from :any:`BasePlanner.links` when :any:`remove_links` is called. It isn't required for the scheduling to be already stopped when :code:`_unschedule` is called.
 
 If the scheduler you're using utilises some form of task-managing job objects, you may access these using :any:`Link.job` in order to correctly destroy them if necessary when :any:`_unschedule` is called.
 
@@ -82,7 +84,12 @@ Example from :any:`APSPlanner._shutdown_planner`:
 
 
 
-active
+Exceptions
+^^^^^^^^^^^^^^^^^
+
+When implementing your planner you should consider that links may raise exceptions when executing. Your planner should anticipate this and allow handling the exceptions appropriately to ensure continuous execution. Both :any:`APSPlanner` and :any:`SchedulePlanner` allow catching exceptions when :code:`catch_exceptions=True` is passed on construction, otherwise they will log the exception and shutdown. Please see :ref:`Exception handling <exception_handling>` for more.
+
+active property
 ^^^^^^^^^^^^^^^^^
 
 Apart from extending the necessary methods described above, you may optionally implement the :any:`active` property. It should return a boolean value indicating whether the scheduler is currently running. This property is exposed for your convenience and is not used by Databay.

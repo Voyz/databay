@@ -13,7 +13,7 @@ from databay.errors import MissingLinkError
 from databay.planners import SchedulePlanner
 from databay.planners.schedule_planner import ScheduleIntervalError
 from stubs.LinkStub import LinkStub
-from test_utils import fqname, DummyException
+from test_utils import fqname, DummyException, DummyUnusualException
 
 
 class TestSchedulePlanner(TestCase):
@@ -58,22 +58,28 @@ class TestSchedulePlanner(TestCase):
         self.assertIsNone(link.job, 'Link should not contain a job')
         self.assertEqual(len(schedule.jobs), 0, 'Scheduler should not have any jobs')
 
-    def test_add_link(self):
+    def test_add_links(self):
         link = LinkStub([], [], timedelta(seconds=1))
-        self.planner.add_link(link)
+        self.planner.add_links(link)
         self.assertIsNotNone(link.job, 'Link should contain a job')
         self.assertTrue(link in self.planner.links, 'Planner should contain the link')
 
-    def test_remove_link(self):
+    def test_add_links_on_init(self):
         link = LinkStub([], [], timedelta(seconds=1))
-        self.planner.add_link(link)
-        self.planner.remove_link(link)
+        self.planner = SchedulePlanner(link)
+        self.assertIsNotNone(link.job, 'Link should contain a job')
+        self.assertTrue(link in self.planner.links, 'Planner should contain the link')
+
+    def test_remove_links(self):
+        link = LinkStub([], [], timedelta(seconds=1))
+        self.planner.add_links(link)
+        self.planner.remove_links(link)
         self.assertIsNone(link.job, 'Link should not contain a job')
         self.assertTrue(link not in self.planner.links, 'Planner should not contain the link')
 
     def test_remove_invalid_link(self):
         link = LinkStub([], [], timedelta(seconds=1))
-        self.assertRaises(MissingLinkError, self.planner.remove_link, link)
+        self.assertRaises(MissingLinkError, self.planner.remove_links, link)
         self.assertIsNone(link.job, 'Link should not contain a job')
         self.assertTrue(link not in self.planner.links, 'Planner should not contain the link')
 
@@ -94,11 +100,11 @@ class TestSchedulePlanner(TestCase):
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
 
-    @patch(fqname(Link))
+    @patch(fqname(Link), spec=Link)
     def test_add_and_run(self, link):
         link.interval.total_seconds.return_value = 0.02
         self.planner._refresh_interval = 0.02
-        self.planner.add_link(link)
+        self.planner.add_links(link)
 
         th = Thread(target=self.planner.start, daemon=True)
         th.start()
@@ -109,13 +115,48 @@ class TestSchedulePlanner(TestCase):
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
 
-    @patch(fqname(Link))
+    @patch(fqname(Link), spec=Link)
     def test_invalid_interval(self, link):
         link.interval.total_seconds.return_value = 0.1
         self.planner._refresh_interval = 0.2
 
-        self.assertRaises(ScheduleIntervalError, self.planner.add_link, link)
+        self.assertRaises(ScheduleIntervalError, self.planner.add_links, link)
 
+
+    # def _with_exception(self, link, catch_exceptions):
+    #     logging.getLogger('databay').setLevel(logging.CRITICAL)
+    #     self.planner = SchedulePlanner(catch_exceptions=catch_exceptions)
+    #     link.transfer.side_effect = DummyException()
+    #     link.interval.total_seconds.return_value = 0.02
+    #     self.planner._refresh_interval = 0.02
+    #
+    #     self.planner.add_links(link)
+    #
+    #     ex = []
+    #
+    #     # a nasty way to check if the exception was raised and to pass it back to main thread
+    #     def handler():
+    #         try:
+    #             self.planner.start()
+    #             ex.append(None)
+    #         except Exception as e:
+    #             ex.append(e)
+    #
+    #     th = Thread(target=handler, daemon=True)
+    #     th.start()
+    #     time.sleep(0.04)
+    #     link.transfer.assert_called()
+    #
+    #     self.planner.shutdown()
+    #     th.join(timeout=2)
+    #     self.assertFalse(th.is_alive(), 'Thread should be stopped.')
+    #
+    #     if catch_exceptions:
+    #         self.assertIsNone(ex[0], "Exception should not have propagated")
+    #     else:
+    #         self.assertIsInstance(ex[0], DummyException, "DummyException should have propagated")
+    #
+    #     self.assertFalse(self.planner.running, 'Scheduler should be stopped')
 
     def _with_exception(self, link, catch_exceptions):
         logging.getLogger('databay').setLevel(logging.CRITICAL)
@@ -124,38 +165,42 @@ class TestSchedulePlanner(TestCase):
         link.interval.total_seconds.return_value = 0.02
         self.planner._refresh_interval = 0.02
 
-        self.planner.add_link(link)
+        link.transfer.side_effect = DummyException()
+        link.interval.total_seconds.return_value = 0.02
+        self.planner.add_links(link)
 
-        ex = []
-
-        # a nasty way to check if the exception was raised and to pass it back to main thread
-        def handler():
-            try:
-                self.planner.start()
-                ex.append(None)
-            except Exception as e:
-                ex.append(e)
-
-        th = Thread(target=handler, daemon=True)
+        th = Thread(target=self.planner.start, daemon=True)
         th.start()
         time.sleep(0.04)
         link.transfer.assert_called()
 
-        self.planner.shutdown()
-        th.join(timeout=2)
-        self.assertFalse(th.is_alive(), 'Thread should be stopped.')
-
         if catch_exceptions:
-            self.assertIsNone(ex[0], "Exception should not have propagated")
-        else:
-            self.assertIsInstance(ex[0], DummyException, "DummyException should have propagated")
+            self.assertTrue(self.planner.running, 'Scheduler should be running')
+            self.planner.shutdown(False)
+            th.join(timeout=2)
+            self.assertFalse(th.is_alive(), 'Thread should be stopped.')
 
-    @patch(fqname(Link))
+        self.assertFalse(self.planner.running, 'Scheduler should be stopped')
+
+    @patch(fqname(Link), spec=Link)
     def test_catch_exception(self, link):
         self._with_exception(link, True)
 
-    @patch(fqname(Link))
+    @patch(fqname(Link), spec=Link)
     def test_raise_exception(self, link):
         self._with_exception(link, False)
 
+    @patch(fqname(Link), spec=Link)
+    def test_uncommon_exception(self, link):
+        logging.getLogger('databay').setLevel(logging.CRITICAL)
 
+        link.transfer.side_effect = DummyUnusualException(argA=123, argB=True)
+        link.interval.total_seconds.return_value = 0.02
+        self.planner.add_links(link)
+
+        th = Thread(target=self.planner.start, daemon=True)
+        th.start()
+        time.sleep(0.04)
+        link.transfer.assert_called()
+
+        self.assertFalse(self.planner.running, 'Scheduler should be stopped')

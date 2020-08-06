@@ -27,6 +27,5 @@ link = Link([random_int_inlet_on, random_int_inlet_off],
             interval=timedelta(seconds=0.5),
             name='should_print_metadata')
 
-planner = SchedulePlanner(refresh_interval=0.5)
-planner.add_link(link)
+planner = SchedulePlanner(link, refresh_interval=0.5)
 planner.start()

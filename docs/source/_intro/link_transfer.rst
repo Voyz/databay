@@ -1,3 +1,5 @@
+.. _link_transfer:
+
 Link transfer
 -------------
 

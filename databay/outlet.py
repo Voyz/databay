@@ -1,5 +1,10 @@
 """
-.. seealso:: :any:`Inlet` representing the corresponding input of the data stream.
+.. seealso::
+
+    * :ref:`Extending Outlets <extending_outlets>` to learn how to extend this class correctly.
+    * :any:`Inlet` representing the corresponding input of the data stream.
+
+
 """
 import asyncio
 import threading
@@ -11,6 +16,7 @@ from databay import Record
 class Outlet(ABC):
     """
     Abstract class representing an output of the data stream.
+
     """
 
     def __init__(self):

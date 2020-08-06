@@ -13,7 +13,7 @@ from databay import Link
 from databay.errors import MissingLinkError
 from databay.planners.aps_planner import APSPlanner
 from stubs.LinkStub import LinkStub
-from test_utils import fqname, DummyException
+from test_utils import fqname, DummyException, DummyUnusualException
 
 
 class TestAPSPlanner(TestCase):
@@ -47,23 +47,29 @@ class TestAPSPlanner(TestCase):
         self.assertEqual(len(self.planner._scheduler.get_jobs()), 0, 'Scheduler should not have any jobs')
 
 
-    def test_add_link(self):
+    def test_add_links(self):
         link = LinkStub([], [], timedelta(seconds=1))
-        self.planner.add_link(link)
+        self.planner.add_links(link)
         self.assertIsNotNone(link.job, 'Link should contain a job')
         self.assertTrue(link in self.planner.links, 'Planner should contain the link')
 
-    def test_remove_link(self):
+    def test_add_links_on_init(self):
         link = LinkStub([], [], timedelta(seconds=1))
-        self.planner.add_link(link)
-        self.planner.remove_link(link)
+        self.planner = APSPlanner(link)
+        self.assertIsNotNone(link.job, 'Link should contain a job')
+        self.assertTrue(link in self.planner.links, 'Planner should contain the link')
+
+    def test_remove_links(self):
+        link = LinkStub([], [], timedelta(seconds=1))
+        self.planner.add_links(link)
+        self.planner.remove_links(link)
         self.assertIsNone(link.job, 'Link should not contain a job')
         self.assertTrue(link not in self.planner.links, 'Planner should not contain the link')
 
     def test_remove_invalid_link(self):
         link = LinkStub([], [], timedelta(seconds=1))
-        # self.planner.add_link(link)
-        self.assertRaises(MissingLinkError, self.planner.remove_link, link)
+        # self.planner.add_links(link)
+        self.assertRaises(MissingLinkError, self.planner.remove_links, link)
         self.assertIsNone(link.job, 'Link should not contain a job')
         self.assertTrue(link not in self.planner.links, 'Planner should not contain the link')
 
@@ -72,7 +78,7 @@ class TestAPSPlanner(TestCase):
         th = Thread(target=self.planner.start, daemon=True)
         th.start()
         self.assertTrue(self.planner.running, 'Scheduler should be running')
-        self.planner.shutdown()
+        self.planner.shutdown(False)
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
 
@@ -83,7 +89,7 @@ class TestAPSPlanner(TestCase):
         self.planner.pause()
         self.assertRaises(SchedulerAlreadyRunningError, self.planner.start)
         self.assertEqual(self.planner._scheduler.state, STATE_PAUSED, 'Scheduler should be paused')
-        self.planner.shutdown()
+        self.planner.shutdown(False)
 
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
@@ -91,7 +97,7 @@ class TestAPSPlanner(TestCase):
     def test_shutdown(self):
         th = Thread(target=self.planner.start, daemon=True)
         th.start()
-        self.planner.shutdown()
+        self.planner.shutdown(False)
         self.assertFalse(self.planner.running, 'Scheduler should not be running')
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
@@ -101,7 +107,7 @@ class TestAPSPlanner(TestCase):
         th.start()
         self.planner.pause()
         self.assertEqual(self.planner._scheduler.state, STATE_PAUSED, 'Scheduler should be paused')
-        self.planner.shutdown()
+        self.planner.shutdown(False)
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
 
@@ -112,7 +118,7 @@ class TestAPSPlanner(TestCase):
         self.assertEqual(self.planner._scheduler.state, STATE_PAUSED, 'Scheduler should be paused')
         self.planner.resume()
         self.assertTrue(self.planner.running, 'Scheduler should not be paused')
-        self.planner.shutdown()
+        self.planner.shutdown(False)
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
 
@@ -121,7 +127,7 @@ class TestAPSPlanner(TestCase):
         th.start()
         self.planner.pause()
         self.assertEqual(self.planner._scheduler.state, STATE_PAUSED, 'Scheduler should be paused')
-        self.planner.shutdown()
+        self.planner.shutdown(False)
         self.assertFalse(self.planner.running, 'Scheduler should not be running')
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
@@ -129,7 +135,7 @@ class TestAPSPlanner(TestCase):
     def test_pause_shutdown(self):
         th = Thread(target=self.planner.start, daemon=True)
         th.start()
-        self.planner.shutdown()
+        self.planner.shutdown(False)
         self.assertRaises(SchedulerNotRunningError, self.planner.pause)
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
@@ -137,7 +143,7 @@ class TestAPSPlanner(TestCase):
     def test_resume_shutdown(self):
         th = Thread(target=self.planner.start, daemon=True)
         th.start()
-        self.planner.shutdown()
+        self.planner.shutdown(False)
         self.assertRaises(SchedulerNotRunningError, self.planner.resume)
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
@@ -145,7 +151,7 @@ class TestAPSPlanner(TestCase):
     def test_start_shutdown(self):
         th = Thread(target=self.planner.start, daemon=True)
         th.start()
-        self.planner.shutdown()
+        self.planner.shutdown(False)
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread 1 should be stopped.')
         self.assertFalse(self.planner.running, 'Scheduler should not be running')
@@ -153,32 +159,33 @@ class TestAPSPlanner(TestCase):
         th2 = Thread(target=self.planner.start, daemon=True)
         th2.start()
         self.assertTrue(self.planner.running, 'Scheduler should be running')
-        self.planner.shutdown()
+        self.planner.shutdown(False)
         th2.join(timeout=2)
         self.assertFalse(th2.is_alive(), 'Thread 2 should be stopped.')
 
-    @patch(fqname(Link))
+    @patch(fqname(Link), spec=Link)
     def test_add_and_run(self, link):
         link.interval.total_seconds.return_value = 0.02
-        self.planner.add_link(link)
+        self.planner.add_links(link)
 
         th = Thread(target=self.planner.start, daemon=True)
         th.start()
         time.sleep(0.04)
         link.transfer.assert_called()
 
-        self.planner.shutdown()
+        self.planner.shutdown(False)
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
 
 
     def _with_exception(self, link, catch_exceptions):
         logging.getLogger('databay').setLevel(logging.CRITICAL)
+        # logging.getLogger('databay').setLevel(logging.INFO)
         self.planner = APSPlanner(catch_exceptions=catch_exceptions)
 
         link.transfer.side_effect = DummyException()
         link.interval.total_seconds.return_value = 0.02
-        self.planner.add_link(link)
+        self.planner.add_links(link)
 
         th = Thread(target=self.planner.start, daemon=True)
         th.start()
@@ -187,16 +194,32 @@ class TestAPSPlanner(TestCase):
 
         if catch_exceptions:
             self.assertTrue(self.planner.running, 'Scheduler should be running')
-            self.planner.shutdown()
+            self.planner.shutdown(False)
             th.join(timeout=2)
             self.assertFalse(th.is_alive(), 'Thread should be stopped.')
 
         self.assertFalse(self.planner.running, 'Scheduler should be stopped')
 
-    @patch(fqname(Link))
+    @patch(fqname(Link), spec=Link)
     def test_catch_exception(self, link):
         self._with_exception(link, True)
 
-    @patch(fqname(Link))
+    @patch(fqname(Link), spec=Link)
     def test_raise_exception(self, link):
         self._with_exception(link, False)
+
+
+    @patch(fqname(Link), spec=Link)
+    def test_uncommon_exception(self, link):
+        logging.getLogger('databay').setLevel(logging.CRITICAL)
+
+        link.transfer.side_effect = DummyUnusualException(123, True)
+        link.interval.total_seconds.return_value = 0.02
+        self.planner.add_links(link)
+
+        th = Thread(target=self.planner.start, daemon=True)
+        th.start()
+        time.sleep(0.04)
+        link.transfer.assert_called()
+
+        self.assertFalse(self.planner.running, 'Scheduler should be stopped')

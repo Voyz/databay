@@ -1,5 +1,12 @@
+"""
+.. seealso::
+
+    :ref:`Extending BasePlanner <extending_base_planner>` to learn how to extend this class correctly.
+"""
+
 import logging
 from abc import ABC, abstractmethod
+from typing import List, Union
 
 from databay.errors import MissingLinkError
 from databay.link import Link
@@ -12,9 +19,15 @@ class BasePlanner(ABC):
     """
 
 
-    def __init__(self,):
-        ""
+    def __init__(self, links:Union[Link, List[Link]]=None):
+        """
+        :type links: :any:`Link` or list[:any:`Link`]
+        :param links: Links that should be added and scheduled.
+        """
+
         self._links = []
+        if links is not None:
+            self.add_links(links)
 
     @property
     def links(self):
@@ -25,34 +38,42 @@ class BasePlanner(ABC):
         """
         return self._links
 
-    def add_link(self, link: Link):
+    def add_links(self, links:Union[Link, List[Link]]):
         """
-        Add new link to this planner. This can be run once planner is already running.
+        Add new links to this planner. This can be run once planner is already running.
 
-        :type link: :any:`Link`
-        :param link: Link that should be added and scheduled.
+        :type links: :any:`Link` or list[:any:`Link`]
+        :param links: Links that should be added and scheduled.
         """
-        self._links.append(link)
-        self._schedule(link)
-        _LOGGER.info('Added link: %s', link)
+        if not isinstance(links, list):
+            links = [links]
 
-    def remove_link(self, link: Link):
+        for link in links:
+            assert isinstance(link, Link)
+            self._links.append(link)
+            self._schedule(link)
+            _LOGGER.info('Added link: %s', link)
+
+    def remove_links(self, links: Link):
         """
-        Remove a link from this planner. This can be run once planner is already running.
+        Remove links from this planner. This can be run once planner is already running.
 
-        :type link: :any:`Link`
-        :param link: Link that should be unscheduled and removed.
+        :type links: :any:`Link` or list[:any:`Link`]
+        :param links: Links that should be unscheduled and removed.
 
         :raises: :py:class:`MissingLinkError <errors.MissingLinkError>` if link is not found.
         """
+        if not isinstance(links, list):
+            links = [links]
 
-        if link not in self._links:
-            raise MissingLinkError(f'Planner does not contain the link: {link}')
+        for link in links:
+            if link not in self._links:
+                raise MissingLinkError(f'Planner does not contain the link: {link}')
 
-        if link.job is not None:
-            self._unschedule(link)
+            if link.job is not None:
+                self._unschedule(link)
 
-        self._links.remove(link)
+            self._links.remove(link)
 
     @abstractmethod
     def _schedule(self, link: Link):
@@ -83,6 +104,8 @@ class BasePlanner(ABC):
         Start this planner. Links will start being scheduled based on their intervals after calling this method. The exact methodology depends on the planner implementation used.
 
         This will also loop over all links and call the on_start callback before starting the planner.
+
+        See :ref:`Start and Shutdown <start_shutdown>` to learn more about starting and shutdown.
         """
         _LOGGER.info('Starting %s' % str(self))
         for link in self.links:
@@ -94,6 +117,8 @@ class BasePlanner(ABC):
         Shutdown this planner. Links will stop being scheduled after calling this method. Remaining link jobs may still execute after calling this method depending on the concrete planner implementation.
 
         This will also loop over all links and call the on_shutdown callback after shutting down the planner.
+
+        See :ref:`Start and Shutdown <start_shutdown>` to learn more about starting and shutdown.
         """
         _LOGGER.info('Shutting down %s' % str(self))
         self._shutdown_planner(wait)

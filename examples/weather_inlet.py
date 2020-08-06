@@ -35,6 +35,5 @@ weather_inlet = WeatherInlet(api_key, 'Bangkok')
 link = Link(weather_inlet, PrintOutlet(only_payload=True),
             interval=timedelta(seconds=2), name='bangkok_weather')
 
-planner = APSPlanner()
-planner.add_link(link)
+planner = APSPlanner(link)
 planner.start()

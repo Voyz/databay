@@ -1,3 +1,5 @@
+.. _start_shutdown:
+
 Start and shutdown
 ---------------------
 

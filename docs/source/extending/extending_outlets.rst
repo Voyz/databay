@@ -32,8 +32,7 @@ Such outlet is ready to be added to a link and used in Databay.
     print_outlet = PrintOutlet()
     link = Link([...some inlets...], print_outlet, interval=timedelta(seconds=5))
 
-    planner = APSPlanner()
-    planner.add_link(link)
+    planner = APSPlanner(link)
     planner.start()
 
 Above setup will print all records transferred by that link (:ref:`See full example <basic-outlet>`).

@@ -1,3 +1,5 @@
+.. _scheduling:
+
 Scheduling
 ----------
 
@@ -8,8 +10,7 @@ To schedule a link, all you need to do is to add it to a planner and call :any:`
 .. code-block:: python
 
     link = Link(some_inlet, some_outlet, timedelta(minutes=1))
-    planner = SchedulePlanner()
-    planner.add.link(link)
+    planner = SchedulePlanner(link)
     planner.start()
 
 Databay provides two built-in :any:`BasePlanner` implementations based on two popular Python scheduling libraries:

@@ -1,5 +1,8 @@
 """
-.. seealso:: :any:`Outlet` representing the corresponding outputs of the data stream.
+.. seealso::
+
+    * :ref:`Extending Inlets <extending_inlets>` to learn how to extend this class correctly.
+    * :any:`Outlet` representing the corresponding output of the data stream.
 """
 
 import asyncio
@@ -209,7 +212,7 @@ class Inlet(ABC):
 #
 # link1 = Link([random_int_inletA, random_int_inletB], csv1)
 #
-# planner.add_link([link1, link2])
+# planner.add_links([link1, link2])
 #
 #
 #

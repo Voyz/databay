@@ -1,8 +1,11 @@
 """
-.. seealso:: :any:`BasePlanner` for remaining interface of this planner.
+.. seealso::
+    * :ref:`Scheduling <scheduling>` to learn more about scheduling in Databay.
+    * :any:`BasePlanner` for remaining interface of this planner.
 """
 
 import logging
+from typing import Union, List
 
 from apscheduler.events import EVENT_JOB_ERROR
 from apscheduler.executors.pool import ThreadPoolExecutor
@@ -27,23 +30,31 @@ class APSPlanner(BasePlanner):
 
     """
 
-    def __init__(self, threads:int=30, executors_override:dict=None, job_defaults_override:dict=None, catch_exceptions:bool=False):
+    def __init__(self, links:Union[Link, List[Link]]=None, threads:int=30, executors_override:dict=None, job_defaults_override:dict=None, catch_exceptions:bool=False):
         """
+
+        :type links: :any:`Link` or list[:any:`Link`]
+        :param links: Links that should be added and scheduled.
+            |default| :code:`None`
 
         :type threads: int
-        :param threads: Number of threads available for job execution. Each link will be run on a separate thread job. |default| :code:`30`
+        :param threads: Number of threads available for job execution. Each link will be run on a separate thread job.
+            |default| :code:`30`
 
         :type executors_override: dict
-        :param executors_override: Overrides for executors option of `APS configuration <configuring-scheduler_>`__ |default| :code:`None`
+        :param executors_override: Overrides for executors option of `APS configuration <configuring-scheduler_>`__
+            |default| :code:`None`
 
         :type job_defaults_override: dict
-        :param job_defaults_override: Overrides for job_defaults option of `APS configuration <configuring-scheduler_>`__  |default| :code:`None`
+        :param job_defaults_override: Overrides for job_defaults option of `APS configuration <configuring-scheduler_>`__
+            |default| :code:`None`
 
         :type catch_exceptions: bool
-        :param catch_exceptions: Whether exceptions should be caught or halt the planner. |default| :code:`False`
+        :param catch_exceptions: Whether exceptions should be caught or halt the planner.
+            |default| :code:`False`
         """
 
-        super().__init__()
+
         self._threads = threads
         self._catch_exceptions = catch_exceptions
 
@@ -57,6 +68,9 @@ class APSPlanner(BasePlanner):
         # self._scheduler = BackgroundScheduler(executors=executors, job_defaults=job_defaults, timezone=utc)
         self._scheduler.add_listener(self._on_exception, EVENT_JOB_ERROR)
 
+        super().__init__(links)
+
+
     def _on_exception(self, event):
         if event.code is EVENT_JOB_ERROR:
             try:
@@ -65,6 +79,9 @@ class APSPlanner(BasePlanner):
                 exception_message = str(event.exception) + f'{extra_info}'
                 traceback = event.exception.__traceback__
 
+                # print(type(event.exception))
+                # type(event.exception)('asdf')
+
                 try:
                     raise type(event.exception)(exception_message).with_traceback(traceback)
                 except TypeError as type_exception:
@@ -72,9 +89,9 @@ class APSPlanner(BasePlanner):
                     if 'required positional argument' in str(type_exception):
                         raise Exception(exception_message).with_traceback(traceback) from None
             except Exception as e:
-                _LOGGER.error(e, exc_info=True)
+                _LOGGER.exception(e)
 
-            if not self._catch_exceptions:
+            if not self._catch_exceptions and self.running:
                 self.shutdown(False)
 
 
@@ -106,6 +123,8 @@ class APSPlanner(BasePlanner):
     def start(self):
         """
         Start this planner. Calls :any:`APS Scheduler.start() <apscheduler.schedulers.base.BaseScheduler.start>`
+
+        See :ref:`Start and Shutdown <start_shutdown>` to learn more about starting and shutdown.
         """
         super().start()
 
@@ -133,6 +152,8 @@ class APSPlanner(BasePlanner):
     def shutdown(self, wait:bool=True):
         """
         Shutdown this planner. Calls :any:`APScheduler.shutdown() <apscheduler.schedulers.base.BaseScheduler.shutdown>`
+
+        See :ref:`Start and Shutdown <start_shutdown>` to learn more about starting and shutdown.
 
         :type wait: bool
         :param wait: Whether to wait until all currently executing jobs have finished.

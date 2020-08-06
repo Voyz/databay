@@ -41,6 +41,5 @@ link = Link(random_int_inlet,
             interval=timedelta(seconds=2),
             name='file_outlet')
 
-planner = APSPlanner()
-planner.add_link(link)
+planner = APSPlanner(link)
 planner.start()
