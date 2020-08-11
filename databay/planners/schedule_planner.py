@@ -1,7 +1,7 @@
 """
 .. seealso::
     * :ref:`Scheduling <scheduling>` to learn more about scheduling in Databay.
-    * :any:`BasePlanner` for remaining interface of this planner.
+    * :any:`BasePlanner` for the remaining interface of this planner.
 """
 
 import logging
@@ -44,7 +44,7 @@ class SchedulePlanner(BasePlanner):
         :type refresh_interval: :class:`float`
         :param refresh_interval: Frequency at which this planner will scan over
             its links and attempt to update them if necessary. Note that adding
-            links with interval smaller than this value will raise a :any:`ScheduleIntervalError`.
+            links with intervals smaller than this value will raise a :any:`ScheduleIntervalError`.
             |default| :code:`1.0`
 
         :type catch_exceptions: bool

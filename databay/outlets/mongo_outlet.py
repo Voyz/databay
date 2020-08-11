@@ -155,7 +155,7 @@ class MongoOutlet(Outlet):
 
     def connect(self, database_name:str=None) -> bool:
         """
-        Connect to the specified database. Returns True if already connected to the specified database. Disconnects from any existing databases if specified database is different.
+        Connect to the specified database. Returns True if already connected to the specified database. Disconnects from any existing databases if the specified database is different.
 
         :type database_name: str
         :param database_name: Name of the database to connect to. |default| :code:`None` (Connects to default database name if not specified`)

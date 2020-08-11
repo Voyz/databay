@@ -1,7 +1,7 @@
 """
 .. seealso::
     * :ref:`Scheduling <scheduling>` to learn more about scheduling in Databay.
-    * :any:`BasePlanner` for remaining interface of this planner.
+    * :any:`BasePlanner` for the remaining interface of this planner.
 """
 
 import logging

@@ -311,7 +311,7 @@ class Link():
 
     def on_start(self):
         """
-        Called when governing planner is about to start.
+        Called when the governing planner is about to start.
         Calls :any:`try_start <Inlet.try_start>` on all inlets and outlets of this link.
 
         If an inlet or outlet is present in multiple links its on_start will only be called
@@ -325,7 +325,7 @@ class Link():
 
     def on_shutdown(self):
         """
-        Called just after governing planner has shutdown.
+        Called just after the governing planner has shutdown.
         Calls :any:`try_shutdown <Inlet.try_shutdown>` on all inlets and outlets of this link.
 
         If an inlet or outlet is present in multiple links its on_shutdown will only be called
