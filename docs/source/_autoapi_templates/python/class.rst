@@ -45,8 +45,9 @@
     {% for meta in metadata %}
     {{ meta.rendered|indent(4) }}
     {% endfor %}
-    {% endif %}
     :raw-html:`</div>`
+    {% endif %}
+
     {% for attribute in visible_attributes %}
     {{ attribute.rendered|indent(4) }}
     {% endfor %}
