@@ -13,7 +13,9 @@
 
    {% if obj.properties|length > 0 %}
    .. rst-class:: prop
-   {{ obj.properties|join(' ') }}
+
+      {{ obj.properties|join(' ') }}
+
    {% endif %}
 
    {% if obj.docstring %}

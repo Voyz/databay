@@ -3,7 +3,8 @@
 
 
     .. rst-class:: full-class-path
-    {{ obj.id }}
+
+      {{ obj.id }}
 
     {% if obj.docstring %}
     {{ obj.docstring|prepare_docstring|indent(4) }}

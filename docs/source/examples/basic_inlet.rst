@@ -5,7 +5,7 @@ Basic Inlet
 
     In this example we create a simple implementation of :any:`Inlet`, producing a random integer on a 5 second interval.
 
-    #. Extend the :any:`Inlet` class, returning produced data from the :any:`pull` method:
+    #. Extend the :any:`Inlet` class, returning produced data from the :any:`pull <Inlet.pull>` method:
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/basic_inlet.py

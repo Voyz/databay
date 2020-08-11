@@ -1,9 +1,9 @@
 Basic metadata
-------------
+--------------
 
 .. container:: tutorial-block
 
-    This example demonstrates basic usage of :ref:`Global metadata <global_metadata>`, used by a PrintOutlet created in the :ref:`Basic Outlet <basic_metadata>` example.
+    This example demonstrates basic usage of :ref:`Global metadata <global_metadata>`, used by a PrintOutlet created in the :ref:`Basic Outlet <basic-outlet>` example.
 
     #. Create the :code:`ConditionalPrintOutlet` implementing :any:`Outlet` class. This outlet will accept one metadata key:
 

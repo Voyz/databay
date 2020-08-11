@@ -12,11 +12,11 @@ Extending Inlets
 To implement custom data production you need to extend the :any:`Inlet` class, override the :any:`Inlet.pull` method and return the data produced.
 
 Simple example
-^^^^^^^^^^^^^^
+--------------
 
 .. container:: tutorial-block
 
-    #. Extend the :any:`Inlet` class, returning produced data from the :any:`pull` method:
+    #. Extend the :any:`Inlet` class, returning produced data from the :any:`pull <Inlet.pull>` method:
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../../examples/basic_inlet.py
@@ -47,7 +47,7 @@ Each pull call is provided with an :any:`Update` object as a parameter. It conta
 Your inlet may skip producing data by returning an empty :any:`list`.
 
 Creating records
-^^^^^^^^^^^^^^^^
+----------------
 
 Data produced by inlets is wrapped in :any:`Record` objects before being passed to outlets. If you wish to control how records are created or attach local metadata, use the :any:`Inlet.new_record` method to create records within your inlet and return these instead.
 
@@ -61,7 +61,7 @@ Data produced by inlets is wrapped in :any:`Record` objects before being passed 
             return record
 
 Producing multiple records
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------
 
 During one transfer you may produce multiple data entities within the :any:`Inlet.pull` method. Returning a :any:`list` is an indication that multiple records are being produced at once, in which case each element of the :any:`list` will be turned into a :any:`Record`. Any return type other than :any:`list` (eg. :any:`tuple`, :any:`set`, :any:`dict`) will be considered as one :any:`Record`.
 
@@ -87,7 +87,7 @@ Returning a :any:`set`, producing one record:
         # produces one records
         return {random.randint(0, 50), random.randint(0, 100)}
 
-Same is true when explicitly creating multiple records within :any:`pull` and returning these.
+Same is true when explicitly creating multiple records within :any:`pull <Inlet.pull>` and returning these.
 
 .. code-block:: python
 
@@ -119,7 +119,7 @@ If you wish for one record to contain a :any:`list` of data that doesn't get bro
 .. _global_metadata:
 
 Global metadata
-^^^^^^^^^^^^^^^
+---------------
 
 :any:`Inlet` can attach custom metadata to all records it produces. Metadata's intended use is to provide additional context to records when they are consumed by outlets. To do so, when constructing an :any:`Inlet` pass a metadata dictionary, a copy of which will be attached to all records produced by that :any:`Inlet` instance.
 
@@ -168,9 +168,9 @@ Additionally, each record is supplied with a special :code:`__inlet__` metadata 
 .. _local_metadata:
 
 Local metadata
-^^^^^^^^^^^^^^
+--------------
 
-Apart from providing an inlet with :ref:`global_metadata` that will be the same for all records, you may also attach local per-record metadata that can vary for each record. This can be done inside of the :any:`pull` method by specifying a metadata dictionary when creating a record using :any:`Inlet.new_record` method.
+Apart from providing an inlet with :ref:`global_metadata` that will be the same for all records, you may also attach local per-record metadata that can vary for each record. This can be done inside of the :any:`pull <Inlet.pull>` method by specifying a metadata dictionary when creating a record using :any:`Inlet.new_record` method.
 
 
 .. code-block:: python
@@ -195,7 +195,7 @@ Note that local metadata will override global metadata if same metadata is speci
 
 
 Start and shutdown
-^^^^^^^^^^^^^^^^^^
+------------------
 
 All inlets contain :any:`Inlet.active` flag that is set by the governing link when scheduling starts and unset when scheduling stops. You can use this flag to refine the behaviour of your inlet.
 
@@ -212,7 +212,7 @@ You can further control the starting and shutting down functionality by overridi
             random.seed(42)
 
 Asynchronous inlet
-^^^^^^^^^^^^^^^^^^
+------------------
 
 You may implement asynchronous data production by defining :any:`Inlet.pull` as a coroutine. The governing link will await all its inlets to finish producing their data before passing the results to outlets.
 
@@ -231,7 +231,7 @@ You may implement asynchronous data production by defining :any:`Inlet.pull` as 
 See :ref:`Basic Asynchronous <basic-asynchronous>` for a full example of implementing asynchronous code in Databay.
 
 Test your inlet
-^^^^^^^^^^^^^^^
+---------------
 
 Databay comes with a template :any:`unittest.TestCase` designed to validate your implementation of :any:`Inlet` class. To use it, create a new test class extending :any:`InletTester` and implement :any:`InletTester.get_inlet` method returning an instance of your inlet.
 
@@ -252,7 +252,7 @@ Running such a concrete test will execute a variety of test cases that ensure yo
 
 * Creating new records.
 * Attaching global and local metadata.
-* Calling :any:`pull` method.
+* Calling :any:`pull <Inlet.pull>` method.
 
 Since :any:`InletTester` will call pull on your inlet, you may want to mock some functionality of your inlet in order to separate testing of your inlet logic from external code.
 

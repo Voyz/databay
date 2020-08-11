@@ -1,5 +1,5 @@
 Intermediate Inlet
-------------
+------------------
 
 .. _OpenWeatherMap: https://openweathermap.org/current
 
@@ -10,16 +10,16 @@ Intermediate Inlet
     #. Create the :code:`WeatherInlet` implementing :any:`Inlet` class. We expect :code:`api_key` and :code:`city_name` to be provided when constructing this inlet.
 
     .. rst-class:: highlight-small
-    .. literalinclude:: ../../examples/weather_inlet.py
+    .. literalinclude:: ../../examples/intermediate_inlet.py
         :language: python
         :start-at: from databay.inlet
         :end-at: self.city_name = city_name
 
 
-    #. Implement :any:`pull` method, starting by creating the OpenWeatherMap URL using the :code:`api_key` and :code:`city_name` provided.
+    #. Implement :any:`pull <Inlet.pull>` method, starting by creating the OpenWeatherMap URL using the :code:`api_key` and :code:`city_name` provided.
 
     .. rst-class:: highlight-small
-    .. literalinclude:: ../../examples/weather_inlet.py
+    .. literalinclude:: ../../examples/intermediate_inlet.py
         :language: python
         :start-at: def pull(
         :end-at: f'appid={
@@ -27,7 +27,7 @@ Intermediate Inlet
     #. Make a request to OpenWeatherMap using :any:`urllib.request`.
 
     .. rst-class:: highlight-small
-    .. literalinclude:: ../../examples/weather_inlet.py
+    .. literalinclude:: ../../examples/intermediate_inlet.py
         :language: python
         :start-at: urllib.request.
         :end-at: urllib.request.
@@ -35,7 +35,7 @@ Intermediate Inlet
     #. Parse the response and return produced data.
 
     .. rst-class:: highlight-small
-    .. literalinclude:: ../../examples/weather_inlet.py
+    .. literalinclude:: ../../examples/intermediate_inlet.py
         :language: python
         :start-at: formatted =
         :end-at: return formatted
@@ -43,7 +43,7 @@ Intermediate Inlet
     #. Instantiate :code:`WeatherInlet`.
 
     .. rst-class:: highlight-small
-    .. literalinclude:: ../../examples/weather_inlet.py
+    .. literalinclude:: ../../examples/intermediate_inlet.py
         :language: python
         :start-at: api_key = os.environ.get
         :end-at: weather_inlet = WeatherInlet
@@ -51,7 +51,7 @@ Intermediate Inlet
     #. Create a link, add it to planner and schedule.
 
     .. rst-class:: highlight-small
-    .. literalinclude:: ../../examples/weather_inlet.py
+    .. literalinclude:: ../../examples/intermediate_inlet.py
         :language: python
         :start-at: link = Link
         :end-at: planner.start
@@ -70,6 +70,6 @@ Intermediate Inlet
 
     Full example:
 
-    .. literalinclude:: ../../examples/weather_inlet.py
+    .. literalinclude:: ../../examples/intermediate_inlet.py
         :language: python
 

@@ -10,11 +10,11 @@ Extending Outlets
 To implement custom data consumption you need to extend the :any:`Outlet` class and override the :any:`Outlet.push` method.
 
 Simple example
-^^^^^^^^^^^^^^
+--------------
 
 .. container:: tutorial-block
 
-    #. Extend the :any:`Outlet` class, printing the incoming data in the :any:`push` method:
+    #. Extend the :any:`Outlet` class, printing the incoming data in the :any:`push <Outlet.push>` method:
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../../examples/basic_outlet.py
@@ -43,7 +43,7 @@ Simple example
 Each push call is provided with an :any:`Update` object as one of parameters. It contains the name of the governing link (if specified) and an incremental integer index. Use the :code:`str(update)` to get a formatted string of that update. See :any:`Transfer Update <transfer-update>` for more.
 
 Consuming Records
-^^^^^^^^^^^^^^^^^
+-----------------
 
 
 Outlets are provided with a :any:`list` of all records produced by all inlets of the governing link. Each :any:`Record` contains two fields:
@@ -65,7 +65,7 @@ Outlets are provided with a :any:`list` of all records produced by all inlets of
 By default a copy of records is provided to outlets in order to prevent accidental data corruption. You can disable this mechanism by passing :code:`copy_records=False` when constructing a link, in which case the same :any:`list` will be provided to all outlets. Ensure you aren't modifying the records or their underlying data in your :any:`Outlet.push` method.
 
 Metadata
-^^^^^^^^
+--------
 
 Your outlet can be built to behave differently depending on the metadata carried by the records. Metadata is attached to each record when inlets produce data. Learn more about the difference between :ref:`Global metadata <global_metadata>` and :ref:`Local metadata <local_metadata>`.
 
@@ -110,7 +110,7 @@ Correct:
 .. image:: ../_static/images/databay_metadata_csv.png
 
 Start and shutdown
-^^^^^^^^^^^^^^^^^^
+------------------
 
 All outlets contain :any:`Outlet.active` flag that is set by the governing link when scheduling starts and unset when scheduling stops. You can use this flag to refine the behaviour of your outlet.
 
@@ -127,7 +127,7 @@ You can further control the starting and shutting down functionality by overridi
             self.prefix = 'foo'
 
 Asynchronous outlet
-^^^^^^^^^^^^^^^^^^
+-------------------
 
 You may implement asynchronous data consumption by defining :any:`Outlet.push` as a coroutine.
 

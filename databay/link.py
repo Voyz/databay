@@ -317,6 +317,9 @@ class Link():
         If an inlet or outlet is present in multiple links its on_start will only be called
         once by whichever link executes first.
         """
+
+        # todo: catch exceptions
+
         for inlet in self._inlets:
             inlet.try_start()
 
@@ -331,6 +334,9 @@ class Link():
         If an inlet or outlet is present in multiple links its on_shutdown will only be called
         once by whichever link executes first.
         """
+
+        # todo: catch exceptions
+
         for inlet in self._inlets:
             inlet.try_shutdown()
 

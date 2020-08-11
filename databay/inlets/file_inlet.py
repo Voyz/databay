@@ -33,6 +33,7 @@ class FileInlet(Inlet):
         """
         Produce data by reading a file in the mode specified.
 
+        :raises: :any:`FileNotFoundError` if file does not exists.
         :returns: contents of the file.
         """
 
@@ -46,7 +47,11 @@ class FileInlet(Inlet):
             return self.file.readline()
 
     def on_start(self):
-        """ If read mode is :any:`FileInletMode.LINE`, open the file and hold it open for reading."""
+        """
+        If read mode is :any:`FileInletMode.LINE`, open the file and hold it open for reading.
+
+        :raises: :any:`FileNotFoundError` if file does not exists.
+         """
         if self.read_mode is FileInletMode.LINE:
             self.file = open(self.filepath, 'r')
 

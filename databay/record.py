@@ -22,7 +22,7 @@ class Record():
     def payload(self) -> dict:
         """
         :returns: Data stored in this record.
-        :rtype: :any:`Any`
+        :rtype: Any
         """
 
         return self._payload

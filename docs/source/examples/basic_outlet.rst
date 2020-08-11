@@ -5,7 +5,7 @@ Basic Outlet
 
     In this example we create a simple implementation of :any:`Outlet`, printing the incoming records one by one.
 
-    #. Extend the :any:`Outlet` class, printing the incoming data in the :any:`push` method:
+    #. Extend the :any:`Outlet` class, printing the incoming data in the :any:`push <Outlet.push>` method:
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/basic_outlet.py

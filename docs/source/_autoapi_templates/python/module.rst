@@ -27,10 +27,11 @@
 
 {% if obj.top_level_object %}
 Databay API Reference
+=====================
 {% else %}
 {{ obj.name }}
-{% endif %}
 ======={{ "=" * obj.name|length }}
+{% endif %}
 
 .. py:module:: {{ obj.name }}
 
@@ -50,6 +51,7 @@ Databay API Reference
 
 {% for subpackage in visible_subpackages %}
    - {{ subpackage.short_name|replace("databay.","") }} <{{ subpackage.short_name }}/index.rst>
+
 {% endfor %}
 {% endif %}
 {% endblock %}
@@ -62,6 +64,7 @@ Databay API Reference
 
 {% for submodule in visible_submodules %}
   {{ submodule.short_name|replace("databay.","") }} <{{ submodule.short_name }}/index.rst>
+
 {% endfor %}
 
 {% endif %}
@@ -89,13 +92,15 @@ Databay API Reference
 {% block classes scoped %}
 
 .. rst-class:: mb-l mt-xxxx
-Contents:
+
+    Contents:
 
 .. autoapisummary::
    :nosignatures:
 
 {% for child in visible_children %}
    {{ child.id }}
+
 {% endfor %}
 
 

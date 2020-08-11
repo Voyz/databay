@@ -11,7 +11,8 @@ All classes in Databay are configured to utilise a :any:`Python Logger <python:l
    %Y-%m-%d %H:%M:%S.milis|levelname| message (logger name)
 
 .. rst-class:: mb-s
-For example:
+
+    For example:
 
 .. code-block:: python
 

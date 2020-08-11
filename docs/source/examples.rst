@@ -17,7 +17,7 @@ You can find all examples in the GitHub repository in the `Examples folder <http
 .. include:: examples/basic_outlet.rst
 
 .. _advanced-inlet:
-.. include:: examples/weather_inlet.rst
+.. include:: examples/intermediate_inlet.rst
 
 .. _advanced-outlet:
 .. include:: examples/intermediate_outlet.rst
