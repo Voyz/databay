@@ -161,7 +161,7 @@ class Inlet(ABC):
         s = "%s(" % (self.__class__.__name__)
 
         if self.metadata:
-            s += 'metadata:%s' % self.metadata
+            s += 'metadata=%s' % self.metadata
 
         s += ')'
 

@@ -1,5 +1,6 @@
 import csv
 import logging
+import os
 
 from databay.outlet import Outlet, metadata
 from databay.record import Record
@@ -8,9 +9,8 @@ _LOGGER = logging.getLogger('databay.CsvOutlet')
 
 class CsvOutlet(Outlet):
     """
-    Outlet that will write records to a csv file.
+    Outlet that writes records to a csv file.
     """
-
 
     CSV_FILE:metadata = 'CsvOutlet.CSV_FILE'
     """Filepath of the csv file to write records to."""
@@ -18,7 +18,7 @@ class CsvOutlet(Outlet):
     FILE_MODE:metadata = 'CsvOutlet.FILE_MODE'
     """Write mode to use when writing into the csv file."""
 
-    def __init__(self, default_filepath:str, default_file_mode:str='a', *args, **kwargs):
+    def __init__(self, default_filepath:str, default_file_mode:str='a'):
         """
 
         :param default_filepath: Filepath of the default csv file to write records to.
@@ -27,7 +27,7 @@ class CsvOutlet(Outlet):
         :param default_file_mode: Default write mode to use when writing into the csv file.
         :type default_file_mode: str
         """
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.default_filepath = default_filepath
         self.default_file_mode = default_file_mode
 
@@ -50,6 +50,13 @@ class CsvOutlet(Outlet):
 
             _LOGGER.info(f'{update} writing into: {filepath}, file mode: {file_mode}, record: {record}')
 
-            with open(filepath, 'a') as f:
+            # todo: add more write options
+            with open(filepath, file_mode) as f:
+
+                # todo: add more DictWriter options
                 writer = csv.DictWriter(f, record.payload.keys())
+
+                if not os.path.exists(filepath) or os.path.getsize(filepath) == 0 or 'w' in file_mode:
+                    writer.writeheader()
+
                 writer.writerow(record.payload)

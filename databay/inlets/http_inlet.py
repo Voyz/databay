@@ -51,4 +51,15 @@ class HttpInlet(Inlet):
                 _LOGGER.info(f'{update} received {self.url}')
                 return [record]
 
+    def __repr__(self):
+        s = "%s(" % (self.__class__.__name__)
+
+        s += f'url={self.url}'
+
+        if self.metadata:
+            s += ', metadata:%s' % self.metadata
+
+        s += ')'
+        return s
+
 

@@ -22,17 +22,17 @@ class Run_App():
         planner = SchedulePlanner(refresh_interval=0.5)
 
         # alphavantage_inlet = AlphavantageInlet(key='9TZBJ8V9EMEES2WN', symbol='TSLA', interval='1min', metadata={'MONGODB_COLLECTION': 'alpha_prices'})
-        http_inlet = HttpInlet('https://jsonplaceholder.typicode.com/todos/1')
+        http_inlet = HttpInlet('https://jsonplaceholder.typicode.com/todos/1', metadata={CsvOutlet.FILE_MODE:'a'})
         http_inlet2 = HttpInlet('https://postman-echo.com/get?foo1=bar1&foo2=bar2', metadata={'MONGODB_COLLECTION': 'test_collection2', 'csv_file': 'output_02.csv'})
 
         print_outlet = PrintOutlet()
         mongo_outlet = MongoOutlet('databay', 'test_collection')
         csv_outlet = CsvOutlet('output_01.csv')
 
-        # planner.add_links(Link([http_inlet2, http_inlet2, http_inlet2, http_inlet], [csv_outlet], timedelta(seconds=2)))
-        planner.add_links(Link([http_inlet], [mongo_outlet], timedelta(seconds=1), name='first'))
-        planner.add_links(Link([http_inlet2, http_inlet2, http_inlet2], [mongo_outlet], timedelta(seconds=5), name='second'))
-        planner.add_links(Link([], [], timedelta(seconds=1.5)))
+        planner.add_links(Link([http_inlet, http_inlet, http_inlet], [csv_outlet], timedelta(seconds=2)))
+        # planner.add_links(Link([http_inlet], [mongo_outlet], timedelta(seconds=1), name='first'))
+        # planner.add_links(Link([http_inlet2, http_inlet2, http_inlet2], [mongo_outlet], timedelta(seconds=5), name='second'))
+        # planner.add_links(Link([], [], timedelta(seconds=1.5)))
         # planner.add_links(Link([alphavantage_inlet], [mongo_outlet], timedelta(seconds=5)))
         # planner.add_links(Link([iex_inlet], [mongo_outlet], timedelta(seconds=5)))
         planner.start()
