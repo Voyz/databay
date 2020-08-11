@@ -51,7 +51,7 @@ class CsvOutlet(Outlet):
             _LOGGER.info(f'{update} writing into: {filepath}, file mode: {file_mode}, record: {record}')
 
             # todo: add more write options
-            with open(filepath, file_mode) as f:
+            with open(filepath, file_mode, newline="") as f:
 
                 # todo: add more DictWriter options
                 writer = csv.DictWriter(f, record.payload.keys())
