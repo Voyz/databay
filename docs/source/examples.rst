@@ -20,7 +20,7 @@ You can find all examples in the GitHub repository in the `Examples folder <http
 .. include:: examples/weather_inlet.rst
 
 .. _advanced-outlet:
-.. include:: examples/file_outlet.rst
+.. include:: examples/intermediate_outlet.rst
 
 .. _basic-metadata:
 .. include:: examples/basic_metadata.rst

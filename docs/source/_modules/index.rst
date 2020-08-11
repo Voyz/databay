@@ -13,6 +13,7 @@ Source Code
   link <databay/link>
   outlet <databay/outlet>
   record <databay/record>
+  file_inlet <databay/inlets/file_inlet>
   http_inlet <databay/inlets/http_inlet>
   null_inlet <databay/inlets/null_inlet>
   random_int_inlet <databay/inlets/random_int_inlet>
