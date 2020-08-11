@@ -29,7 +29,7 @@ Basic Outlet
         :start-at: link = Link(
         :end-at: name='print_outlet'
 
-    #. Add to planner and schedule.
+    #. Add to a planner and schedule.
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/basic_outlet.py

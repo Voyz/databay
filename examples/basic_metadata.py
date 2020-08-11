@@ -8,8 +8,8 @@ from databay.record import Record
 
 class ConditionalPrintOutlet(Outlet):
 
-    # Whether records should be printed or skipped
     SHOULD_PRINT = 'ConditionalPrintOutlet.SHOULD_PRINT'
+    """Whether records should be printed or skipped."""
 
     def push(self, records:[Record], update):
         for record in records:

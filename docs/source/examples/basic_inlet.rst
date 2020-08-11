@@ -29,7 +29,7 @@ Basic Inlet
         :start-at: link = Link
         :end-at: name='random_ints'
 
-    #. Add to planner and schedule.
+    #. Add to a planner and schedule.
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/basic_inlet.py

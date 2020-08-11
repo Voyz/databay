@@ -1,3 +1,12 @@
+"""
+.. warning::
+    :any:`HttpInlet` requires `AIOHTTP <https://docs.aiohttp.org/en/stable/>`_ to function. Please install required dependencies using:
+
+    .. code-block:: python
+
+        pip install databay[HttpInlet]
+"""
+
 import json
 import logging
 from typing import List
@@ -29,7 +38,7 @@ class HttpInlet(Inlet):
         Asynchronously pulls data from the specified URL using aiohttp.ClientSession.get_
 
         :type update: :any:`Update`
-        :param update: Update object representing the particular Link update run.
+        :param update: Update object representing the particular Link transfer.
 
         :return: Single or multiple records produced.
         :rtype: :any:`Record` or list[:any:`Record`]

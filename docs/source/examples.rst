@@ -13,13 +13,13 @@ You can find all examples in the GitHub repository in the `Examples folder <http
 .. _basic-inlet:
 .. include:: examples/basic_inlet.rst
 
-.. _weather-inlet:
-.. include:: examples/weather_inlet.rst
-
 .. _basic-outlet:
 .. include:: examples/basic_outlet.rst
 
-.. _file-outlet:
+.. _advanced-inlet:
+.. include:: examples/weather_inlet.rst
+
+.. _advanced-outlet:
 .. include:: examples/file_outlet.rst
 
 .. _basic-metadata:

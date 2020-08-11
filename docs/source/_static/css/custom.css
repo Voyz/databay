@@ -380,10 +380,10 @@ html.writer-html5 .rst-content .section-metadata dl[class]:not(.option-list):not
     margin-left: 24px;
 }
 
-html.writer-html5 .rst-content .section-metadata dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple).py.attribute dt {
-    background-color: #fae024;
-    border-left-color: #e2cb20;
-}
+/*html.writer-html5 .rst-content .section-metadata dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple).py.attribute dt {*/
+/*    background-color: #fae024;*/
+/*    border-left-color: #e2cb20;*/
+/*}*/
 
 /* fis for MS Edge breaking on the copybutton*/
 @supports (-ms-ime-align:auto) {

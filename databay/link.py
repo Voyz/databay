@@ -201,7 +201,7 @@ class Link():
     @property
     def job(self) -> Any: # pragma: no cover
         """
-        The job this link is executed with. Job should persist between link updates.
+        The job this link is executed with. Job should persist between link transfers.
         |default| :code:`None`
 
         :returns: Job this link is executed with.

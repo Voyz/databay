@@ -13,7 +13,7 @@ Basic metadata
     .. literalinclude:: ../../examples/basic_metadata.py
         :language: python
         :start-at: class ConditionalPrintOutlet
-        :end-at: SHOULD_PRINT =
+        :end-at: """Whether
 
     #. Implement :code:`push` method, looping over all records and printing them if :code:`ConditionalPrintOutlet.SHOULD_PRINT` is set:
 
@@ -39,7 +39,7 @@ Basic metadata
         :start-at: print_outlet =
         :end-at: name='should_print_metadata'
 
-    #. Add to planner and schedule.
+    #. Add to a planner and schedule.
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/basic_metadata.py
@@ -57,7 +57,7 @@ Basic metadata
         >>> should_print_metadata.2 Record(payload=54, metadata={'PrintOutlet.SHOULD_PRINT': True, '__inlet__': "RandomIntInlet(metadata:{'PrintOutlet.SHOULD_PRINT': True})"})
         >>> ...
 
-    On each transfer :code:`ConditionalPrintOutlet` prints records incoming only from the :code:`random_int_inlet_on` that was constructed with global metadata enabling printing.
+    On each transfer :code:`ConditionalPrintOutlet` prints records incoming only from the :code:`random_int_inlet_on` that was constructed with global metadata that allows printing.
 
     Full example:
 

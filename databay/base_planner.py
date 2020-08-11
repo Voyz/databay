@@ -15,7 +15,7 @@ _LOGGER = logging.getLogger('databay.BasePlanner')
 
 class BasePlanner(ABC):
     """
-    Base abstract class for a job planner. Implementations should handle scheduling link updates based on :py:class:`datetime.timedelta` intervals.
+    Base abstract class for a job planner. Implementations should handle scheduling link transfers based on :py:class:`datetime.timedelta` intervals.
     """
 
 

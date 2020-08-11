@@ -28,4 +28,4 @@ By default Databay will only log messages with :code:`WARNING` priority or highe
 
     logging.getLogger('databay.APSPlanner').setLevel(logging.DEBUG)
 
-You can attach new handlers to any of these loggers in order to implement custom logging behaviour - such as a :any:`FileHandler <logging.FileHandler>` to log into a file.
+You can attach new handlers to any of these loggers in order to implement custom logging behaviour - such as a :any:`FileHandler <logging.FileHandler>` to log into a file, or a separate :any:`StreamHandler <logging.StreamHandler>` to customise the print signature.

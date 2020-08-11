@@ -69,7 +69,7 @@ Example from :any:`APSPlanner._start_planner`:
 _shutdown_planner
 ^^^^^^^^^^^^^^^^^
 
-Shutdown the scheduling. This method runs whenever :any:`shutdown` is called and should not be executed directly. It should shutdown the scheduling of links.
+Shutdown the scheduling. This method runs whenever :any:`shutdown` is called and should not be executed directly. It should shut down the scheduling of links.
 
 A :code:`wait` parameter is provided that you can pass down to your scheduling system if it allows waiting for the remaining jobs to complete before shutting down.
 

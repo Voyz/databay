@@ -83,14 +83,14 @@ Simple usage
 
     * Once scheduling starts, link will log the beginning and end of each transfer:
 
-        Note the :code:`http_to_mongo.0` at the beginning of the message. This is printing the :any:`Update` object that represents each individual transfer executed by tha    t particular link. :code:`http_to_mongo` is the name of the link, while :code:`0` represents the index of the transfer.
-
         .. rst-class:: highlight-small
         .. code-block:: python
 
             http_to_mongo.0 transfer
 
-    * Then :any:`HttpInlet` logs its data generation:
+        Note the :code:`http_to_mongo.0` prefix in the message. It is the string representation of the :any:`Update` object that represents each individual transfer executed by that particular link. :code:`http_to_mongo` is the name of the link, while :code:`0` represents the index of the transfer.
+
+    * Then :any:`HttpInlet` logs its data production:
 
         .. rst-class:: highlight-small
         .. code-block:: python
@@ -107,7 +107,7 @@ Simple usage
             http_to_mongo.0 written [{'userId': 1, 'id': 1, 'title': 'delectus aut
 
 
-    * Finally, link logs completing its first transfer:
+    * Finally, link reports completing its first transfer:
 
         .. rst-class:: highlight-small
         .. code-block:: python

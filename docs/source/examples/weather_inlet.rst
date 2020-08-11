@@ -1,4 +1,4 @@
-Weather Inlet
+Intermediate Inlet
 ------------
 
 .. _OpenWeatherMap: https://openweathermap.org/current
@@ -48,7 +48,7 @@ Weather Inlet
         :start-at: api_key = os.environ.get
         :end-at: weather_inlet = WeatherInlet
 
-    #. Create link, add it to planner and schedule.
+    #. Create a link, add it to planner and schedule.
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/weather_inlet.py
@@ -66,7 +66,7 @@ Weather Inlet
         >>> bangkok_weather.2 light rain
         >>> ...
 
-    On each transfer :code:`WeatherInlet` makes a request to OpenWeatherMap API and returns a description of the weather in selected city.
+    On each transfer :code:`WeatherInlet` makes a request to OpenWeatherMap API and returns a description of the weather in the selected city.
 
     Full example:
 

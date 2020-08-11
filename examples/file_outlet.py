@@ -8,8 +8,11 @@ from databay.outlet import Outlet
 
 class FileOutlet(Outlet):
 
-    FILEPATH = 'FileOutlet.FILEPATH' # specify the destination file
-    FILE_MODE = 'FileOutlet.FILE_MODE' # specify the write mode
+    FILEPATH = 'FileOutlet.FILEPATH'
+    """Filepath of the file to write to."""
+
+    FILE_MODE = 'FileOutlet.FILE_MODE'
+    """Write mode to use when writing into the csv file."""
 
     def __init__(self,
                  default_filepath:str='outputs/default_output.txt',

@@ -50,7 +50,7 @@ Databay
     planner = APSPlanner(link)
     planner.start()
 
-Every 5 seconds this snippet will pull data from a test URL, and write it to a MongoDB.
+Every 5 seconds this snippet will pull data from a test URL, and write it to MongoDB.
 
 ----
 

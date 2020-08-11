@@ -1,11 +1,11 @@
-File Outlet
+Intermediate Outlet
 ------------
 
 .. _python_io: https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files
 
 .. container:: tutorial-block
 
-    This example demonstrates an outlet writes the incoming records into a file. It showcases what a realistic implementation of :any:`Outlet` may look like.
+    This example demonstrates an outlet that writes the incoming records into a file. It showcases what a realistic implementation of :any:`Outlet` may look like.
 
     #. Create the :code:`FileOutlet` implementing :any:`Outlet` class. This outlet will accept two metadata keys:
 
@@ -16,10 +16,10 @@ File Outlet
     .. literalinclude:: ../../examples/file_outlet.py
         :language: python
         :start-at: class FileOutlet
-        :end-at: FILE_MODE =
+        :end-at: """Write
 
 
-    #. We expect :code:`default_filepath` and :code:`default_file_mode` to be provided when constructing this outlet.
+    #. We give an option to specify :code:`default_filepath` and :code:`default_file_mode` when constructing this outlet.
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/file_outlet.py
@@ -27,7 +27,7 @@ File Outlet
         :start-at: def __init__(
         :end-at: self.default_file_mode =
 
-    #. Implement :code:`push` method, looping over all record and reading their metadata.
+    #. Implement :code:`push` method, looping over all records and reading their metadata.
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/file_outlet.py
@@ -51,7 +51,7 @@ File Outlet
         :start-at: metadata =
         :end-at: file_outlet = FileOutlet
 
-    #. Create link, add to planner and schedule.
+    #. Create a link, add to a planner and schedule.
 
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/file_outlet.py

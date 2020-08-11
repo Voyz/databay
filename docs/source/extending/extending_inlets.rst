@@ -154,7 +154,7 @@ Correct:
             super().__init__(*args, **kwargs) # metadata dict gets passed and stored here
             self.should_do_stuff = should_do_stuff
 
-Metadata supported by each outlet differs and is dependant on the particular outlet implementation. Please refer to specific outlet documentation for more information on metadata expected.
+Metadata supported by each outlet differs and is dependent on the particular outlet implementation. Please refer to specific outlet documentation for more information on metadata expected.
 
 
 Additionally, each record is supplied with a special :code:`__inlet__` metadata entry containing string representation of the inlet that produced it.
@@ -170,7 +170,7 @@ Additionally, each record is supplied with a special :code:`__inlet__` metadata 
 Local metadata
 ^^^^^^^^^^^^^^
 
-Apart providing an inlet with :ref:`global_metadata` that will be same for all records, you may also attach local per-record metadata that can vary for each record. This can be done inside of the :any:`pull` method by specifying a metadata dictionary when creating a record using :any:`Inlet.new_record` method.
+Apart from providing an inlet with :ref:`global_metadata` that will be the same for all records, you may also attach local per-record metadata that can vary for each record. This can be done inside of the :any:`pull` method by specifying a metadata dictionary when creating a record using :any:`Inlet.new_record` method.
 
 
 .. code-block:: python
@@ -226,8 +226,9 @@ You may implement asynchronous data production by defining :any:`Inlet.pull` as 
         # Note the 'async' keyword
         async def pull(self, update):
             async_results = await some_async_code()
-            await asyncio.sleep(1)
             return async_results
+
+See :ref:`Basic Asynchronous <basic-asynchronous>` for a full example of implementing asynchronous code in Databay.
 
 Test your inlet
 ^^^^^^^^^^^^^^^
@@ -247,7 +248,7 @@ Databay comes with a template :any:`unittest.TestCase` designed to validate your
 
         # You can add further tests here
 
-Running such concrete test will execute a variety of test cases that ensure your inlet correctly provides the expected functionality. These include:
+Running such a concrete test will execute a variety of test cases that ensure your inlet correctly provides the expected functionality. These include:
 
 * Creating new records.
 * Attaching global and local metadata.

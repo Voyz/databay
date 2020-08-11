@@ -20,7 +20,7 @@ class RandomIntInlet(Inlet):
         # execute
         r = random.randint(0, 100)
 
-        _LOGGER.debug(f'{update} inlet:{r}')
+        _LOGGER.debug(f'{update} produced:{r}')
         return r
 
 class PrintOutlet(Outlet):
@@ -40,7 +40,7 @@ class PrintOutlet(Outlet):
         await asyncio.sleep(0.5)
 
         # execute
-        _LOGGER.debug(f'{update} outlet:{record.payload}')
+        _LOGGER.debug(f'{update} consumed:{record.payload}')
 
 random_int_inletA = RandomIntInlet()
 random_int_inletB = RandomIntInlet()

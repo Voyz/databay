@@ -62,7 +62,7 @@ Outlets are provided with a :any:`list` of all records produced by all inlets of
                 if record.metadata.get('should_print', False):
                     print(record.payload)
 
-By default a copy of records is provided to outlets in order to prevent accidental data corruption. You can disable this mechanism by passing :code:`copy_records=False` when constructing a link, in which case same :any:`list` will be provided to all outlets. Ensure you aren't modifying the records or their underlying data in your :any:`Outlet.push` method.
+By default a copy of records is provided to outlets in order to prevent accidental data corruption. You can disable this mechanism by passing :code:`copy_records=False` when constructing a link, in which case the same :any:`list` will be provided to all outlets. Ensure you aren't modifying the records or their underlying data in your :any:`Outlet.push` method.
 
 Metadata
 ^^^^^^^^
@@ -142,6 +142,8 @@ You may implement asynchronous data consumption by defining :any:`Outlet.push` a
         async def push(self, records, update):
             async_results = await some_async_code(records)
             await asyncio.sleep(1)
+
+See :ref:`Basic Asynchronous <basic-asynchronous>` for a full example of implementing asynchronous code in Databay.
 
 ----
 

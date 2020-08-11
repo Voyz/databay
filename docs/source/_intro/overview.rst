@@ -30,6 +30,6 @@ Scheduling is implemented using third party libraries, exposed through the :any:
     planner = APSPlanner(link)
     planner.start()
 
-Every 5 seconds this snippet will pull data from a test URL, and write it to a MongoDB.
+Every 5 seconds this snippet will pull data from a test URL, and write it to MongoDB.
 
 While Databay comes with a handful of built-in inlets and outlets, its strength lies in extendability. To use Databay in your project, create concrete implementations of :any:`Inlet` and :any:`Outlet` classes that handle the data production and consumption functionality you require. Databay will then make sure data can repeatedly flow between the inlets and outlets you create. :ref:`Extending Inlets <extending_inlets>` and :ref:`extending Outlets <extending_outlets>` is easy and has a wide range of customization. Head over to :any:`Extending Databay <extending>` section for a detailed explanation.
