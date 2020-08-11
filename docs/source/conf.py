@@ -57,7 +57,12 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
+exclude_patterns = [
+    'examples/*.rst',
+    '_intro/*.rst',
+    '_autoapi_templates/python/*.rst',
+    'api/index.rst',
+]
 
 
 

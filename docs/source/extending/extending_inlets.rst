@@ -66,7 +66,8 @@ Producing multiple records
 During one transfer you may produce multiple data entities within the :any:`Inlet.pull` method. Returning a :any:`list` is an indication that multiple records are being produced at once, in which case each element of the :any:`list` will be turned into a :any:`Record`. Any return type other than :any:`list` (eg. :any:`tuple`, :any:`set`, :any:`dict`) will be considered as one :any:`Record`.
 
 .. rst-class:: mb-s
-Returning a :any:`list`, producing two records:
+
+    Returning a :any:`list`, producing two records:
 
 .. rst-class:: highlight-small
 .. code-block:: python
@@ -77,7 +78,8 @@ Returning a :any:`list`, producing two records:
         return [random.randint(0, 50), random.randint(0, 100)]
 
 .. rst-class:: mb-s
-Returning a :any:`set`, producing one record:
+
+    Returning a :any:`set`, producing one record:
 
 .. rst-class:: highlight-small
 .. code-block:: python
@@ -134,7 +136,8 @@ Global metadata
 Metadata dictionary is independent from the inlet that it is given to. Inlet should not modify the metadata or read it; instead inlets should expect all setup parameters to be provided as arguments on construction.
 
 .. rst-class:: mb-s
-Incorrect:
+
+    Incorrect:
 
 .. rst-class::highlight-small
 .. code-block:: python
@@ -144,7 +147,8 @@ Incorrect:
             self.should_do_stuff = metadata.get('should_do_stuff')
 
 .. rst-class:: mb-s
-Correct:
+
+    Correct:
 
 .. rst-class::highlight-small
 .. code-block:: python
@@ -233,7 +237,7 @@ See :ref:`Basic Asynchronous <basic-asynchronous>` for a full example of impleme
 Test your inlet
 ---------------
 
-Databay comes with a template :any:`unittest.TestCase` designed to validate your implementation of :any:`Inlet` class. To use it, create a new test class extending :any:`InletTester` and implement :any:`InletTester.get_inlet` method returning an instance of your inlet.
+Databay comes with a template :any:`unittest.TestCase` designed to validate your implementation of :any:`Inlet` class. To use it, create a new test class extending :code:`InletTester` and implement :code:`InletTester.get_inlet` method returning an instance of your inlet.
 
 .. code-block:: python
 
@@ -254,7 +258,7 @@ Running such a concrete test will execute a variety of test cases that ensure yo
 * Attaching global and local metadata.
 * Calling :any:`pull <Inlet.pull>` method.
 
-Since :any:`InletTester` will call pull on your inlet, you may want to mock some functionality of your inlet in order to separate testing of your inlet logic from external code.
+Since :code:`InletTester` will call pull on your inlet, you may want to mock some functionality of your inlet in order to separate testing of your inlet logic from external code.
 
 ----
 

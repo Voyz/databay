@@ -32,7 +32,8 @@ Databay
 
 
 .. rst-class:: mb-s
-:ref:`A simple example <simple-usage>`:
+
+    :ref:`A simple example <simple-usage>`:
 
 .. code-block:: python
 

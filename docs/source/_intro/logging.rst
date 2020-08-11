@@ -19,7 +19,8 @@ All classes in Databay are configured to utilise a :any:`Python Logger <python:l
    2020-07-30 19:51:41.318|D| http_to_mongo.0 transfer (databay.Link)
 
 .. rst-class:: mb-s
-By default Databay will only log messages with :code:`WARNING` priority or higher. You can manually enable more verbose logging by calling:
+
+    By default Databay will only log messages with :code:`WARNING` priority or higher. You can manually enable more verbose logging by calling:
 
 .. code-block:: python
 

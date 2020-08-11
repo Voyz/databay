@@ -72,7 +72,8 @@ Your outlet can be built to behave differently depending on the metadata carried
 When creating an outlet it is up to you to ensure the expected metadata and its effects are clearly documented. To prevent name clashes between various outlets' metadata, it is recommended to include outlet name in the keys expected by your outlet.
 
 .. rst-class:: mb-s
-Incorrect:
+
+    Incorrect:
 
 .. rst-class:: highlight-small
 .. code-block:: python
@@ -80,7 +81,8 @@ Incorrect:
     CSV_FILE = 'CSV_FILE'
 
 .. rst-class:: mb-s
-Correct:
+
+    Correct:
 
 .. rst-class:: highlight-small
 .. code-block:: python
