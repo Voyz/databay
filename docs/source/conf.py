@@ -109,7 +109,7 @@ autoapi_ignore = [
     # '*databay/__init__.py',
     # '/*test*/',
     '*examples/*',
-    '*misc/*',
+    '*misc/logs.py',
     # '*inlets/random_int_inlet.py',
     # '*outlets/print_outlet.py',
     # '*outlets/csv_outlet.py',

@@ -178,12 +178,12 @@ html.writer-html5 .rst-content dl.py p + dl.field-list.simple{
     margin-bottom: 60px;
 }
 
-.section#databay-api-reference .toctree-wrapper.compound:first-of-type{
+.section#module-databay .toctree-wrapper.compound:first-of-type{
     padding-bottom: 0;
     margin-bottom: 0;
     border-bottom: none;
 }
-.section#databay-api-reference .toctree-wrapper.compound:last-of-type{
+.section#module-databay .toctree-wrapper.compound:last-of-type{
     margin-top: 0;
     border-top: none;
 }

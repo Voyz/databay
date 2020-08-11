@@ -23,9 +23,6 @@ class TestHttpInlet(inlet_tester.InletTester):
     def get_inlet(self):
         return HttpInlet('https://jsonplaceholder.typicode.com/todos/1')
 
-    def test_test(self):
-        asyncio.run(self.inlet.pull(None))
-
 
 
 

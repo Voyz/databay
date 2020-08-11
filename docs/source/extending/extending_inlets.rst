@@ -237,7 +237,7 @@ See :ref:`Basic Asynchronous <basic-asynchronous>` for a full example of impleme
 Test your inlet
 ---------------
 
-Databay comes with a template :any:`unittest.TestCase` designed to validate your implementation of :any:`Inlet` class. To use it, create a new test class extending :code:`InletTester` and implement :code:`InletTester.get_inlet` method returning an instance of your inlet.
+Databay comes with a template :any:`unittest.TestCase` designed to validate your implementation of :any:`Inlet` class. To use it, create a new test class extending :any:`InletTester` and implement :any:`InletTester.get_inlet` method returning an instance of your inlet.
 
 .. code-block:: python
 
@@ -245,12 +245,24 @@ Databay comes with a template :any:`unittest.TestCase` designed to validate your
 
     class RandomIntInletTest(inlet_tester.InletTester):
 
-        def get_inlet(self, metadata):
-            return RandomIntInlet(metadata=metadata)
+        def get_inlet(self):
+            return RandomIntInlet()
 
         ...
 
         # You can add further tests here
+
+You may also return a :any:`list` of inlets, to run each test on various configurations of your inlet:
+
+.. code-block:: python
+
+        def get_inlet(self):
+            return [
+                RandomIntInlet(),
+                RandomIntInlet(min=10, max=200),
+            ]
+
+
 
 Running such a concrete test will execute a variety of test cases that ensure your inlet correctly provides the expected functionality. These include:
 
@@ -258,7 +270,7 @@ Running such a concrete test will execute a variety of test cases that ensure yo
 * Attaching global and local metadata.
 * Calling :any:`pull <Inlet.pull>` method.
 
-Since :code:`InletTester` will call pull on your inlet, you may want to mock some functionality of your inlet in order to separate testing of your inlet logic from external code.
+Since :any:`InletTester` will call :any:`pull <Inlet.pull>` on your inlet, you may want to mock some of your inlet's functionality in order to separate testing of its logic from external code.
 
 ----
 
