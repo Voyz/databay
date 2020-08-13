@@ -1,6 +1,6 @@
 *This library is currently being beta-tested. See something that's broken? Did we get something wrong? [Create an issue and let us know!][issues]*
 
-# Databay [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+# Databay [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![GitHub Release](https://img.shields.io/pypi/v/databay?label=version)]()
           
 
 
@@ -75,7 +75,7 @@ While Databay comes with a handful of built-in inlets and outlets, its strength 
 
 We aim to support the ecosystem of Databay users by collating and promoting inlets and outlets that implement popular functionalities. We encourage you to share the inlets and outlets you write with the community - start by reading the [guidelines on extending Databay][extending].
 
-Did you write a cool inlet or outlet that you'd like to share with others? Send us an [email][voy1982_email] with your public repo and we'll list it here!
+Did you write a cool inlet or outlet that you'd like to share with others? Put it on a public repo, send us an [email][voy1982_email] and we'll list it here!
 
 [voy1982@yahoo.co.uk][voy1982_email]
 
