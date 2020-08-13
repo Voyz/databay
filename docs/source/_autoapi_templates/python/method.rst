@@ -1,10 +1,6 @@
 {%- if obj.display %}
 {% if sphinx_version >= (2, 1) %}
 
-..
-  {{ obj.__dict__ }}
-  {{ obj.args }}
-
 .. py:method:: {{ obj.short_name }}({{ obj.args }}) {% if obj.return_annotation %} -> {{ obj.return_annotation }} {% endif %}
 
 {% else %}

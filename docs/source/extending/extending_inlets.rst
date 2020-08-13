@@ -215,6 +215,8 @@ You can further control the starting and shutting down functionality by overridi
         def on_start(self):
             random.seed(42)
 
+.. _async_inlet:
+
 Asynchronous inlet
 ------------------
 

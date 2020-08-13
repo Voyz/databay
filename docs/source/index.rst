@@ -1,4 +1,5 @@
-
+.. _asyncio: https://docs.python.org/3/library/asyncio.html
+.. |Asyncio| replace:: **Asyncio**
 
 Databay
 =======
@@ -26,10 +27,31 @@ Databay
 
 
 * :ref:`Overview <overview>` - Learn what is Databay.
-* :any:`Examples <examples>` - See Databay in use.
+* :ref:`Examples <examples>` - See Databay in use.
 * :any:`Extending Databay <extending>` - Use Databay in your project.
 * :any:`API Reference <api/databay/index>` - Read the API documentation.
 
+
+Features
+--------
+
+
+.. list-table::
+
+    *   - **Simple, decoupled interface**
+        - Easily implement :ref:`data production <extending_inlets>` and :ref:`consumption <extending_outlets>` that fits your needs.
+
+    *   - **Granular control over data transfer**
+        -  Multiple ways of :ref:`passing information <records>` between producers and consumers.
+
+    *   - |Asyncio|_ **supported**
+        - You can :ref:`produce <async_inlet>` or :ref:`consume <async_outlet>` asynchronously.
+
+    *   - **We'll handle the rest**
+        - :ref:`scheduling`, :ref:`startup and shutdown <start_shutdown>`, :ref:`exception handling <exception_handling>`, :ref:`logging <logging>`.
+
+    *   - **Support for custom scheduling**
+        - Use :ref:`your own scheduling logic <extending_base_planner>` if you like.
 
 .. rst-class:: mb-s
 

@@ -128,6 +128,8 @@ You can further control the starting and shutting down functionality by overridi
         def on_start(self):
             self.prefix = 'foo'
 
+.. _async_outlet:
+
 Asynchronous outlet
 -------------------
 

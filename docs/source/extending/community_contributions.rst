@@ -7,14 +7,17 @@
 Community Contributions
 =======================
 
-We aim to support the ecosystem of Databay users by collating and promoting third-party inlets and outlets that implement popular functionalities. We encourage you to share the inlets and outlets you write with the community. See the list of currently shared inlets and outlets on `Databay's GitHub Page <github_community_>`_.
+We aim to support the ecosystem of Databay users by collating and promoting third-party inlets and outlets that implement popular functionalities. We encourage you to share the inlets and outlets you write with the community. See the list of currently shared inlets and outlets, as well as the description of the submission process on `Databay's GitHub Page <github_community_>`_.
 
-To ensure your contribution is widely adopted, we recommend the following guideline of implementation:
+Guideline
+#########
+
+To ensure your contribution is widely adopted, we recommend the following guideline of implementation.
 
 Read the documentation
 ----------------------
 
-Understand the design decisions behind Databay, and the inlets and outlets. Read through some of the :any:`examples <examples>` as well as the currently implemented :any:`inlets <databay.inlets>` and :any:`outlets <databay.outlets>`.
+Understand the design decisions behind Databay, and the inlets and outlets. Read through the :ref:`examples <examples>` as well as the currently implemented :any:`inlets <databay.inlets>` and :any:`outlets <databay.outlets>` to understand how Databay can be used.
 
 Write tests
 -----------
@@ -60,7 +63,11 @@ Correctly use metadata
 
     .. rubric:: Outlets
 
-    When writing outlets supporting metadata, you should clearly describe the expected behaviour of each metadata in the documentation. To prevent name clashing with other implementations, each metadata key should contain the name of your outlet included in its body.
+    When writing outlets supporting metadata, you should clearly describe the expected behaviour of each metadata in the documentation.
+
+    Your outlet should not exclusively rely on metadata and error out in its absence. Provide a method of setting default values for all metadata you expect and use these when encountering records that don't carry metadata.
+
+    To prevent name clashing with other implementations, each metadata key should contain the name of your outlet included in its body.
 
     Incorrect:
 
@@ -77,4 +84,6 @@ Correctly use metadata
         .. code-block:: python
 
             FILEPATH:metadata = 'CsvOutlet.FILEPATH'
+
+
 
