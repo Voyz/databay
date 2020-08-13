@@ -69,24 +69,38 @@ Every 5 seconds this snippet will pull data from a test URL, and write it to Mon
 
 While Databay comes with a handful of built-in inlets and outlets, its strength lies in extendability. To use Databay in your project, create concrete implementations of `Inlet` and `Outlet` classes that handle the data production and consumption functionality you require. Databay will then make sure data can repeatedly flow between the inlets and outlets you create. [Extending inlets][extending_inlets] and [extending outlets][extending_outlets] is easy and has a wide range of customization. Head over to [Extending Databay][extending] section for a detailed explanation or to [Examples][examples] for real use cases. 
 
-## Contribute
+## Community
 
-We aim to support the ecosystem of Databay users by collating and promoting inlets and outlets that implement common functionalities. We encourage you to share the inlets and outlets you write with the community, start by reading the [guidelines on extending Databay][extending].
+We aim to support the ecosystem of Databay users by collating and promoting inlets and outlets that implement popular functionalities. We encourage you to share the inlets and outlets you write with the community - start by reading the [guidelines on extending Databay][extending].
 
-Did you write a cool inlet or outlet that you'd like to share with others? Send us an email with your repo and we'll list it here!
+Did you write a cool inlet or outlet that you'd like to share with others? Send us an [email][voy1982_email] with your repo and we'll list it here!
 
-[voy1982@yahoo.co.uk](mailto:voy1982@yahoo.co.uk)
+[voy1982@yahoo.co.uk][voy1982_email]
 
-**Inlets**
+#### Inlets
 
 * [FileInlet](https://databay.readthedocs.io/en/latest/api/databay/inlets/file_inlet/index.html) - File input inlet (built-in).
 * [HttpInlet](https://databay.readthedocs.io/en/latest/api/databay/inlets/http_inlet/index.html) - Asynchronous http request inlet using aiohttp (built-in).
 
-**Outlets**
+#### Outlets
 
 * [FileOutlet](https://databay.readthedocs.io/en/latest/api/databay/outlets/file_outlet/index.html) - Generic file outlet (built-in).
 * [CsvOutlet](https://databay.readthedocs.io/en/latest/api/databay/outlets/csv_outlet/index.html) - CSV file outlet (built-in).
 * [MongoOutlet](https://databay.readthedocs.io/en/latest/api/databay/outlets/mongo_outlet/index.html) - MongoDB outlet (built-in).
+
+
+## Roadmap
+
+#### v1.0
+1. Beta test the pre-release.
+1. Complete 100% test coverage (currently 75%).
+1. Add more advanced examples.
+1. Release v1.0.
+
+#### v1.1
+1. Filters and translators - callbacks for processing data between inlets and outlets.
+1. Advanced scheduling - conditional, non uniform intervals.
+
 
 ## Licence
 
@@ -112,3 +126,4 @@ See [LICENSE](LICENSE)
   [startup_and_shutdown]: https://databay.readthedocs.io/en/latest/introduction.html#start-and-shutdown
   [async_inlet]: https://databay.readthedocs.io/en/latest/extending/extending_inlets.html#asynchronous-inlet
   [async_outlet]: https://databay.readthedocs.io/en/latest/extending/extending_outlets.html#asynchronous-outlet
+  [voy1982_email]: mailto:voy1982@yahoo.co.uk
