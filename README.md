@@ -73,7 +73,7 @@ While Databay comes with a handful of built-in inlets and outlets, its strength 
 
 ## <a name="community"></a>Community Contributions
 
-We aim to support the ecosystem of Databay users by collating and promoting inlets and outlets that implement popular functionalities. We encourage you to share the inlets and outlets you write with the community - start by reading the [guidelines on extending Databay][extending].
+We aim to support the ecosystem of Databay users by collating and promoting inlets and outlets that implement popular functionalities. We encourage you to share the inlets and outlets you write with the community - start by reading the [guidelines][community_docs] on contributing to the Databay community.
 
 Did you write a cool inlet or outlet that you'd like to share with others? Put it on a public repo, send us an [email][voy1982_email] and we'll list it here!
 
@@ -131,3 +131,4 @@ See [LICENSE](LICENSE)
   [async_outlet]: https://databay.readthedocs.io/en/latest/extending/extending_outlets.html#asynchronous-outlet
   [voy1982_email]: mailto:voy1982@yahoo.co.uk
   [issues]: https://github.com/Voyz/databay/issues
+  [community_docs]: https://databay.readthedocs.io/en/latest/extending/community_contributions.html
