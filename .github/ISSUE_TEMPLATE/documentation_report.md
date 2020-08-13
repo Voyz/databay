@@ -11,7 +11,9 @@ assignees: ''
 List documentation pages affected:
 
 **Describe the issue**
-A clear and concise description.
+What are you trying to do or find out more about?
 
-**Additional context**
-Add any other context about the issue here.
+Where have you looked?
+
+Where did you expect to find this information?
+

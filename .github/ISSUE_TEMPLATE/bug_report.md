@@ -27,3 +27,6 @@ OS:
 
 **Additional context**
 Add any other context about the problem here.
+
+**Suggest a Fix**
+If you can't fix the bug yourself, perhaps you can point to what might be causing the problem (line of code or commit).
