@@ -1,4 +1,4 @@
-*This library is currently being beta-tested. See something that's broken? Did we get something wrong? [Let us know!][voy1982_email]*
+*This library is currently being beta-tested. See something that's broken? Did we get something wrong? [Create an issue and let us know!][issues]*
 
 # Databay [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
           
@@ -130,3 +130,4 @@ See [LICENSE](LICENSE)
   [async_inlet]: https://databay.readthedocs.io/en/latest/extending/extending_inlets.html#asynchronous-inlet
   [async_outlet]: https://databay.readthedocs.io/en/latest/extending/extending_outlets.html#asynchronous-outlet
   [voy1982_email]: mailto:voy1982@yahoo.co.uk
+  [issues]: https://github.com/Voyz/databay/issues
