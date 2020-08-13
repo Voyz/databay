@@ -24,15 +24,15 @@ Or more specifically:
 
 ## Features
 
-* **Simple, decoupled interface** - Easily implement [data production][extending_inlets] and [consumption][extending_outlets] that fits your needs.
+* **Simple, decoupled interface** — Easily implement [data production][extending_inlets] and [consumption][extending_outlets] that fits your needs.
 
-* **Granular control over data transfer** - Multiple ways of [passing information][records] between producers and consumers.
-    
-* **[Asyncio][asyncio] supported** - You can [produce][async_inlet] or [consume][async_outlet] asynchronously.
+* **Granular control over data transfer** — Multiple ways of [passing information][records] between producers and consumers.
 
-* **We'll handle the rest** - [scheduling][scheduling], [startup and shutdown][startup_and_shutdown], [exception handling][exceptions], [logging][logging].
+* **[Asyncio][asyncio] supported** — You can [produce][async_inlet] or [consume][async_outlet] asynchronously.
 
-* **Support for custom scheduling** - Use [your own scheduling logic][extending_base_planner] if you like.
+* **We'll handle the rest** — [scheduling][scheduling], [startup and shutdown][startup_and_shutdown], [exception handling][exceptions], [logging][logging].
+
+* **Support for custom scheduling** — Use [your own scheduling logic][extending_base_planner] if you like.
 
 
   
@@ -68,6 +68,25 @@ Every 5 seconds this snippet will pull data from a test URL, and write it to Mon
 ---- 
 
 While Databay comes with a handful of built-in inlets and outlets, its strength lies in extendability. To use Databay in your project, create concrete implementations of `Inlet` and `Outlet` classes that handle the data production and consumption functionality you require. Databay will then make sure data can repeatedly flow between the inlets and outlets you create. [Extending inlets][extending_inlets] and [extending outlets][extending_outlets] is easy and has a wide range of customization. Head over to [Extending Databay][extending] section for a detailed explanation or to [Examples][examples] for real use cases. 
+
+## Contribute
+
+We aim to support the ecosystem of Databay users by collating and promoting inlets and outlets that implement common functionalities. We encourage you to share the inlets and outlets you write with the community, start by reading the [guidelines on extending Databay][extending].
+
+Did you write a cool inlet or outlet that you'd like to share with others? Send us an email with your repo and we'll list it here!
+
+[voy1982@yahoo.co.uk](mailto:voy1982@yahoo.co.uk)
+
+**Inlets**
+
+* [FileInlet](https://databay.readthedocs.io/en/latest/api/databay/inlets/file_inlet/index.html) - File input inlet (built-in).
+* [HttpInlet](https://databay.readthedocs.io/en/latest/api/databay/inlets/http_inlet/index.html) - Asynchronous http request inlet using aiohttp (built-in).
+
+**Outlets**
+
+* [FileOutlet](https://databay.readthedocs.io/en/latest/api/databay/outlets/file_outlet/index.html) - Generic file outlet (built-in).
+* [CsvOutlet](https://databay.readthedocs.io/en/latest/api/databay/outlets/csv_outlet/index.html) - CSV file outlet (built-in).
+* [MongoOutlet](https://databay.readthedocs.io/en/latest/api/databay/outlets/mongo_outlet/index.html) - MongoDB outlet (built-in).
 
 ## Licence
 
