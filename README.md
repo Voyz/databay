@@ -1,3 +1,5 @@
+*This library is currently being beta-tested. See something that's broken? Did we get something wrong? [Let us know!][voy1982_email]*
+
 # Databay [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
           
 
@@ -73,7 +75,7 @@ While Databay comes with a handful of built-in inlets and outlets, its strength 
 
 We aim to support the ecosystem of Databay users by collating and promoting inlets and outlets that implement popular functionalities. We encourage you to share the inlets and outlets you write with the community - start by reading the [guidelines on extending Databay][extending].
 
-Did you write a cool inlet or outlet that you'd like to share with others? Send us an [email][voy1982_email] with your repo and we'll list it here!
+Did you write a cool inlet or outlet that you'd like to share with others? Send us an [email][voy1982_email] with your public repo and we'll list it here!
 
 [voy1982@yahoo.co.uk][voy1982_email]
 
@@ -96,6 +98,7 @@ Did you write a cool inlet or outlet that you'd like to share with others? Send 
 1. Complete 100% test coverage (currently 75%).
 1. Add more advanced examples.
 1. Release v1.0.
+1. Buy a carrot cake and celebrate.
 
 #### v1.1
 1. Filters and translators - callbacks for processing data between inlets and outlets.
