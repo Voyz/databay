@@ -71,7 +71,7 @@ Every 5 seconds this snippet will pull data from a test URL, and write it to Mon
 
 While Databay comes with a handful of built-in inlets and outlets, its strength lies in extendability. To use Databay in your project, create concrete implementations of `Inlet` and `Outlet` classes that handle the data production and consumption functionality you require. Databay will then make sure data can repeatedly flow between the inlets and outlets you create. [Extending inlets][extending_inlets] and [extending outlets][extending_outlets] is easy and has a wide range of customization. Head over to [Extending Databay][extending] section for a detailed explanation or to [Examples][examples] for real use cases. 
 
-## <a name="community"></a> Community Contributions
+## <a name="community"></a>Community Contributions
 
 We aim to support the ecosystem of Databay users by collating and promoting inlets and outlets that implement popular functionalities. We encourage you to share the inlets and outlets you write with the community - start by reading the [guidelines on extending Databay][extending].
 
@@ -91,7 +91,7 @@ Did you write a cool inlet or outlet that you'd like to share with others? Put i
 * [MongoOutlet](https://databay.readthedocs.io/en/latest/api/databay/outlets/mongo_outlet/index.html) - MongoDB outlet (built-in).
 
 
-## Roadmap
+## <a name="roadmap"></a>Roadmap
 
 #### v1.0
 1. Beta test the pre-release.
