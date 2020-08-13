@@ -7,6 +7,7 @@ from unittest.mock import patch
 from asynctest import mock
 
 from databay import Record, Update
+from databay.inlets import NullInlet
 from test_utils import fqname
 
 
@@ -30,7 +31,7 @@ class InletTester(TestCase):
 
     def get_inlet(self):
         """Implement this method to return instances of your inlet class."""
-        raise NotImplementedError()
+        return NullInlet()
 
     def setUp(self):
         self.gmetadata = {'global':'global'}

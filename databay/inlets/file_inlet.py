@@ -6,7 +6,7 @@ class FileInletMode(Enum):
     """Enum defining the mode in which the FileInlet should read the file."""
 
     LINE:str = 'line'
-    """Read file one line per transfer. This will open and hold the file open for as long as the planner is running."""
+    """Read file one line per transfer. This will open the file and hold it open for as long as the planner is running."""
 
     FILE:str = 'file'
     """Read the entire file on each transfer. This will only open the file briefly during the transfer."""

@@ -54,7 +54,7 @@ class Inlet(ABC):
         if not isinstance(data, list):
             data = [data]
 
-        if not isinstance(data[0], Record):
+        if data and not isinstance(data[0], Record):
             for i in range(len(data)):
                 entry = data[i]
                 if not isinstance(entry, Record):
