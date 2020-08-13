@@ -1,17 +1,17 @@
 ---
 name: Documentation report
-about: Report a bug or suggest an improvement to the documentation.
+about: Report a bug in the documentation or suggest a change.
 title: ''
 labels: 'documentation'
 assignees: ''
 
 ---
 
-**Link to pages affected**
+**Links to pages affected**
 List documentation pages affected:
 
 **Describe the issue**
 A clear and concise description.
 
 **Additional context**
-Add any other context about the feature here.
+Add any other context about the issue here.
