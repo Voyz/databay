@@ -5,10 +5,8 @@ We'd love for you to contribute to our source code and to make Databay even bett
  - [Code of Conduct](#coc)
  - [Question or Problem?](#question)
  - [Issues and Bugs](#issue)
- - [Feature Requests](#feature)
  - [Submission Guidelines](#submit)
  - [Coding Rules](#rules)
- - [Signing the CLA](#cla)
 
 ## <a name="coc"></a> Code of Conduct
 
@@ -38,7 +36,7 @@ Where did you expect to find this information?
 ```
 
 ## <a name="issue"></a> Found an Issue?
-If you find a bug in the source code or a mistake in the documentation, you can help us by submitting an issue to our [GitHub Repository][github]. Even better you can submit a Pull Request with a fix.
+If you find a bug in the source code, you can help us by submitting an issue to our [GitHub Repository][github]. Even better you can submit a Pull Request with a fix.
 
 See [below](#submit) for some guidelines.
 

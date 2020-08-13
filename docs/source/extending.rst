@@ -10,6 +10,7 @@ In order to handle your custom data production and consumption in Databay, you n
     extending/extending_inlets
     extending/extending_outlets
     extending/extending_base_planner
+    extending/community_contributions.rst
 
 ..
     .. include:: ./_extending/extending_inlets.rst
