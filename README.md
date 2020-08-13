@@ -28,11 +28,11 @@ Or more specifically:
 
 * **Granular control over data transfer** - Multiple ways of [passing information][records] between producers and consumers.
     
-* **Asynchronous execution** - [asyncio][asyncio] supported.
+* **[Asyncio][asyncio] supported** - You can [produce][async_inlet] or [consume][async_outlet] asynchronously.
 
-* **We'll handle the rest** - [scheduling][scheduling], [exception handling][exceptions], [logging][logging], job management.
+* **We'll handle the rest** - [scheduling][scheduling], [startup and shutdown][startup_and_shutdown], [exception handling][exceptions], [logging][logging].
 
-* **Support for custom scheduling** - Use your own scheduling logic [if you like][extending_base_planner].
+* **Support for custom scheduling** - Use [your own scheduling logic][extending_base_planner] if you like.
 
 
   
@@ -90,3 +90,6 @@ See [LICENSE](LICENSE)
   [exceptions]: https://databay.readthedocs.io/en/latest/introduction.html#exception-handling
   [logging]: https://databay.readthedocs.io/en/latest/introduction.html#logging
   [extending_base_planner]: https://databay.readthedocs.io/en/latest/extending/extending_base_planner.html
+  [startup_and_shutdown]: https://databay.readthedocs.io/en/latest/introduction.html#start-and-shutdown
+  [async_inlet]: https://databay.readthedocs.io/en/latest/extending/extending_inlets.html#asynchronous-inlet
+  [async_outlet]: https://databay.readthedocs.io/en/latest/extending/extending_outlets.html#asynchronous-outlet
