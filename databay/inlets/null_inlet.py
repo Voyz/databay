@@ -1,6 +1,6 @@
 from databay import Inlet
 
-class NullInlet(Inlet):
+class NullInlet(Inlet): # pragma: no cover
     """
     Inlet that doesn't do anything, essentially a 'no-op' inlet.
     """

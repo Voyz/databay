@@ -3,7 +3,7 @@ import random
 from databay import Inlet
 
 
-class RandomIntInlet(Inlet):
+class RandomIntInlet(Inlet): # pragma: no cover
     """
     Inlet that will generate a random integer within the specified range.
     """

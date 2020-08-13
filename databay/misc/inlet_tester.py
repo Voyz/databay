@@ -29,7 +29,7 @@ class InletTester(TestCase):
     Utility class used for testing concrete implementations of :any:`Inlet`.
     """
 
-    def get_inlet(self):
+    def get_inlet(self): # pragma: no cover
         """Implement this method to return instances of your inlet class."""
         return NullInlet()
 
