@@ -4,28 +4,28 @@
 
 Databay is a Python interface for **scheduled data transfer**. It facilitates transfer of (any) data from A to B, on a scheduled interval.
 
-### Installation
+## Installation
 
 ```python
 pip install databay
 ```
 
-### Documentation
+## Documentation
 
-See full **[Databay documentation][1]**.
+See full **[Databay documentation][docs]**.
 
 Or more specifically:
 
-* [Overview][2] - Learn what is Databay.
-* [Examples][3] - See Databay in use.
-* [Extending Databay][4] - Use Databay in your project.
-* [API Reference][5] - Read the API documentation.
+* [Overview][overview] - Learn what is Databay.
+* [Examples][examples] - See Databay in use.
+* [Extending Databay][extending] - Use Databay in your project.
+* [API Reference][api] - Read the API documentation.
 
 
 
 
   
-### Overview
+## Overview
 
 In Databay, data transfer is expressed with three components:
 
@@ -38,28 +38,38 @@ Scheduling is implemented using third party libraries, exposed through the `Base
 [A simple example][simple_example]:
 
 ```python
-# Create an inlet, outlet and a link.
-http_inlet = HttpInlet('https://some.test.url.com/')
-mongo_outlet = MongoOutlet('databay', 'test_collection')
-link = Link(http_inlet, mongo_outlet, datetime.timedelta(seconds=5))
+# Data producer
+inlet = HttpInlet('https://some.test.url.com/')
 
-# Create a planner, add the link and start scheduling.
+# Data consumer
+outlet = MongoOutlet('databay', 'test_collection')
+
+# Data transfer between the two
+link = Link(inlet, outlet, datetime.timedelta(seconds=5))
+
+# Start scheduling
 planner = APSPlanner(link)
 planner.start()
 ```
 
 Every 5 seconds this snippet will pull data from a test URL, and write it to MongoDB.
 
-### Licence
+---- 
+
+While Databay comes with a handful of built-in inlets and outlets, its strength lies in extendability. To use Databay in your project, create concrete implementations of `Inlet` and `Outlet` classes that handle the data production and consumption functionality you require. Databay will then make sure data can repeatedly flow between the inlets and outlets you create. [Extending Inlets][extending_inlets] and [extending Outlets][extending_outlets] is easy and has a wide range of customization. Head over to [Extending Databay][extending] section for a detailed explanation or to [Examples][examples] for real use cases. 
+
+## Licence
 
 See [LICENSE](LICENSE)
 
 
-  [1]: https://databay.readthedocs.io/
-  [2]: https://databay.readthedocs.io/en/latest/introduction.html#overview
-  [3]: https://databay.readthedocs.io/en/latest/examples.html
-  [4]: https://databay.readthedocs.io/en/latest/extending.html
-  [5]: https://databay.readthedocs.io/en/latest/api/databay/index.html
+  [docs]: https://databay.readthedocs.io/
+  [overview]: https://databay.readthedocs.io/en/latest/introduction.html#overview
+  [examples]: https://databay.readthedocs.io/en/latest/examples.html
+  [api]: https://databay.readthedocs.io/en/latest/api/databay/index.html
   [aps]: http://apscheduler.readthedocs.io/
-  [schedule]: https://databay.readthedocs.io/en/latest/api/databay/index.html
+  [schedule]: https://schedule.readthedocs.io/
   [simple_example]: https://databay.readthedocs.io/en/latest/examples.html#simple-usage
+  [extending]: https://databay.readthedocs.io/en/latest/extending.html
+  [extending_inlets]: https://databay.readthedocs.io/en/latest/extending/extending_inlets.html
+  [extending_outlets]: https://databay.readthedocs.io/en/latest/extending/extending_outlets.html
