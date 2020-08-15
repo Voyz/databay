@@ -1,6 +1,7 @@
 *This library is currently being beta-tested. See something that's broken? Did we get something wrong? [Create an issue and let us know!][issues]*
 
 <h1 align="center" name="databay">
+    <a name="databay"></a>
     <img src="/databay_title.png" alt="Databay title" title="Databay title" width="600"/>
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![GitHub Release](https://img.shields.io/pypi/v/databay?label=version)]()
