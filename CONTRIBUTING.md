@@ -94,10 +94,10 @@ Before you submit your pull request consider the following guidelines:
 
 * Search [GitHub](https://github.com/Voyz/databay/pulls) for an open or closed Pull Request
   that relates to your submission. You don't want to duplicate effort.
-* Make your changes in a new git branch, based off dev branch:
+* Make your changes in a new git branch, based off master branch:
 
      ```shell
-     git checkout -b my-fix-branch dev
+     git checkout -b my-fix-branch master
      ```
 
 * Create your patch, **including appropriate test cases**.
@@ -116,13 +116,13 @@ Before you submit your pull request consider the following guidelines:
     git push origin my-fix-branch
     ```
 
-* In GitHub, send a pull request to `databay:dev`.
+* In GitHub, send a pull request to `databay:master`.
 * If we suggest changes then:
   * Make the required updates.
   * Rebase your branch and force push to your GitHub repository (this will update your Pull Request):
 
     ```shell
-    git rebase dev -i
+    git rebase master -i
     git push origin my-fix-branch -f
     ```
 
@@ -139,10 +139,10 @@ from the main (upstream) repository:
     git push origin --delete my-fix-branch
     ```
 
-* Check out the dev branch:
+* Check out the master branch:
 
     ```shell
-    git checkout dev -f
+    git checkout master -f
     ```
 
 * Delete the local branch:
@@ -151,11 +151,11 @@ from the main (upstream) repository:
     git branch -D my-fix-branch
     ```
 
-Once a new release containing your PR is published, the dev branch will be merged with the master branch and your change will be available through updating your master with the latest upstream version:
+* Update your master with the latest upstream version:
 
-```shell
-git pull --ff upstream master
-```
+    ```shell
+    git pull --ff upstream master
+    ```
 
 ## <a name="rules"></a> Coding Rules
 
@@ -166,7 +166,6 @@ We generally follow the [Google Python style guide][py-style-guide].
 *This guide was inspired by the [Firebase Web Quickstarts contribution guidelines](https://github.com/firebase/quickstart-js/blob/master/CONTRIBUTING.md).*
 
 [github]: https://github.com/Voyz/databay
-[google-cla]: https://cla.developers.google.com
 [py-style-guide]: http://google.github.io/styleguide/pyguide.html
 [jsbin]: http://jsbin.com/
 [stackoverflow]: http://stackoverflow.com/questions/tagged/databay

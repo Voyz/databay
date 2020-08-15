@@ -1,6 +1,10 @@
 *This library is currently being beta-tested. See something that's broken? Did we get something wrong? [Create an issue and let us know!][issues]*
 
-# Databay [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![GitHub Release](https://img.shields.io/pypi/v/databay?label=version)]()
+![Test Image 1](databay_title.png)
+
+<img src="/databay_title.png" alt="Kitten" title="A cute kitten" style="margin:20px 30px 20px"/>
+
+# <a name="databay"></a> [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![GitHub Release](https://img.shields.io/pypi/v/databay?label=version)]()
           
 
 

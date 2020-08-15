@@ -385,6 +385,10 @@ html.writer-html5 .rst-content .section-metadata dl[class]:not(.option-list):not
 /*    border-left-color: #e2cb20;*/
 /*}*/
 
+html.writer-html5 .rst-content .image-full {
+    margin: 10px 30px 40px;
+}
+
 /* fis for MS Edge breaking on the copybutton*/
 @supports (-ms-ime-align:auto) {
 
@@ -457,5 +461,9 @@ html.writer-html5 .rst-content .section-metadata dl[class]:not(.option-list):not
 
     .rst-content dl.py dt .viewcode-link {
         font-size: 100%;
+    }
+
+    html.writer-html5 .rst-content .image-full {
+        margin: 26px 0 30px;
     }
 }

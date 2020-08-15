@@ -4,6 +4,11 @@
 Databay
 =======
 
+.. container:: image-full
+
+    .. image:: _static/images/databay_title_small.png
+
+
 .. container:: text-block
 
     Databay is a Python interface for **scheduled data transfer**.
