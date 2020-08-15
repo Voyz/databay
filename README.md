@@ -1,8 +1,7 @@
 *This library is currently being beta-tested. See something that's broken? Did we get something wrong? [Create an issue and let us know!][issues]*
 
-<h1 align="center" name="databay" id="databay" href="#databay">
-    <script>Databay</script>
-    <a name="databay" href="#databay">
+<h1 align="center" id="databay" >
+    <a>
         <img src="/databay_title.png" alt="Databay title" title="Databay title" width="600"/>
     </a>
 
