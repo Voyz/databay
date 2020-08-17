@@ -31,8 +31,6 @@ class CsvOutlet(Outlet):
         self.default_filepath = default_filepath
         self.default_file_mode = default_file_mode
 
-    """Metadata: Filepath of the csv file to write records to."""
-
 
     def push(self, records:[Record], update):
         """

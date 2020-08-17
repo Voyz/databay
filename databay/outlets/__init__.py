@@ -2,7 +2,7 @@ import importlib
 
 if importlib.util.find_spec('pymongo') is not None:
     from databay.outlets.mongo_outlet import MongoOutlet
-else:
+else: # pragma: no cover
     def MongoOutlet(*args, **kwargs):
         raise ImportError('PyMongo dependency is required for MongoOutlet. Fix by running: pip install databay[MongoOutlet]')
 

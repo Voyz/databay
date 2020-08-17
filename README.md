@@ -110,7 +110,7 @@ Did you write a cool inlet or outlet that you'd like to share with others? Put i
 
 #### v1.0
 1. Beta test the pre-release.
-1. Complete 100% test coverage (currently 75%).
+1. Complete 100% test coverage (currently 92%).
 1. Add more advanced examples.
 1. Release v1.0.
 1. Buy a carrot cake and celebrate.
