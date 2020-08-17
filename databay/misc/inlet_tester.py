@@ -81,17 +81,23 @@ class InletTester(TestCase):
         Test creating new records and overriding global metadata.
         """
 
-        self.inlet._metadata = mock.MagicMock()
+        meta = mock.MagicMock()
+        meta.keys.return_value = self.gmetadata.keys()
+        meta.__getitem__.side_effect = lambda x: self.gmetadata.__getitem__(x)
+
+        self.inlet._metadata = meta
         self.inlet.on_start()
         records = asyncio.run(self.inlet._pull(update))
         self.inlet.on_shutdown()
         self.inlet._metadata.get.assert_not_called()
-        self.inlet._metadata.__getitem__.assert_not_called()
+        self.assertEqual(self.inlet._metadata.__getitem__.call_count, len(self.gmetadata))
 
         self.assertIsInstance(records, (list))
         for record in records:
             self.assertIsInstance(record, Record)
             self.assertIsNotNone(record.payload)
+            self.assertLessEqual(self.gmetadata.items(), record.metadata.items(),
+                                 'Global metadata should be contained in record.metadata')
 
 
     @for_each_inlet
