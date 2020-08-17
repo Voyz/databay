@@ -2,7 +2,7 @@ from databay.outlet import Outlet
 from databay.record import Record
 
 
-class NullOutlet(Outlet):
+class NullOutlet(Outlet): # pragma: no cover
     """
     Outlet that doesn't do anything, essentially a 'no-op' outlet.
     """

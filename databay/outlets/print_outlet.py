@@ -30,9 +30,8 @@ class PrintOutlet(Outlet):
         :type update: :any:`Update`
         :param update: Update object representing the particular Link update run.
         """
-        update = update if not self.skip_update else ''
+
+        update = str(update)+' ' if not self.skip_update else ''
         for record in records:
-            if self.only_payload:
-                print(update, record.payload)
-            else:
-                print(update, record)
+            body = str(record.payload) if self.only_payload else str(record)
+            print(f'{update}{body}')
