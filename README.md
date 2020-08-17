@@ -2,16 +2,17 @@
 
 <p align="center">
     <a id="databay" href="#databay">
-    <img src="/databay_title.png" alt="Databay title" title="Databay title" width="600"/>
+        <img src="/databay_title.png" alt="Databay title" title="Databay title" width="600"/>
     </a>
-    <p align="center">
+</p>
+
+<p align="center">
     <a href="https://opensource.org/licenses/Apache-2.0">
         <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"/> 
     </a>
     <a href="https://github.com/Voyz/databay/releases">
         <img src="https://img.shields.io/pypi/v/databay?label=version"/> 
     </a>
-    </p>
 </p>
 
 
