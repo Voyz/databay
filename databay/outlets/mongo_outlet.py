@@ -12,8 +12,7 @@ import functools
 import logging
 from typing import List
 
-from pymongo import MongoClient
-from pymongo.database import Database
+import pymongo
 
 from databay.outlet import Outlet, metadata
 from databay import Record
@@ -24,24 +23,6 @@ class MongoCollectionNotFound(Exception):
     """ Raised when requested collection does not exist in the database."""
     pass
 
-
-def ensure_connection_async(fn):
-    """
-    Ensure the MongoDB connection is established before running the function.
-
-    This decorator returns a coroutine and awaits for the decorated function.
-
-    :type fn: :any:`Callable <typing.Callable>`
-    :param fn: Function to decorate
-    """
-    @functools.wraps(fn)
-    async def wrapper(self, *args, **kwargs):
-        if self._db is None:
-            self.connect()
-            # raise RuntimeError('Database is not connected')
-        return await fn(self, *args, **kwargs)
-
-    return wrapper
 
 def ensure_connection(fn):
     """
@@ -61,13 +42,12 @@ def ensure_connection(fn):
 class MongoOutlet(Outlet):
     """
     Outlet for pushing data into a MongoDB instance. Pushes are executed synchronously.
-
     """
 
     MONGODB_COLLECTION:metadata = 'MongoOutlet.MONGODB_COLLECTION'
     """ Name of collection to write to. """
 
-    def __init__(self, database_name:str='databay', collection:str='default_collection', host:str=None, port:str=None, *args, **kwargs):
+    def __init__(self, database_name:str='databay', collection:str='default_collection', host:str=None, port:str=None):
         """
 
         :type database_name: str
@@ -108,7 +88,7 @@ class MongoOutlet(Outlet):
         collections = {}
 
         for record in records:
-            collection_name = record.metadata.get('MONGODB_COLLECTION', self.collection)
+            collection_name = record.metadata.get(self.MONGODB_COLLECTION, self.collection)
 
             if collection_name not in collections: collections[collection_name] = []
 
@@ -119,8 +99,8 @@ class MongoOutlet(Outlet):
 
         return collections
 
-    @ensure_connection_async
-    async def push(self, records:[Record], update):
+    @ensure_connection
+    def push(self, records:[Record], update):
         """
         |decorated| :any:`ensure_connection`
 
@@ -135,7 +115,7 @@ class MongoOutlet(Outlet):
 
         # Make sure no writes happen before start and after shutdown.
         if not self.active:
-            return
+            return False
 
         records_by_collections = self._group_by_collection(records)
 
@@ -147,11 +127,11 @@ class MongoOutlet(Outlet):
                 self._add_collection(collection_name)
                 collection = self._get_collection(collection_name)
 
-            # print(_count, 'insert', collection_records)
             _LOGGER.info(f'{update} insert {collection_records}')
             collection.insert_many(collection_records)
-            # print(_count, 'written', collection_records)
             _LOGGER.info(f'{update} written {collection_records}')
+
+        return True
 
     def connect(self, database_name:str=None) -> bool:
         """
@@ -162,19 +142,21 @@ class MongoOutlet(Outlet):
 
         :return: Returns True if already connected to the database specified.
         :rtype: bool
-
         """
+
         if database_name is None:
             database_name = self.database_name
 
-        if isinstance(self._client, MongoClient) and isinstance(self._db, Database):
+
+        # if isinstance(self._client, pymongo.MongoClient) and isinstance(self._db, pymongo.database.Database):
+        if self._client is not None and self._db is not None:
             if self._db.name == database_name:
                 return True
             else:
                 self.disconnect()
 
         # self._client = MongoClient(host='172.18.0.2', port=27017)
-        self._client = MongoClient(host=self.host, port=self.port)
+        self._client = pymongo.MongoClient(host=self.host, port=self.port)
         self._db = self._client[database_name]
         return False
 
