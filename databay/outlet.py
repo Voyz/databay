@@ -27,8 +27,6 @@ class Outlet(ABC):
         ""
         self._active = False
 
-        # if not asyncio.iscoroutinefunction(self.push):
-        #     raise ImplementationError('Outlet.push() function must be a coroutine. Fix by adding \'async\' keyword.')
         self._uses_coroutine = asyncio.iscoroutinefunction(self.push)
 
         self._thread_lock = threading.Lock()
@@ -107,18 +105,13 @@ class Outlet(ABC):
     @property
     def active(self):
         """
-        Whether this outlet is active and ready to push. This variable is set by
-        the governing link to :code:`True` on start and to :code:`False` on shutdown.
+        Whether this outlet is active and ready to push. This variable is set automatically to :code:`True` on start and to :code:`False` on shutdown.
         |default| :code:`False`
 
         :rtype: bool
         """
 
         return self._active
-
-    # @active.setter
-    # def active(self, active):
-    #     self._active = active
 
     def __repr__(self):
         return '%s()' % (self.__class__.__name__)
