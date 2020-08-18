@@ -6,7 +6,6 @@ from threading import Thread
 from databay import Link
 from databay.inlets.file_inlet import FileInlet, FileInletMode
 from databay.planners import APSPlanner, SchedulePlanner
-# from databay.inlets.AlphavantageInlet import AlphavantageInlet
 from databay.inlets import HttpInlet
 from databay.outlets import CsvOutlet
 from databay.outlets import MongoOutlet
@@ -22,7 +21,7 @@ class Run_App():
         # planner = APSPlanner()
         planner = SchedulePlanner(refresh_interval=0.5)
 
-        # alphavantage_inlet = AlphavantageInlet(key='9TZBJ8V9EMEES2WN', symbol='TSLA', interval='1min', metadata={'MONGODB_COLLECTION': 'alpha_prices'})
+
         http_inlet = HttpInlet('https://jsonplaceholder.typicode.com/todos/1', metadata={CsvOutlet.FILE_MODE:'a'})
         file_inlet = FileInlet('output_03.csv', read_mode=FileInletMode.LINE)
         http_inlet2 = HttpInlet('https://postman-echo.com/get?foo1=bar1&foo2=bar2', metadata={'MONGODB_COLLECTION': 'test_collection2', 'csv_file': 'output_02.csv'})
