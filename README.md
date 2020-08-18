@@ -2,7 +2,7 @@
 
 <p align="center">
     <a id="databay" href="#databay">
-        <img src="/databay_title.png" alt="Databay title" title="Databay title" width="600"/>
+        <img src="https://github.com/Voyz/databay/blob/master/databay_title.png" alt="Databay title" title="Databay title" width="600"/>
     </a>
 </p>
 
@@ -121,7 +121,7 @@ Did you write a cool inlet or outlet that you'd like to share with others? Put i
 
 ## Licence
 
-See [LICENSE](LICENSE)
+See [LICENSE](https://github.com/Voyz/databay/blob/master/LICENSE)
 
 
   [docs]: https://databay.readthedocs.io/
