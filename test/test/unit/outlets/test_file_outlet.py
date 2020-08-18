@@ -14,9 +14,10 @@ class TestFileOutlet(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.target_filepath = '_file_outlet_target.txt'
-        cls.attempt_filepath = '_file_outlet_attempt.txt'
-        cls.custom_filepath = '_file_outlet_custom_attempt.txt'
+        cls.this_filepath = os.path.abspath(os.path.dirname(__file__))
+        cls.target_filepath = os.path.join(cls.this_filepath, '_file_outlet_target.txt')
+        cls.attempt_filepath = os.path.join(cls.this_filepath, '_file_outlet_attempt.txt')
+        cls.custom_filepath = os.path.join(cls.this_filepath, '_file_outlet_custom_attempt.txt')
         with open(cls.target_filepath, 'r') as f:
             cls.target = f.read()
 
