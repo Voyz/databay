@@ -9,7 +9,8 @@
 
 import json
 import logging
-from typing import List
+from json import JSONDecodeError
+from typing import List, Union
 
 import aiohttp
 
@@ -25,15 +26,19 @@ class HttpInlet(Inlet):
     .. _aiohttp.ClientSession.get: https://docs.aiohttp.org/en/stable/client_reference.html#aiohttp.ClientSession.get
     """
 
-    def __init__(self, url:str, *args, **kwargs):
+    def __init__(self, url:str, json:str=True, *args, **kwargs):
         """
         :type url: str
         :param url: URL that should be queried for data.
+
+        :type json: bool
+        :param json: Whether response should be parsed as JSON.
         """
         super().__init__(*args, **kwargs)
         self.url = url
+        self.json = json
 
-    async def pull(self, update) -> List[Record]:
+    async def pull(self, update) -> Union[List[Record], str]:
         """
         Asynchronously pulls data from the specified URL using aiohttp.ClientSession.get_
 
@@ -47,9 +52,17 @@ class HttpInlet(Inlet):
         async with aiohttp.ClientSession() as session:
             async with session.get(self.url) as response:
                 payload = await response.read()
-                record = self.new_record(payload=json.loads(payload))
                 _LOGGER.info(f'{update} received {self.url}')
-                return [record]
+                try:
+                    if self.json:
+                        return json.loads(payload)
+                    else:
+                        return payload.decode("utf-8")
+                except Exception as e:
+                    if isinstance(e, JSONDecodeError) and 'Expecting value: line 1 column 1 (char 0)' in str(e):
+                        raise ValueError(f'Response does not contain valid JSON:\n\n{payload}') from e
+                    else:
+                        raise e
 
     def __repr__(self):
         s = "%s(" % (self.__class__.__name__)
