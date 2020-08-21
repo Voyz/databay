@@ -122,6 +122,7 @@ class TestLink(TestCase):
 
         self.assertEqual(outlet1.records, [inlet1.record, inlet2.record, inlet3.record])
         total_wait_time = inlet1.wait_time + inlet2.wait_time + inlet3.wait_time
+        total_wait_time *= 1.1 # add a little buffer
         self.assertLess(diff.total_seconds(), total_wait_time)
 
     # test if synchronous calls indeed run synchronously
