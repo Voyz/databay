@@ -85,7 +85,7 @@ Every 5 seconds this snippet will pull data from a test URL, and write it to Mon
 Example use:
 
 <a id="databay" href="https://www.youtube.com/watch?v=8XL7d_ehhsA">
-    <img src="https://i.imgur.com/SdlcBRy.jpg" alt="Databay showcase gif" title="Databay showcase gif" width="500"/>
+    <img src="https://media1.giphy.com/media/L0YO5W07LR612KybFF/giphy.gif" alt="Databay showcase gif" title="Databay showcase gif" width="500"/>
 </a>
 
 ---- 
