@@ -2,7 +2,7 @@
 
 <p align="center">
     <a id="databay" href="#databay">
-        <img src="https://github.com/Voyz/databay/blob/master/databay_title.png" alt="Databay title" title="Databay title" width="600"/>
+        <img src="https://github.com/Voyz/databay/blob/master/media/databay_title.png" alt="Databay title" title="Databay title" width="600"/>
     </a>
 </p>
 
@@ -20,6 +20,10 @@
 
 
 Databay is a Python interface for **scheduled data transfer**. It facilitates transfer of (any) data from A to B, on a scheduled interval.
+
+<a id="databay" href="https://www.youtube.com/watch?v=8XL7d_ehhsA">
+    <img src="https://github.com/Voyz/databay/blob/master/media/databay_showcase.gif" alt="Databay showcase gif" title="Databay showcase gif" width="672"/>
+</a>
 
 ## Installation
 
