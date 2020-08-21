@@ -1,4 +1,4 @@
-import importlib
+import importlib.util
 
 if importlib.util.find_spec('aiohttp') is not None:
     from databay.inlets.http_inlet import HttpInlet

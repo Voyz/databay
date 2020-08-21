@@ -1,4 +1,4 @@
-import importlib
+import importlib.util
 
 if importlib.util.find_spec('pymongo') is not None:
     from databay.outlets.mongo_outlet import MongoOutlet
