@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
 setup(
     name = 'databay',
     packages = find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests", "examples", "docs", "out", "dist"]),
-    version = '0.1.3',
+    version = '0.1.4',
     license='Apache-2.0',
     description = 'Databay is a Python interface for scheduled data transfer. It facilitates transfer of (any) data from A to B, on a scheduled interval.',
     long_description=long_description,
@@ -16,7 +16,7 @@ setup(
     author = 'Voy Zan',
     author_email = 'voy1982@yahoo.co.uk',
     url = 'https://github.com/Voyz/databay',
-    download_url = 'https://github.com/Voyz/databay/archive/v0.1.3.tar.gz',
+    download_url = 'https://github.com/Voyz/databay/archive/v0.1.4.tar.gz',
     keywords = ['data transfer', 'data production', 'data consumption', 'schedule', 'scheduled data transfer', 'scheduled transfer', 'data flow', 'repeated data transfer'],
     install_requires=[
         'APScheduler<4.0.0',
