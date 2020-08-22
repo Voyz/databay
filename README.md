@@ -85,16 +85,9 @@ Every 5 seconds this snippet will pull data from a test URL, and write it to Mon
 Example use:
 
 <a id="databay" href="https://www.youtube.com/watch?v=8XL7d_ehhsA">
-    <img src="https://media.giphy.com/media/LRry92DvSAvZFkytRd/giphy.gif" alt="Databay showcase gif" title="Databay showcase gif" width="500"/>
+    <img src="https://github.com/Voyz/voyz_public/blob/master/databay_promo_vidA_gif_A03.gif" alt="Databay showcase gif" title="Databay showcase gif" width="500"/>
 </a>
 
-asdf 
-
-![](https://github.com/Voyz/voyz_public/blob/master/MAIN_GIF.gif)
-
-fdas
-
-![Alt Text](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
 
 ---- 
 
