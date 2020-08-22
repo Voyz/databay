@@ -9,7 +9,7 @@ from databay.planners import APSPlanner
 logging.getLogger('databay').setLevel(logging.DEBUG)
 
 # Create an inlet, outlet and a link.
-http_inlet = HttpInlet('https://aajsonplaceholder.typicode.com/todos/1')
+http_inlet = HttpInlet('https://jsonplaceholder.typicode.com/todos/1')
 mongo_outlet = MongoOutlet(database_name='databay', collection='test_collection')
 link = Link(http_inlet, mongo_outlet,
             datetime.timedelta(seconds=5), name='http_to_mongo')
