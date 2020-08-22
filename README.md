@@ -90,7 +90,7 @@ Example use:
 
 asdf 
 
-![](https://media.giphy.com/media/UsNciISHiWeFfs0B5N/giphy.gif)
+![](https://github.com/Voyz/voyz_public/blob/master/MAIN_GIF.gif)
 
 fdas
 
