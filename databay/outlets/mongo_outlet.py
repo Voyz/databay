@@ -4,7 +4,7 @@
 
     .. code-block:: python
 
-        pip install databay[MongoOutlet]
+        pip install "databay[MongoOutlet]"
 """
 
 
