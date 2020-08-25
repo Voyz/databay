@@ -34,7 +34,7 @@ class Update():
         :returns: "{name}.{index}"
         """
         s = ''
-        if self.name is not '': s += f'{self.name}.'
+        if self.name != '': s += f'{self.name}.'
         s += f'{self.index}'
         return s
 
