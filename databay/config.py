@@ -1,3 +1,11 @@
+import sys
+import asyncio
+
+# Fix for #3 - Asyncio/aiohttp causes a 'RuntimeError: Event loop is closed' error on ProactorEventLoop, which became default for Python 3.8
+if sys.version_info[0] == 3 and sys.version_info[1] >= 8 and sys.platform.startswith('win'):
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+
 def initialise():
     import logging
 
