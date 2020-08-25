@@ -169,8 +169,7 @@ class SchedulePlanner(BasePlanner):
                                 raise type(ex)(exception_message).with_traceback(traceback)
                             except TypeError as type_exception:
                                 # Some custom exceptions won't let you use the common constructor and will throw an error on initialisation. We catch these and just throw a generic RuntimeError.
-                                if 'required positional argument' in str(type_exception):
-                                    raise RuntimeError(exception_message).with_traceback(traceback) from None
+                                raise RuntimeError(exception_message).with_traceback(traceback) from None
                         except Exception as e:
                             # if self._catch_exceptions:
                             _LOGGER.exception(e)
