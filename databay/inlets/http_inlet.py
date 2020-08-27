@@ -4,7 +4,7 @@
 
     .. code-block:: python
 
-        pip install databay[HttpInlet]
+        pip install "databay[HttpInlet]"
 """
 
 import json
