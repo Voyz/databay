@@ -86,8 +86,7 @@ class APSPlanner(BasePlanner):
                     raise type(event.exception)(exception_message).with_traceback(traceback)
                 except TypeError as type_exception:
                     # Some custom exceptions won't let you use the common constructor and will throw an error on initialisation. We catch these and just throw a generic RuntimeError.
-                    if 'required positional argument' in str(type_exception):
-                        raise Exception(exception_message).with_traceback(traceback) from None
+                    raise Exception(exception_message).with_traceback(traceback) from None
             except Exception as e:
                 _LOGGER.exception(e)
 
