@@ -112,11 +112,18 @@ Did you write a cool inlet or outlet that you'd like to share with others? Put i
 * [CsvOutlet](https://databay.readthedocs.io/en/latest/api/databay/outlets/csv_outlet/index.html) - CSV file outlet (built-in).
 * [MongoOutlet](https://databay.readthedocs.io/en/latest/api/databay/outlets/mongo_outlet/index.html) - MongoDB outlet (built-in).
 
+#### Requests
+
+The following are inlets and outlets that others would like to see implemented. Feel free to build an item from this list and share your implementation! Let us know if you'd like to add an item to this list. 
+
+* PostgreSqlOutlet - [PostgreSQL](https://www.postgresql.org/) Outlet
+
 
 ## <a name="roadmap"></a>Roadmap
 
 #### v1.0
 1. Beta test the pre-release.
+1. ~~Complete 100% test coverage.~~
 1. Add more advanced examples.
 1. Release v1.0.
 1. Buy a carrot cake and celebrate.
