@@ -1,8 +1,16 @@
+import asyncio
 import copy
 import io
 import os
+import sys
+from unittest import TestCase
 
-from asynctest import TestCase, patch, asyncio
+if sys.version_info[0] == 3 and sys.version_info[1] >= 8:
+    from unittest.mock import patch
+else:
+    from asynctest import patch
+
+
 
 from databay import Record, Update
 from databay.outlets import PrintOutlet
