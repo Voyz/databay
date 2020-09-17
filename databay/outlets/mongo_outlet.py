@@ -148,14 +148,12 @@ class MongoOutlet(Outlet):
             database_name = self.database_name
 
 
-        # if isinstance(self._client, pymongo.MongoClient) and isinstance(self._db, pymongo.database.Database):
         if self._client is not None and self._db is not None:
             if self._db.name == database_name:
                 return True
             else:
                 self.disconnect()
 
-        # self._client = MongoClient(host='172.18.0.2', port=27017)
         self._client = pymongo.MongoClient(host=self.host, port=self.port)
         self._db = self._client[database_name]
         return False

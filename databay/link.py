@@ -42,8 +42,6 @@ class Update():
 from databay import Inlet
 from databay import Outlet
 
-_ITERABLE_EXCEPTION = "is not iterable"
-
 class Link():
     """
     Link in the relationship graph. Use this class to define relationships between inlets and outlets.
@@ -234,7 +232,6 @@ class Link():
         self._count += 1
         count = self._count
         update = Update(name=self.name, index=count)
-        # print(count, 'transfer')
         _LOGGER.debug(f'{update} transfer')
 
         async def inlet_task(inlet):
@@ -249,44 +246,10 @@ class Link():
 
         inlet_tasks = [inlet_task(inlet) for inlet in self._inlets]
         results_raw = await asyncio.gather(*inlet_tasks)
-        # print(results_raw)
-
-        # records = []
-        # def add_to_records(records, results):
-        #     try:
-        #         records += results
-        #     except Exception as e:
-        #         if _ITERABLE_EXCEPTION in str(e):
-        #             records = add_to_records(records, [results])
-        #         else:
-        #             if self._catch_exceptions:
-        #                 _LOGGER.exception(f'Unknown Inlet results exception: "{e}" for results: {results}, in link: {self}, during: {update}', exc_info=True)
-        #             else:
-        #                 raise e
-        #
-        #     return records
-        #
-        #
-        # for results in results_raw:
-        #     records = add_to_records(records, results)
-                # iterable_message = f'Inlets must return iterable, found: {results}, in link: {self}, during: {update}'
-                #
-                # if not self._catch_exceptions:
-                #     if _ITERABLE_EXCEPTION in str(e): # format the common iterable error for readability
-                #         raise TypeError(iterable_message)
-                #     else:
-                #         raise e
-                #
-                # elif _ITERABLE_EXCEPTION in str(e):
-                #     _LOGGER.exception(iterable_message, exc_info=False)
-                # else:
-                #     _LOGGER.exception(f'Unknown Inlet results exception: "{e}" for results: {results}, in link: {self}, during: {update}', exc_info=True)
-
         records = list(itertools.chain.from_iterable(results_raw))
 
 
         async def outlet_task(outlet, records_copy):
-            # asyncio.run_coroutine_threadsafe(outlet.push(records), asyncio.get_event_loop())
             try:
                 await outlet._push(records_copy, update)
             except Exception as e:
@@ -302,7 +265,6 @@ class Link():
             else:
                 task = outlet_task(outlet, records)
             outlet_tasks.append(task)
-        # outlet_tasks = [outlet_task(outlet, copy.deepcopy(records)) for outlet in self._outlets]
         await asyncio.gather(*outlet_tasks)
 
         _LOGGER.debug(f'{update} done')

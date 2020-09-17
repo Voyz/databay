@@ -29,8 +29,6 @@ class Inlet(ABC):
         self._active = False
 
         self._uses_coroutine = asyncio.iscoroutinefunction(self.pull)
-        # if not asyncio.iscoroutinefunction(self.pull):
-        #     raise ImplementationError('Inlet.pull() function must be a coroutine. Fix by adding \'async\' keyword.')
         self._thread_lock = threading.Lock()
 
     @property
@@ -166,78 +164,3 @@ class Inlet(ABC):
         s += ')'
 
         return s
-
-
-
-# class RandomIntInlet(Inlet):
-#
-#     def pull(self, update):
-#         if cat >= 10:
-#             record = self.new_record(cat)
-#         return random.randint(0, 100)
-#
-#
-# class Filter():
-#
-#
-# class CsvOutlet(Outlet):
-#
-#     # Name of csv file to write records to.
-#     CSV_FILE = 'CsvOutlet.CSV_FILE'
-#
-#     def __init__(self, override=False, default_name:str):
-#         self.override = override
-#         self.default_name = default_name
-#
-#     def push(self, records:[Record], update):
-#         for record in records:
-#             if self.CSV_FILE in record.metadata:
-#                 csv_file = record.metadata[self.CSV_FILE] + '.cvs'
-#             else:
-#                 csv_file = self.default_name
-#
-#             method = 'w' if self.override == True else 'a'
-#
-#             with open(csv_file, method) as f:
-#                 writer = csv.DictWriter(f, record.payload.keys())
-#                 writer.writerow(record.payload)
-#
-#
-# ...
-#
-# random_int_inletA = RandomIntInlet(metadata={CsvOutlet.CSV_FILE: 'cat'})
-# random_int_inletB = RandomIntInlet(metadata={CsvOutlet.CSV_FILE: 'dog'})
-#
-# csv1 = CsvOutlet(True)
-#
-# link1 = Link([random_int_inletA, random_int_inletB], csv1)
-#
-# planner.add_links([link1, link2])
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-# class CsvOutlet(Outlet):
-#
-#     # Name of csv file to write records to.
-#     CSV_FILE = 'CsvOutlet.CSV_FILE'
-#
-#     def push(self, records:[Record], update):
-#         for record in records:
-#             if 'name' in record.metadata:
-#                 csv_file = record.metadata[self.CSV_FILE] + '.csv'
-#                 ...
-#                 # write to csv_file specified
-#
-#
-# ...
-#
-# random_int_inletA = RandomIntInlet(metadata={'name': 'cat'})
-# random_int_inletA = RandomIntInlet(metadata={CsvOutlet.CSV_FILE: 'cat', MongoOutlet.collenction_name: 'animals'})
-# random_int_inletB = RandomIntInlet(metadata={CsvOutlet.CSV_FILE: 'dog'})

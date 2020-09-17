@@ -14,7 +14,6 @@ from test_utils import fqname
 def for_each_inlet(fn):
     """Runs the test for each inlet returned from :any:`InletTester.get_inlet`"""
 
-    # @functools.wraps(fn)
     def wrapper(test_kls, *args, **kwargs):
         for inlet in test_kls.inlets:
             inlet._metadata = {**test_kls.inlet._metadata, **test_kls.gmetadata}

@@ -79,9 +79,6 @@ class APSPlanner(BasePlanner):
                 exception_message = str(event.exception) + f'{extra_info}'
                 traceback = event.exception.__traceback__
 
-                # print(type(event.exception))
-                # type(event.exception)('asdf')
-
                 try:
                     raise type(event.exception)(exception_message).with_traceback(traceback)
                 except TypeError as type_exception:
