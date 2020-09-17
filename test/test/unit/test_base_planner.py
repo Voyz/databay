@@ -105,3 +105,24 @@ class TestBasePlanner(TestCase):
         # finally both should be called
         link.on_shutdown.assert_called()
         self.planner._shutdown_planner.assert_called()
+
+
+    @patch(fqname(Link), spec=Link)
+    def test_purge(self, link):
+        self.planner.add_links(link)
+        self.planner.purge()
+
+        self.planner._unschedule.assert_called_with(link)
+        self.assertEqual(self.planner.links, [])
+
+
+    @patch(fqname(Link), spec=Link)
+    def test_purge_while_running(self, link):
+        self.planner.add_links(link)
+        self.planner.start()
+        self.planner.purge()
+
+        self.planner._unschedule.assert_called_with(link)
+        self.assertEqual(self.planner.links, [])
+
+        self.planner.shutdown()
