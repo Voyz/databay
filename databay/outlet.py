@@ -12,6 +12,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from databay import Record
+import databay as da
 
 class metadata(str):
     """ This is just a dummy class used to distinguish member fields containing metadata keys."""
@@ -32,14 +33,14 @@ class Outlet(ABC):
         self._thread_lock = threading.Lock()
 
 
-    async def _push(self, records:List[Record], update):
+    async def _push(self, records:List[Record], update:'da.Update'):
         if self._uses_coroutine:
             rv = await self.push(records, update)
         else:
             rv = self.push(records, update)
 
     @abstractmethod
-    async def push(self, records:List[Record], update):
+    def push(self, records:List[Record], update:'da.Update'):
         """
         Push received data.
 

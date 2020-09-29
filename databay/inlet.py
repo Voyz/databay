@@ -11,6 +11,8 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from databay import Record
+import databay as da
+
 
 
 
@@ -43,7 +45,7 @@ class Inlet(ABC):
         """
         return self._metadata
 
-    async def _pull(self, update):
+    async def _pull(self, update:'da.Update'):
         if self._uses_coroutine:
             data = await self.pull(update)
         else:
@@ -62,7 +64,7 @@ class Inlet(ABC):
 
 
     @abstractmethod
-    async def pull(self, update) -> List[Record]:
+    def pull(self, update:'da.Update') -> List[Record]:
         """
         Produce new data.
 
