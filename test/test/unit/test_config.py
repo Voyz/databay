@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 from unittest import TestCase, mock
 
 from asynctest import patch, MagicMock
@@ -15,9 +16,10 @@ class TestConfig(TestCase):
         logging.shutdown()
         reload(logging)
 
-    @patch('sys.platform', 'win32')
     @patch('sys.version_info')
     def test_event_loop_policy_3_8(self, version_info):
+        if sys.platform != 'win32':
+            self.skipTest('Only testable on Windows')
         version_info.__getitem__.side_effect = lambda x: [3, 8][x]
 
         # fake a 3.8 default setup
@@ -27,9 +29,10 @@ class TestConfig(TestCase):
 
         self.assertIsInstance(asyncio.get_event_loop_policy(), asyncio.WindowsSelectorEventLoopPolicy, "Asyncio event loop policy should be WindowsSelectorEventLoopPolicy.")
 
-    @patch('sys.platform', 'win32')
     @patch('sys.version_info')
     def test_event_loop_policy_3_7(self, version_info):
+        if sys.platform != 'win32':
+            self.skipTest('Only testable on Windows')
         version_info.__getitem__.side_effect = lambda x: [3, 7][x]
 
         # fake a manual 3.8 default setup
