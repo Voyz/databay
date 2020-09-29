@@ -237,9 +237,23 @@ class TestAPSPlanner(TestCase):
         self.planner.purge()
 
         self.link.set_job.assert_called_with(None)
-        self.assertEqual(self.planner.links, [])
-        self.assertEqual(self.planner._scheduler.get_jobs(), [])
+        self.assertEqual([], self.planner.links)
+        self.assertEqual([], self.planner._scheduler.get_jobs())
 
         self.planner.shutdown()
+        th.join(timeout=2)
+        self.assertFalse(th.is_alive(), 'Thread should be stopped.')
+
+    def test_purge_after_shutdown(self):
+        self.planner.add_links(self.link)
+        th = Thread(target=self.planner.start, daemon=True)
+        th.start()
+        self.planner.shutdown()
+        self.planner.purge()
+
+        self.link.set_job.assert_called_with(None)
+        self.assertEqual([], self.planner.links)
+        self.assertEqual([], self.planner._scheduler.get_jobs())
+
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')

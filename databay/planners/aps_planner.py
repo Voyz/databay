@@ -9,6 +9,7 @@ from typing import Union, List
 
 from apscheduler.events import EVENT_JOB_ERROR
 from apscheduler.executors.pool import ThreadPoolExecutor
+from apscheduler.jobstores.base import JobLookupError
 from apscheduler.schedulers.base import STATE_RUNNING
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.interval import IntervalTrigger
@@ -173,6 +174,10 @@ class APSPlanner(BasePlanner):
         Unschedule and clear all links. It can be used while planner is running. APS automatically removes jobs, so we only clear the links.
         """
         for link in self.links:
+            try:
+                link.job.remove()
+            except JobLookupError:
+                pass # APS already removed jobs if shutdown was called before purge, otherwise let's do it ourselves
             link.set_job(None)
 
         self._links = []
