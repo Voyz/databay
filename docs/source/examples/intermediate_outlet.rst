@@ -48,7 +48,7 @@ Intermediate Outlet
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/intermediate_outlet.py
         :language: python
-        :start-at: metadata =
+        :start-at: MetadataKey =
         :end-at: file_outlet = FileOutlet
 
     #. Create a link, add to a planner and schedule.

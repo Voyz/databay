@@ -2,7 +2,7 @@ import csv
 import logging
 import os
 
-from databay.outlet import Outlet, metadata
+from databay.outlet import Outlet, MetadataKey
 from databay.record import Record
 
 _LOGGER = logging.getLogger('databay.CsvOutlet')
@@ -12,10 +12,10 @@ class CsvOutlet(Outlet):
     Outlet that writes records to a csv file.
     """
 
-    CSV_FILE:metadata = 'CsvOutlet.CSV_FILE'
+    CSV_FILE:MetadataKey = 'CsvOutlet.CSV_FILE'
     """Filepath of the csv file to write records to."""
 
-    FILE_MODE:metadata = 'CsvOutlet.FILE_MODE'
+    FILE_MODE:MetadataKey = 'CsvOutlet.FILE_MODE'
     """Write mode to use when writing into the csv file."""
 
     def __init__(self, default_filepath:str, default_file_mode:str='a'):

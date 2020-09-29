@@ -1,5 +1,5 @@
 from databay.record import Record
-from databay.outlet import Outlet, metadata
+from databay.outlet import Outlet, MetadataKey
 
 
 class FileOutlet(Outlet):
@@ -7,13 +7,13 @@ class FileOutlet(Outlet):
     Outlet that writes records to a file.
     """
 
-    FILEPATH:metadata = 'FileOutlet.FILEPATH'
+    FILEPATH:MetadataKey = 'FileOutlet.FILEPATH'
     """Filepath of the file to write to."""
 
-    FILE_MODE:metadata = 'FileOutlet.FILE_MODE'
+    FILE_MODE:MetadataKey = 'FileOutlet.FILE_MODE'
     """Write mode to use when writing into the file."""
 
-    FILE_ENCODING:metadata = 'FileOutlet.FILE_ENCODING'
+    FILE_ENCODING:MetadataKey = 'FileOutlet.FILE_ENCODING'
     """Encoding to use when writing into the file."""
 
     def __init__(self, default_filepath:str, default_file_mode:str='a', default_encoding:str='utf-8'):
