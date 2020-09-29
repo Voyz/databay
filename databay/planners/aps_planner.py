@@ -167,6 +167,16 @@ class APSPlanner(BasePlanner):
         """
         self._scheduler.shutdown(wait=wait)
 
+
+    def purge(self):
+        """
+        Unschedule and clear all links. It can be used while planner is running. APS automatically removes jobs, so we only clear the links.
+        """
+        for link in self.links:
+            link.set_job(None)
+
+        self._links = []
+
     @property
     def running(self):
         """
