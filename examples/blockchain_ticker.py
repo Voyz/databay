@@ -3,7 +3,7 @@ import datetime
 from databay.inlets import HttpInlet
 from databay.outlets import PrintOutlet
 from databay import Link
-from databay.planners import APSPlanner
+from databay.planners import ApsPlanner
 
 from databay.outlets.file_outlet import FileOutlet
 
@@ -26,5 +26,5 @@ file_outlet = FileOutlet('bitcoin_price_1s.txt')
 link = Link(stock_inlet, [print_outlet, file_outlet],
             interval=datetime.timedelta(seconds=1))
 
-planner = APSPlanner(link)
+planner = ApsPlanner(link)
 planner.start()

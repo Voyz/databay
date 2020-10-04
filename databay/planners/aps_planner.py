@@ -5,6 +5,7 @@
 """
 
 import logging
+import warnings
 from typing import Union, List
 
 from apscheduler.events import EVENT_JOB_ERROR
@@ -17,11 +18,14 @@ from apscheduler.triggers.interval import IntervalTrigger
 from databay.base_planner import BasePlanner
 from databay import Link
 
-_LOGGER = logging.getLogger('databay.APSPlanner')
+_LOGGER = logging.getLogger('databay.ApsPlanner')
 # We ignore the APScheduler's exceptions because we log them ourselves.
 logging.getLogger('apscheduler.executors').setLevel(logging.CRITICAL)
 
-class APSPlanner(BasePlanner):
+warnings.filterwarnings("always", category=DeprecationWarning,
+                        module=__name__)
+
+class ApsPlanner(BasePlanner):
     """
     Planner implementing scheduling using the |APS|_. Scheduling sets the :any:`APS Job <apscheduler.job.Job>` as links' job.
 
@@ -194,4 +198,10 @@ class APSPlanner(BasePlanner):
         return self._scheduler.state == STATE_RUNNING
 
     def __repr__(self):
-        return 'APSPlanner(threads:%s)' % (self._threads)
+        return 'ApsPlanner(threads:%s)' % (self._threads)
+
+
+class APSPlanner(ApsPlanner): # pragma: no cover
+    def __init__(self, *args, **kwargs):
+        warnings.warn('APSPlanner was renamed to ApsPlanner and will be permanently changed in version 1.0', DeprecationWarning)
+        super().__init__(*args, **kwargs)

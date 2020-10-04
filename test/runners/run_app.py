@@ -5,7 +5,7 @@ from threading import Thread
 
 from databay import Link
 from databay.inlets.file_inlet import FileInlet, FileInletMode
-from databay.planners import APSPlanner, SchedulePlanner
+from databay.planners import ApsPlanner, SchedulePlanner
 from databay.inlets import HttpInlet
 from databay.outlets import CsvOutlet
 from databay.outlets import MongoOutlet
@@ -18,8 +18,8 @@ class Run_App():
         pass
 
     def run(self):
-        # planner = APSPlanner()
-        planner = SchedulePlanner(refresh_interval=0.5)
+        planner = ApsPlanner()
+        # planner = SchedulePlanner(refresh_interval=0.5)
 
 
         http_inlet = HttpInlet('https://jsonplaceholder.typicode.com/todos/1', metadata={CsvOutlet.FILE_MODE:'a'})

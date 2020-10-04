@@ -15,7 +15,7 @@ To schedule a link, all you need to do is to add it to a planner and call :any:`
 
 Databay provides two built-in :any:`BasePlanner` implementations based on two popular Python scheduling libraries:
 
-* :any:`APSPlanner` - using |APS|_.
+* :any:`ApsPlanner` - using |APS|_.
 * :any:`SchedulePlanner` - using Schedule_.
 
 While they differ in the method of scheduling, threading and exception handling, they both cover a reasonable variety of scheduling scenarios. Please refer to their appropriate documentation for more details on the difference between the two.

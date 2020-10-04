@@ -3,7 +3,7 @@
 Extending BasePlanner
 =====================
 
-Databay comes with two implementations of BasePlanner - :any:`APSPlanner` and :any:`SchedulePlanner`. If you require custom scheduling functionality outside of these two interfaces, you can create your own implementation of :any:`BasePlanner`. Have a look at the two existing implementations for reference: `APSPlanner <../_modules/databay/planners/aps_planner.html>`_ and `SchedulePlanner <../_modules/databay/planners/schedule_planner.html>`_.
+Databay comes with two implementations of BasePlanner - :any:`ApsPlanner` and :any:`SchedulePlanner`. If you require custom scheduling functionality outside of these two interfaces, you can create your own implementation of :any:`BasePlanner`. Have a look at the two existing implementations for reference: `ApsPlanner <../_modules/databay/planners/aps_planner.html>`_ and `SchedulePlanner <../_modules/databay/planners/schedule_planner.html>`_.
 
 To extend the :any:`BasePlanner` you need to provide a way of executing :any:`Link.transfer` method repeatedly by implementing the following four methods. Note that all of these methods are private since they are called internally by BasePlanner and should not be executed directly.
 
@@ -24,7 +24,7 @@ Each link comes with a :any:`datetime.timedelta` interval providing the frequenc
 
 If the scheduler you're using utilises some form of task-managing job objects, you must assign these to the link being scheduled using :any:`Link.set_job`. This is to ensure the job can be correctly destroyed later when :any:`remove_links <BasePlanner.remove_links>` is called.
 
-Example from :code:`APSPlanner._schedule`:
+Example from :code:`ApsPlanner._schedule`:
 
 .. code-block:: python
 
@@ -43,7 +43,7 @@ Unschedule a :any:`Link`. This method runs whenever :any:`remove_links` is calle
 
 If the scheduler you're using utilises some form of task-managing job objects, you may access these using :any:`Link.job` in order to correctly destroy them if necessary when :code:`_unschedule` is called.
 
-Example from :code:`APSPlanner._unschedule`:
+Example from :code:`ApsPlanner._unschedule`:
 
 .. code-block:: python
 
@@ -59,7 +59,7 @@ Start the scheduling. This method runs whenever :any:`BasePlanner.start` is call
 
 This method will be called just after all :any:`Inlet.on_start` and :any:`Outlet.on_start` are called.
 
-Example from :code:`APSPlanner._start_planner`:
+Example from :code:`ApsPlanner._start_planner`:
 
 .. code-block:: python
 
@@ -75,7 +75,7 @@ A :code:`wait` parameter is provided that you can pass down to your scheduling s
 
 This method will be called just before all :any:`Inlet.on_shutdown` and :any:`Outlet.on_shutdown` are called.
 
-Example from :code:`APSPlanner._shutdown_planner`:
+Example from :code:`ApsPlanner._shutdown_planner`:
 
 .. code-block:: python
 
@@ -86,7 +86,7 @@ Example from :code:`APSPlanner._shutdown_planner`:
 Exceptions
 ----------
 
-When implementing your planner you should consider that links may raise exceptions when executing. Your planner should anticipate this and allow handling the exceptions appropriately to ensure continuous execution. Both :any:`APSPlanner` and :any:`SchedulePlanner` allow catching exceptions when :code:`catch_exceptions=True` is passed on construction, otherwise they will log the exception and shutdown. See :ref:`Exception handling <exception_handling>` for more.
+When implementing your planner you should consider that links may raise exceptions when executing. Your planner should anticipate this and allow handling the exceptions appropriately to ensure continuous execution. Both :any:`ApsPlanner` and :any:`SchedulePlanner` allow catching exceptions when :code:`catch_exceptions=True` is passed on construction, otherwise they will log the exception and shutdown. See :ref:`Exception handling <exception_handling>` for more.
 
 Running property
 ----------------
