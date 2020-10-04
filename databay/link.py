@@ -77,7 +77,7 @@ class Link():
         self._outlets = []
         self.add_inlets(inlets)
         self.add_outlets(outlets)
-        if isinstance(interval,(int,float)):
+        if isinstance(interval, (int, float)):
             self._interval = datetime.timedelta(seconds=interval)
         else:
             self._interval = interval
@@ -343,7 +343,7 @@ class Link():
         for outlet in self._outlets:
             outlet.try_shutdown()
     
-    
+
     def __repr__(self):
         """
         :returns: Link(name:%s, inlets:%s, outlets:%s, interval:%s)
