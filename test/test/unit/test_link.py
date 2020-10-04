@@ -287,6 +287,15 @@ class TestLink(TestCase):
         # with self.assertRaisesRegex(TypeError, databay.link._ITERABLE_EXCEPTION):
         self.assertRaises(DummyException, link.transfer)
 
+    @patch(fqname(Inlet),spec=Inlet)
+    def test_integer_to_timedelta(self, inlet1):
+        link = Link([inlet1], [], 1, name='test_integer_interval_coerced')
+        self.assertEquals(link._interval, timedelta(seconds=1))
+    
+    @patch(fqname(Inlet),spec=Inlet)
+    def test_float_to_timedelta(self, inlet1):
+        link = Link([inlet1], [], 1.5, name='test_float_interval_coerced')
+        self.assertEquals(link._interval, timedelta(seconds=1.5))
 
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock())

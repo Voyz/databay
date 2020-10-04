@@ -1,11 +1,9 @@
+import asyncio
 import copy
 import datetime
 import itertools
-from typing import List, Union, Any
-
-import asyncio
-
 import logging
+from typing import Any, List, Union
 
 from databay.errors import InvalidNodeError
 
@@ -39,8 +37,7 @@ class Update():
         return s
 
 
-from databay import Inlet
-from databay import Outlet
+from databay import Inlet, Outlet
 
 _ITERABLE_EXCEPTION = "is not iterable"
 
@@ -52,10 +49,10 @@ class Link():
     def __init__(self, 
                  inlets: Union[Inlet, List[Inlet]],
                  outlets: Union[Outlet, List[Outlet]], 
-                 interval:datetime.timedelta, 
+                 interval: Union[datetime.timedelta, int, float], 
                  name:str='',
                  copy_records:bool=True,
-                 catch_exceptions:bool=False):
+                 catch_exceptions:bool=False):             
         """
         :type inlets: :any:`Inlet` or list[:any:`Inlet`]
         :param inlets: inlets to add to this link
@@ -63,7 +60,7 @@ class Link():
         :type outlets: :any:`Outlet` or list[:any:`Outlet`]
         :param outlets: outlets to add to this link
 
-        :type interval: datetime.timedelta
+        :type interval: Union[datetime.timedelta, int, float]
         :param interval: Frequency at which this link should transfer.
 
         :type name: str
@@ -80,7 +77,10 @@ class Link():
         self._outlets = []
         self.add_inlets(inlets)
         self.add_outlets(outlets)
-        self._interval = interval
+        if isinstance(interval,(int,float)):
+            self._interval = datetime.timedelta(seconds=interval)
+        else:
+            self._interval = interval
         self._count = -1
         self._job = None
         self._name = name
@@ -342,6 +342,9 @@ class Link():
 
         for outlet in self._outlets:
             outlet.try_shutdown()
+    
+    def _int_to_timedelta(self):
+        pass
 
     def __repr__(self):
         """
