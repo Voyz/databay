@@ -343,9 +343,7 @@ class Link():
         for outlet in self._outlets:
             outlet.try_shutdown()
     
-    def _int_to_timedelta(self):
-        pass
-
+    
     def __repr__(self):
         """
         :returns: Link(name:%s, inlets:%s, outlets:%s, interval:%s)
