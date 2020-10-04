@@ -280,13 +280,27 @@ class Link():
         once by whichever link executes first.
         """
 
-        # todo: catch exceptions
-
         for inlet in self._inlets:
-            inlet.try_start()
+            try:
+                inlet.try_start()
+            except Exception as e:
+                if self._catch_exceptions:
+                    _LOGGER.exception(
+                        f'on_start inlet exception: "{e}" for inlet: {inlet}, in link: {self}',
+                        exc_info=True)
+                else:
+                    raise e
 
         for outlet in self._outlets:
-            outlet.try_start()
+            try:
+                outlet.try_start()
+            except Exception as e:
+                if self._catch_exceptions:
+                    _LOGGER.exception(
+                        f'on_start outlet exception: "{e}" for outlet: {outlet}, in link: {self}',
+                        exc_info=True)
+                else:
+                    raise e
 
     def on_shutdown(self):
         """
@@ -297,13 +311,27 @@ class Link():
         once by whichever link executes first.
         """
 
-        # todo: catch exceptions
-
         for inlet in self._inlets:
-            inlet.try_shutdown()
+            try:
+                inlet.try_shutdown()
+            except Exception as e:
+                if self._catch_exceptions:
+                    _LOGGER.exception(
+                        f'on_shutdown inlet exception: "{e}" for inlet: {inlet}, in link: {self}',
+                        exc_info=True)
+                else:
+                    raise e
 
         for outlet in self._outlets:
-            outlet.try_shutdown()
+            try:
+                outlet.try_shutdown()
+            except Exception as e:
+                if self._catch_exceptions:
+                    _LOGGER.exception(
+                        f'on_shutdown outlet exception: "{e}" for outlet: {outlet}, in link: {self}',
+                        exc_info=True)
+                else:
+                    raise e
 
     def __repr__(self):
         """
