@@ -88,7 +88,7 @@ Simple usage
 
             http_to_mongo.0 transfer
 
-        Note the :code:`http_to_mongo.0` prefix in the message. It is the string representation of the :any:`Update` object that represents each individual transfer executed by that particular link. :code:`http_to_mongo` is the name of the link, while :code:`0` represents the index of the transfer.
+        Note the :code:`http_to_mongo.0` prefix in the message. It is the string representation of the :any:`Update` object that represents each individual transfer executed by that particular link. :code:`http_to_mongo` is the name of the link, while :code:`0` represents the incremental index of the transfer.
 
     * Then :any:`HttpInlet` logs its data production:
 
