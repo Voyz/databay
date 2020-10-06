@@ -32,8 +32,8 @@ class Run_App():
 
         planner.add_links(Link([file_inlet], [print_outlet], timedelta(seconds=0.5)))
         planner.add_links(Link([http_inlet, http_inlet, http_inlet], [csv_outlet], timedelta(seconds=2)))
-        # planner.add_links(Link([http_inlet], [mongo_outlet], timedelta(seconds=1), name='first'))
-        # planner.add_links(Link([http_inlet2, http_inlet2, http_inlet2], [mongo_outlet], timedelta(seconds=5), name='second'))
+        # planner.add_links(Link([http_inlet], [mongo_outlet], timedelta(seconds=1), tags='first'))
+        # planner.add_links(Link([http_inlet2, http_inlet2, http_inlet2], [mongo_outlet], timedelta(seconds=5), tags='second'))
         # planner.add_links(Link([], [], timedelta(seconds=1.5)))
         # planner.add_links(Link([alphavantage_inlet], [mongo_outlet], timedelta(seconds=5)))
         # planner.add_links(Link([iex_inlet], [mongo_outlet], timedelta(seconds=5)))

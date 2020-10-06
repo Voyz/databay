@@ -13,28 +13,28 @@ _LOGGER = logging.getLogger('databay.Link')
 
 class Update():
     """
-    Data structure representing one Link transfer. When converted to string returns :code:`{name}.{index}`
+    Data structure representing one Link transfer. When converted to string returns :code:`{tags}.{index}`
     """
-    def __init__(self, name:str, index:int):
+    def __init__(self, tags:List[str], index:int):
         """
 
-        :type name: str
-        :param name: Human readable identifier of the link, see: :class:`Link`.
+        :type tags: List[str]
+        :param tags: Tags the link, see: :class:`Link`.
 
         :type index: int
         :param index: Integer identifier of the current transfer.
         """
-        self.name = name
+        self.tags = tags
         self.index = index
 
     def __repr__(self):
         """
         Provides the formatted transfer string.
 
-        :returns: "{name}.{index}"
+        :returns: "{tags}.{index}"
         """
         s = ''
-        if self.name != '': s += f'{self.name}.'
+        if self.tags != []: s += f'{self.tags}.'
         s += f'{self.index}'
         return s
 
@@ -47,11 +47,11 @@ class Link():
     Link in the relationship graph. Use this class to define relationships between inlets and outlets.
     """
 
-    def __init__(self, 
+    def __init__(self,
                  inlets: Union[Inlet, List[Inlet]],
-                 outlets: Union[Outlet, List[Outlet]], 
-                 interval:datetime.timedelta, 
-                 name:str='',
+                 outlets: Union[Outlet, List[Outlet]],
+                 interval:datetime.timedelta,
+                 tags:Union[str, List[str]]=None,
                  copy_records:bool=True,
                  catch_exceptions:bool=False):
         """
@@ -64,8 +64,8 @@ class Link():
         :type interval: datetime.timedelta
         :param interval: Frequency at which this link should transfer.
 
-        :type name: str
-        :param name: Human readable identifier of this link |default| :code:`''`
+        :type tags: Union[str, List[str]]
+        :param tags: List of tags of this link |default| :code:`[]`
 
         :type copy_records: bool
         :param copy_records: Whether to copy records before passing them to outlets. |default| :code:`True`
@@ -81,7 +81,8 @@ class Link():
         self._interval = interval
         self._count = -1
         self._job = None
-        self._name = name
+        if isinstance(tags, str): tags = [tags]
+        self._tags = tags if tags is not None else []
         self._copy_records = copy_records
         self._catch_exceptions = catch_exceptions
 
@@ -207,14 +208,14 @@ class Link():
         return self._job
 
     @property
-    def name(self) -> str:
+    def tags(self) -> List[str]:
         """
-        The human readable identifier of this link. |default| :code:`''`
+        The tags of this link. |default| :code:`[]`
 
-        :returns: Name of this link
-        :rtype: str
+        :returns: Tags of this link
+        :rtype: List[str]
         """
-        return self._name
+        return self._tags
 
     def transfer(self):
         """
@@ -231,7 +232,7 @@ class Link():
 
         self._count += 1
         count = self._count
-        update = Update(name=self.name, index=count)
+        update = Update(tags=self.tags, index=count)
         _LOGGER.debug(f'{update} transfer')
 
         async def inlet_task(inlet):
@@ -307,7 +308,7 @@ class Link():
 
     def __repr__(self):
         """
-        :returns: Link(name:%s, inlets:%s, outlets:%s, interval:%s)
+        :returns: Link(tags:%s, inlets:%s, outlets:%s, interval:%s)
         """
 
-        return 'Link(name:\'%s\', inlets:%s, outlets:%s, interval:%s)' % (self.name, self.inlets, self.outlets, self.interval)
+        return 'Link(tags:\'%s\', inlets:%s, outlets:%s, interval:%s)' % (self.tags, self.inlets, self.outlets, self.interval)
