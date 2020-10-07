@@ -1,6 +1,7 @@
 import copy
 import datetime
 import itertools
+import warnings
 from typing import List, Union, Any
 
 import asyncio
@@ -34,7 +35,7 @@ class Update():
         :returns: "{tags}.{index}"
         """
         s = ''
-        if self.tags != []: s += f'{self.tags}.'
+        if self.tags != []: s += f'{".".join(self.tags)}.'
         s += f'{self.index}'
         return s
 
@@ -53,7 +54,8 @@ class Link():
                  interval:datetime.timedelta,
                  tags:Union[str, List[str]]=None,
                  copy_records:bool=True,
-                 catch_exceptions:bool=False):
+                 catch_exceptions:bool=False,
+                 name=None):
         """
         :type inlets: :any:`Inlet` or list[:any:`Inlet`]
         :param inlets: inlets to add to this link
@@ -81,10 +83,16 @@ class Link():
         self._interval = interval
         self._count = -1
         self._job = None
+        if name != None:
+            warnings.warn('\'name\' parameter was deprecated in 0.1.* and will be removed in version 1.0. Use \'tags\' instead.')
+            tags = [name]
+
         if isinstance(tags, str): tags = [tags]
         self._tags = tags if tags is not None else []
         self._copy_records = copy_records
         self._catch_exceptions = catch_exceptions
+
+
 
     @property
     def inlets(self) -> List[Inlet]:
@@ -208,6 +216,12 @@ class Link():
         return self._job
 
     @property
+    def name(self) -> str:
+        warnings.warn(
+            '\'Link.name\' property was deprecated in 0.1.* and will be removed in version 1.0. Use \'Link.tags\' instead.')
+        return self.tags[0] if len(self.tags) else ''
+
+    @property
     def tags(self) -> List[str]:
         """
         The tags of this link. |default| :code:`[]`
@@ -311,4 +325,4 @@ class Link():
         :returns: Link(tags:%s, inlets:%s, outlets:%s, interval:%s)
         """
 
-        return 'Link(tags:\'%s\', inlets:%s, outlets:%s, interval:%s)' % (self.tags, self.inlets, self.outlets, self.interval)
+        return 'Link(tags:%s, inlets:%s, outlets:%s, interval:%s)' % (self.tags, self.inlets, self.outlets, self.interval)
