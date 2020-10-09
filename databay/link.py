@@ -14,29 +14,29 @@ _LOGGER = logging.getLogger('databay.Link')
 
 class Update():
     """
-    Data structure representing one Link transfer. When converted to string returns :code:`{tags}.{index}`
+    Data structure representing one Link transfer. When converted to string returns :code:`{tags}.{transfer_number}`
     """
-    def __init__(self, tags:List[str], index:int):
+    def __init__(self, tags:List[str], transfer_number:int):
         """
 
         :type tags: List[str]
         :param tags: Tags the link, see: :class:`Link`.
 
-        :type index: int
-        :param index: Integer identifier of the current transfer.
+        :type transfer_number: int
+        :param transfer_number: Incremental identifier of the current transfer.
         """
         self.tags = tags
-        self.index = index
+        self.transfer_number = transfer_number
 
     def __repr__(self):
         """
         Provides the formatted transfer string.
 
-        :returns: "{tags}.{index}"
+        :returns: "{tags}.{transfer_number}"
         """
         s = ''
         if self.tags != []: s += f'{".".join(self.tags)}.'
-        s += f'{self.index}'
+        s += f'{self.transfer_number}'
         return s
 
 
@@ -81,7 +81,7 @@ class Link():
         self.add_inlets(inlets)
         self.add_outlets(outlets)
         self._interval = interval
-        self._count = -1
+        self._transfer_number = -1
         self._job = None
         if name != None:
             warnings.warn('\'name\' parameter was deprecated in 0.1.* and will be removed in version 1.0. Use \'tags\' instead.')
@@ -244,9 +244,8 @@ class Link():
         Coroutine handling the transfer.
         """
 
-        self._count += 1
-        count = self._count
-        update = Update(tags=self.tags, index=count)
+        self._transfer_number += 1
+        update = Update(tags=self.tags, transfer_number=self._transfer_number)
         _LOGGER.debug(f'{update} transfer')
 
         async def inlet_task(inlet):
