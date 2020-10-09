@@ -207,7 +207,7 @@ class TestLink(TestCase):
 
     def test_add_inlet_same(self):
         inlet1 = DummyInlet()
-        link = Link([], [], timedelta(seconds=1), name='test_add_inlet_same')
+        link = Link([], [], timedelta(seconds=1), tags='test_add_inlet_same')
 
         link.add_inlets(inlet1)
         self.assertRaises(InvalidNodeError, link.add_inlets, inlet1)
@@ -217,7 +217,7 @@ class TestLink(TestCase):
     def test_add_multiple_inlets_same(self):
         inlet1 = DummyInlet()
         inlet2 = DummyInlet()
-        link = Link([], [], timedelta(seconds=1), name='test_add_inlet_same')
+        link = Link([], [], timedelta(seconds=1), tags='test_add_inlet_same')
 
         link.add_inlets(inlet1)
         link.add_inlets(inlet2)
