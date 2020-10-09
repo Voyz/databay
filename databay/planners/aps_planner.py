@@ -203,5 +203,5 @@ class ApsPlanner(BasePlanner):
 
 class APSPlanner(ApsPlanner): # pragma: no cover
     def __init__(self, *args, **kwargs):
-        warnings.warn('APSPlanner was renamed to ApsPlanner in version 0.1.x and will be permanently changed in version 1.0', DeprecationWarning)
+        warnings.warn('APSPlanner was renamed to ApsPlanner in version 0.1.7 and will be permanently changed in version 1.0', DeprecationWarning)
         super().__init__(*args, **kwargs)
