@@ -76,7 +76,7 @@ outlet = MongoOutlet('databay', 'test_collection')
 link = Link(inlet, outlet, datetime.timedelta(seconds=5))
 
 # Start scheduling
-planner = APSPlanner(link)
+planner = ApsPlanner(link)
 planner.start()
 ```
 
