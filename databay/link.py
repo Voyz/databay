@@ -10,35 +10,33 @@ _LOGGER = logging.getLogger('databay.Link')
 
 class Update():
     """
-    Data structure representing one Link transfer. When converted to string returns :code:`{name}.{index}`
+    Data structure representing one Link transfer. When converted to string returns :code:`{name}.{transfer_number}`
     """
-    def __init__(self, name:str, index:int):
+    def __init__(self, name:str, transfer_number:int):
         """
 
         :type name: str
         :param name: Human readable identifier of the link, see: :class:`Link`.
 
-        :type index: int
-        :param index: Integer identifier of the current transfer.
+        :type transfer_number: int
+        :param transfer_number: Incremental identifier of the current transfer.
         """
         self.name = name
-        self.index = index
+        self.transfer_number = transfer_number
 
     def __repr__(self):
         """
         Provides the formatted transfer string.
 
-        :returns: "{name}.{index}"
+        :returns: "{name}.{transfer_number}"
         """
         s = ''
         if self.name != '': s += f'{self.name}.'
-        s += f'{self.index}'
+        s += f'{self.transfer_number}'
         return s
 
 
 from databay import Inlet, Outlet
-
-_ITERABLE_EXCEPTION = "is not iterable"
 
 class Link():
     """
@@ -233,10 +231,8 @@ class Link():
         Coroutine handling the transfer.
         """
 
-        self._count += 1
-        count = self._count
-        update = Update(name=self.name, index=count)
-        # print(count, 'transfer')
+        self._transfer_number += 1
+        update = Update(name=self.name, transfer_number=self._transfer_number)
         _LOGGER.debug(f'{update} transfer')
 
         async def inlet_task(inlet):
@@ -251,44 +247,10 @@ class Link():
 
         inlet_tasks = [inlet_task(inlet) for inlet in self._inlets]
         results_raw = await asyncio.gather(*inlet_tasks)
-        # print(results_raw)
-
-        # records = []
-        # def add_to_records(records, results):
-        #     try:
-        #         records += results
-        #     except Exception as e:
-        #         if _ITERABLE_EXCEPTION in str(e):
-        #             records = add_to_records(records, [results])
-        #         else:
-        #             if self._catch_exceptions:
-        #                 _LOGGER.exception(f'Unknown Inlet results exception: "{e}" for results: {results}, in link: {self}, during: {update}', exc_info=True)
-        #             else:
-        #                 raise e
-        #
-        #     return records
-        #
-        #
-        # for results in results_raw:
-        #     records = add_to_records(records, results)
-                # iterable_message = f'Inlets must return iterable, found: {results}, in link: {self}, during: {update}'
-                #
-                # if not self._catch_exceptions:
-                #     if _ITERABLE_EXCEPTION in str(e): # format the common iterable error for readability
-                #         raise TypeError(iterable_message)
-                #     else:
-                #         raise e
-                #
-                # elif _ITERABLE_EXCEPTION in str(e):
-                #     _LOGGER.exception(iterable_message, exc_info=False)
-                # else:
-                #     _LOGGER.exception(f'Unknown Inlet results exception: "{e}" for results: {results}, in link: {self}, during: {update}', exc_info=True)
-
         records = list(itertools.chain.from_iterable(results_raw))
 
 
         async def outlet_task(outlet, records_copy):
-            # asyncio.run_coroutine_threadsafe(outlet.push(records), asyncio.get_event_loop())
             try:
                 await outlet._push(records_copy, update)
             except Exception as e:
@@ -304,7 +266,6 @@ class Link():
             else:
                 task = outlet_task(outlet, records)
             outlet_tasks.append(task)
-        # outlet_tasks = [outlet_task(outlet, copy.deepcopy(records)) for outlet in self._outlets]
         await asyncio.gather(*outlet_tasks)
 
         _LOGGER.debug(f'{update} done')

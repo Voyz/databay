@@ -75,7 +75,7 @@ Correctly use metadata
 
         .. code-block:: python
 
-            FILEPATH:metadata = 'FILEPATH'
+            FILEPATH:MetadataKey = 'FILEPATH'
 
     Correct:
 
@@ -83,7 +83,7 @@ Correctly use metadata
 
         .. code-block:: python
 
-            FILEPATH:metadata = 'CsvOutlet.FILEPATH'
+            FILEPATH:MetadataKey = 'CsvOutlet.FILEPATH'
 
 
 

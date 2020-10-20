@@ -5,7 +5,7 @@ from typing import List
 
 from databay import Record, Link
 from databay.outlets import PrintOutlet
-from databay.planners import APSPlanner
+from databay.planners import ApsPlanner
 
 from databay.inlet import Inlet
 import urllib.request
@@ -35,5 +35,5 @@ weather_inlet = WeatherInlet(api_key, 'Bangkok')
 link = Link(weather_inlet, PrintOutlet(only_payload=True),
             interval=timedelta(seconds=2), name='bangkok_weather')
 
-planner = APSPlanner(link)
+planner = ApsPlanner(link)
 planner.start()

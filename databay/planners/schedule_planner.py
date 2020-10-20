@@ -60,8 +60,6 @@ class SchedulePlanner(BasePlanner):
         self._exc_lock = threading.Lock()
         self._catch_exceptions = catch_exceptions
 
-        # self._create_thread_pool()
-
     @property
     def refresh_interval(self) -> float:
         """
@@ -171,12 +169,9 @@ class SchedulePlanner(BasePlanner):
                                 # Some custom exceptions won't let you use the common constructor and will throw an error on initialisation. We catch these and just throw a generic RuntimeError.
                                 raise RuntimeError(exception_message).with_traceback(traceback) from None
                         except Exception as e:
-                            # if self._catch_exceptions:
                             _LOGGER.exception(e)
                             if not self._catch_exceptions and self.running:
-                            # else:
                                 self.shutdown(False)
-                                # raise e
 
                     self._exc_info = []
 

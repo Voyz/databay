@@ -2,7 +2,7 @@ import logging
 import time
 from threading import Thread
 from unittest import TestCase
-from unittest.mock import patch
+from unittest.mock import MagicMock
 
 import schedule
 
@@ -21,9 +21,10 @@ class TestSchedulePlanner(TestCase):
         logging.getLogger('databay').setLevel(logging.WARNING)
 
 
-    @patch(fqname(Link), spec=Link)
-    def setUp(self, link):
+    def setUp(self):
         self.planner = SchedulePlanner(refresh_interval=0.02)
+
+        link = MagicMock(spec=Link)
 
         def set_job(job):
             link.job = job
@@ -163,3 +164,28 @@ class TestSchedulePlanner(TestCase):
         self.link.transfer.assert_called()
 
         self.assertFalse(self.planner.running, 'Scheduler should be stopped')
+
+
+    def test_purge(self):
+        self.link.interval.total_seconds.return_value = 0.02
+        self.planner.add_links(self.link)
+        self.planner.purge()
+
+        self.link.set_job.assert_called_with(None)
+        self.assertEqual(self.planner.links, [])
+        self.assertEqual(schedule.jobs, [])
+
+
+    def test_purge_while_running(self):
+        self.planner.add_links(self.link)
+        th = Thread(target=self.planner.start, daemon=True)
+        th.start()
+        self.planner.purge()
+
+        self.link.set_job.assert_called_with(None)
+        self.assertEqual(self.planner.links, [])
+        self.assertEqual(schedule.jobs, [])
+
+        self.planner.shutdown()
+        th.join(timeout=2)
+        self.assertFalse(th.is_alive(), 'Thread should be stopped.')

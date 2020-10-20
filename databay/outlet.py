@@ -12,15 +12,15 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from databay import Record
+import databay as da
 
-class metadata(str):
-    """ This is just a dummy class used to distinguish member fields containing metadata keys."""
+class MetadataKey(str):
+    """ Used to distinguish class attributes containing metadata keys."""
     pass
 
 class Outlet(ABC):
     """
     Abstract class representing an output of the data stream.
-
     """
 
     def __init__(self):
@@ -32,14 +32,14 @@ class Outlet(ABC):
         self._thread_lock = threading.Lock()
 
 
-    async def _push(self, records:List[Record], update):
+    async def _push(self, records:List[Record], update:'da.Update'):
         if self._uses_coroutine:
             rv = await self.push(records, update)
         else:
             rv = self.push(records, update)
 
     @abstractmethod
-    async def push(self, records:List[Record], update):
+    def push(self, records:List[Record], update:'da.Update'):
         """
         Push received data.
 
@@ -59,14 +59,27 @@ class Outlet(ABC):
         Wrapper around on_start call that will ensure it only gets executed once.
         """
 
-        should_on_start = False
+        """ 
+        This is a tricky situation we're trying to protect against, and as such this may be redundant.
+        The way this is constructed anticipates the on* callback to take very long time, and it prevents
+        multiple threads being held waiting for the _thread_lock being released.
+        It is questionable whether this function could be called by multiple threads in first place.
+        An inlet or outlet would have to be added to multiple links, which in turn would need to be added
+        to multiple Planners, all of which would need to request start or shutdown at the same time. 
+        Still given how GIL is handled when threading, the race condition may never actually occur.
+        We're keeping this logic for now, as it doesn't really waste resources and doesn't inflate complexity
+        in any way, while theoretically should protect against callback race conditions, even ones 
+        we may not yet be aware of.
+        """
+
+        allow_run_on_start = False
 
         with self._thread_lock:
             if not self._active:
                 self._active = True
-                should_on_start = True
+                allow_run_on_start = True
 
-        if should_on_start:
+        if allow_run_on_start:
             self.on_start()
 
     def on_start(self):
@@ -83,14 +96,27 @@ class Outlet(ABC):
         Wrapper around on_shutdown call that will ensure it only gets executed once.
         """
 
-        should_on_shutdown = False
+        """ 
+        This is a tricky situation we're trying to protect against, and as such this may be redundant.
+        The way this is constructed anticipates the on* callback to take very long time, and it prevents
+        multiple threads being held waiting for the _thread_lock being released.
+        It is questionable whether this function could be called by multiple threads in first place.
+        An inlet or outlet would have to be added to multiple links, which in turn would need to be added
+        to multiple Planners, all of which would need to request start or shutdown at the same time. 
+        Still given how GIL is handled when threading, the race condition may never actually occur.
+        We're keeping this logic for now, as it doesn't really waste resources and doesn't inflate complexity
+        in any way, while theoretically should protect against callback race conditions, even ones 
+        we may not yet be aware of.
+        """
+
+        allow_run_on_shutdown = False
 
         with self._thread_lock:
             if self._active:
                 self._active = False
-                should_on_shutdown = True
+                allow_run_on_shutdown = True
 
-        if should_on_shutdown:
+        if allow_run_on_shutdown:
             self.on_shutdown()
 
     def on_shutdown(self):

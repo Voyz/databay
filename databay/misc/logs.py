@@ -32,7 +32,6 @@ class ISO8601Formatter(logging.Formatter):
             tz = ''
 
         msecs = record.msecs * self.precision_mult
-        # s = t.replace('[MSECS]', str_format % (msecs))
         s = self.str_format % (t, msecs, tz)
         return s
 
