@@ -217,6 +217,14 @@ class Link():
 
     @property
     def name(self) -> str:
+        """
+        Deprecated in 0.1.8, will be removed in 1.0. Use :any:`Link.tags` instead.
+
+        Name of this Link, equivalent to first tag of this link.
+
+        :returns: Name of this link
+        :rtype: str
+        """
         warnings.warn(
             '\'Link.name\' property was deprecated in 0.1.8 and will be removed in version 1.0. Use \'Link.tags\' instead.')
         return self.tags[0] if len(self.tags) else ''
