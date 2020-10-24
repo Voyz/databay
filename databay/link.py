@@ -20,7 +20,7 @@ class Update():
         """
 
         :type tags: List[str]
-        :param tags: Tags the link, see: :class:`Link`.
+        :param tags: Tags of the link, see: :class:`Link`.
 
         :type transfer_number: int
         :param transfer_number: Incremental identifier of the current transfer.
@@ -58,16 +58,16 @@ class Link():
                  name=None):
         """
         :type inlets: :any:`Inlet` or list[:any:`Inlet`]
-        :param inlets: inlets to add to this link
+        :param inlets: inlets to add to this link.
 
         :type outlets: :any:`Outlet` or list[:any:`Outlet`]
-        :param outlets: outlets to add to this link
+        :param outlets: outlets to add to this link.
 
         :type interval: datetime.timedelta
         :param interval: Frequency at which this link should transfer.
 
         :type tags: Union[str, List[str]]
-        :param tags: List of tags of this link |default| :code:`[]`
+        :param tags: List of tags of this link. |default| :code:`[]`
 
         :type copy_records: bool
         :param copy_records: Whether to copy records before passing them to outlets. |default| :code:`True`
