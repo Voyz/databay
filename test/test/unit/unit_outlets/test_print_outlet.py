@@ -1,4 +1,5 @@
 import io
+import unittest
 
 from asynctest import TestCase, patch, asyncio
 
@@ -45,3 +46,5 @@ class TestPrintOutlet(TestCase):
 
         self.assertEqual(stdout.getvalue(), 'TestRecord(test)\n')
 
+if __name__ == '__main__':
+    unittest.main()
