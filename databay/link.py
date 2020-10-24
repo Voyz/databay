@@ -58,10 +58,8 @@ class Link():
         :param outlets: outlets to add to this link
 
         :type interval: Union[datetime.timedelta, int, float]
-        :param interval: Frequency at which this link should transfer. Can be expressed as :code:`datetime.timedelta` 
-        or as type :code:`int` or :code:`float` which will be coerced explicitly to :code:`datetime.timedelta.seconds`
-        or as type :code:`int` or :code:`float` which will be coerced explicitly to :code:`datetime.timedelta.seconds`
-        or as type :code:`int` or :code:`float` which will be coerced explicitly to :code:`datetime.timedelta.seconds`
+        :param interval: Expects :code:datetime.timedelta. Alternatively, you can provide :code:int or 
+        :code:float which will be coerced explicitly to :code:datetime.timedelta.seconds.
 
         :type name: str
         :param name: Human readable identifier of this link |default| :code:`''`
