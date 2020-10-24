@@ -312,7 +312,7 @@ class TestLink(TestCase):
     @patch(fqname(Inlet), spec=Inlet)
     def test_on_start_inlet_exception_raise(self, inlet1, outlet1):
         inlet1.try_start.side_effect = lambda: exec('raise(RuntimeError())')
-        link = Link([inlet1], [outlet1], timedelta(seconds=1), name='test_on_start')
+        link = Link([inlet1], [outlet1], timedelta(seconds=1), tags='test_on_start')
 
         self.assertRaises(RuntimeError, link.on_start)
 
@@ -324,7 +324,7 @@ class TestLink(TestCase):
     def test_on_start_inlet_exception_catch(self, inlet1, outlet1):
         logging.getLogger('databay.Link').setLevel(logging.WARNING)
         inlet1.try_start.side_effect = lambda: exec('raise(RuntimeError())')
-        link = Link([inlet1], [outlet1], timedelta(seconds=1), name='test_on_start', catch_exceptions=True)
+        link = Link([inlet1], [outlet1], timedelta(seconds=1), tags='test_on_start', catch_exceptions=True)
 
         with self.assertLogs(logging.getLogger('databay.Link'), level='ERROR') as cm:
             link.on_start()
@@ -338,7 +338,7 @@ class TestLink(TestCase):
     @patch(fqname(Inlet), spec=Inlet)
     def test_on_start_outlet_exception_raise(self, inlet1, outlet1, outlet2):
         outlet1.try_start.side_effect = lambda: exec('raise(RuntimeError())')
-        link = Link([inlet1], [outlet1, outlet2], timedelta(seconds=1), name='test_on_start')
+        link = Link([inlet1], [outlet1, outlet2], timedelta(seconds=1), tags='test_on_start')
 
         self.assertRaises(RuntimeError, link.on_start)
 
@@ -352,7 +352,7 @@ class TestLink(TestCase):
     def test_on_start_outlet_exception_catch(self, inlet1, outlet1, outlet2):
         logging.getLogger('databay.Link').setLevel(logging.WARNING)
         outlet1.try_start.side_effect = lambda: exec('raise(RuntimeError())')
-        link = Link([inlet1], [outlet1, outlet2], timedelta(seconds=1), name='test_on_start', catch_exceptions=True)
+        link = Link([inlet1], [outlet1, outlet2], timedelta(seconds=1), tags='test_on_start', catch_exceptions=True)
 
         with self.assertLogs(logging.getLogger('databay.Link'), level='ERROR') as cm:
             link.on_start()
@@ -366,7 +366,7 @@ class TestLink(TestCase):
     @patch(fqname(Inlet), spec=Inlet)
     def test_on_shutdown_inlet_exception_raise(self, inlet1, outlet1):
         inlet1.try_shutdown.side_effect = lambda: exec('raise(RuntimeError())')
-        link = Link([inlet1], [outlet1], timedelta(seconds=1), name='test_on_shutdown')
+        link = Link([inlet1], [outlet1], timedelta(seconds=1), tags='test_on_shutdown')
 
         self.assertRaises(RuntimeError, link.on_shutdown)
 
@@ -378,7 +378,7 @@ class TestLink(TestCase):
     def test_on_shutdown_inlet_exception_catch(self, inlet1, outlet1):
         logging.getLogger('databay.Link').setLevel(logging.WARNING)
         inlet1.try_shutdown.side_effect = lambda: exec('raise(RuntimeError())')
-        link = Link([inlet1], [outlet1], timedelta(seconds=1), name='test_on_shutdown', catch_exceptions=True)
+        link = Link([inlet1], [outlet1], timedelta(seconds=1), tags='test_on_shutdown', catch_exceptions=True)
 
         with self.assertLogs(logging.getLogger('databay.Link'), level='ERROR') as cm:
             link.on_shutdown()
@@ -392,7 +392,7 @@ class TestLink(TestCase):
     @patch(fqname(Inlet), spec=Inlet)
     def test_on_shutdown_outlet_exception_raise(self, inlet1, outlet1, outlet2):
         outlet1.try_shutdown.side_effect = lambda: exec('raise(RuntimeError())')
-        link = Link([inlet1], [outlet1, outlet2], timedelta(seconds=1), name='test_on_shutdown')
+        link = Link([inlet1], [outlet1, outlet2], timedelta(seconds=1), tags='test_on_shutdown')
 
         self.assertRaises(RuntimeError, link.on_shutdown)
 
@@ -406,7 +406,7 @@ class TestLink(TestCase):
     def test_on_shutdown_outlet_exception_catch(self, inlet1, outlet1, outlet2):
         logging.getLogger('databay.Link').setLevel(logging.WARNING)
         outlet1.try_shutdown.side_effect = lambda: exec('raise(RuntimeError())')
-        link = Link([inlet1], [outlet1, outlet2], timedelta(seconds=1), name='test_on_shutdown', catch_exceptions=True)
+        link = Link([inlet1], [outlet1, outlet2], timedelta(seconds=1), tags='test_on_shutdown', catch_exceptions=True)
 
         with self.assertLogs(logging.getLogger('databay.Link'), level='ERROR') as cm:
             link.on_shutdown()
@@ -415,3 +415,24 @@ class TestLink(TestCase):
         inlet1.try_shutdown.assert_called()
         outlet1.try_shutdown.assert_called()
         outlet2.try_shutdown.assert_called()
+
+    def test_single_tag(self):
+        tag = 'tagA'
+        link = Link([], [], timedelta(seconds=1), tags=tag)
+        self.assertEqual(link.tags, [tag])
+
+    def test_multiple_tags(self):
+        tagA = 'tagA'
+        tagB = 'tagB'
+        link = Link([], [], timedelta(seconds=1), tags=[tagA, tagB])
+        self.assertEqual(link.tags, [tagA, tagB])
+
+    def test_tag_as_name(self):
+        link_name = 'link_name'
+        link = Link([], [], timedelta(seconds=1), name=link_name)
+        self.assertEqual(link_name, link.tags[0])
+
+    def test_name_from_tag(self):
+        link_name = 'link_name'
+        link = Link([], [], timedelta(seconds=1), tags=[link_name])
+        self.assertEqual(link.name, link.tags[0])

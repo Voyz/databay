@@ -84,7 +84,7 @@ class Link():
         self._transfer_number = -1
         self._job = None
         if name != None:
-            warnings.warn('\'name\' parameter was deprecated in 0.1.* and will be removed in version 1.0. Use \'tags\' instead.')
+            warnings.warn('\'name\' parameter was deprecated in 0.1.8 and will be removed in version 1.0. Use \'tags\' instead.')
             tags = [name]
 
         if isinstance(tags, str): tags = [tags]
@@ -218,7 +218,7 @@ class Link():
     @property
     def name(self) -> str:
         warnings.warn(
-            '\'Link.name\' property was deprecated in 0.1.* and will be removed in version 1.0. Use \'Link.tags\' instead.')
+            '\'Link.name\' property was deprecated in 0.1.8 and will be removed in version 1.0. Use \'Link.tags\' instead.')
         return self.tags[0] if len(self.tags) else ''
 
     @property
