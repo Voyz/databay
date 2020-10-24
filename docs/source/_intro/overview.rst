@@ -15,7 +15,7 @@ In Databay, data transfer is expressed with three components:
 * :any:`Outlets <Outlet>` - for data consumption.
 * :any:`Links <Link>` - for handling the data transit between inlets and outlets.
 
-Scheduling is implemented using third party libraries, exposed through the :any:`BasePlanner` interface. Currently two BasePlanner implementations are available - using |APS|_ (:any:`APSPlanner`) and Schedule_ (:any:`SchedulePlanner`).
+Scheduling is implemented using third party libraries, exposed through the :any:`BasePlanner` interface. Currently two BasePlanner implementations are available - using |APS|_ (:any:`ApsPlanner`) and Schedule_ (:any:`SchedulePlanner`).
 
 :ref:`A simple example <simple-usage>`:
 
@@ -27,7 +27,7 @@ Scheduling is implemented using third party libraries, exposed through the :any:
     link = Link(http_inlet, mongo_outlet, datetime.timedelta(seconds=5))
 
     # Create a planner, add the link and start scheduling.
-    planner = APSPlanner(link)
+    planner = ApsPlanner(link)
     planner.start()
 
 Every 5 seconds this snippet will pull data from a test URL, and write it to MongoDB.

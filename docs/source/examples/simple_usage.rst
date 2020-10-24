@@ -52,7 +52,7 @@ Simple usage
     .. code-block:: python
 
         >>> 2020-07-30 19:51:36.313|I| Added link: Link(tags:['http_to_mongo'], inlets:[HttpInlet(metadata:{})], outlets:[MongoOutlet()], interval:0:00:05) (databay.BasePlanner)
-        >>> 2020-07-30 19:51:36.314|I| Starting APSPlanner(threads:30) (databay.BasePlanner)
+        >>> 2020-07-30 19:51:36.314|I| Starting ApsPlanner(threads:30) (databay.BasePlanner)
 
         >>> 2020-07-30 19:51:41.318|D| http_to_mongo.0 transfer (databay.Link)
         >>> 2020-07-30 19:51:41.318|I| http_to_mongo.0 pulling https://jsonplaceholder.typicode.com/todos/1 (databay.HttpInlet)
@@ -79,7 +79,7 @@ Simple usage
         .. code-block:: python
 
             Added link: Link(tags:['http_to_mongo'], inlets:[HttpInlet(metadata:{})], outlets:[MongoOutlet()], interval:0:00:05)
-            Starting APSPlanner(threads:30)
+            Starting ApsPlanner(threads:30)
 
     * Once scheduling starts, link will log the beginning and end of each transfer:
 

@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from databay import Link
 from databay.inlets import RandomIntInlet
-from databay.planners import APSPlanner
+from databay.planners import ApsPlanner
 from databay.record import Record
 from databay.outlet import Outlet
 
@@ -44,5 +44,5 @@ link = Link(random_int_inlet,
             interval=timedelta(seconds=2),
             tags='file_outlet')
 
-planner = APSPlanner(link)
+planner = ApsPlanner(link)
 planner.start()

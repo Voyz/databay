@@ -10,18 +10,18 @@ from apscheduler.schedulers.base import STATE_RUNNING, STATE_STOPPED, STATE_PAUS
 import databay
 from databay import Link
 from databay.errors import MissingLinkError
-from databay.planners.aps_planner import APSPlanner
+from databay.planners.aps_planner import ApsPlanner
 from test_utils import fqname, DummyException, DummyUnusualException
 
 
-class TestAPSPlanner(TestCase):
+class TestApsPlanner(TestCase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         logging.getLogger('databay').setLevel(logging.WARNING)
 
     def setUp(self):
-        self.planner = APSPlanner()
+        self.planner = ApsPlanner()
 
         link = MagicMock(spec=Link)
 
@@ -58,7 +58,7 @@ class TestAPSPlanner(TestCase):
         self.assertTrue(self.link in self.planner.links, 'Planner should contain the link')
 
     def test_add_links_on_init(self):
-        self.planner = APSPlanner(self.link)
+        self.planner = ApsPlanner(self.link)
         self.assertIsNotNone(self.link.job, 'Link should contain a job')
         self.assertTrue(self.link in self.planner.links, 'Planner should contain the link')
 
@@ -180,7 +180,7 @@ class TestAPSPlanner(TestCase):
     def _with_exception(self, link, catch_exceptions):
         logging.getLogger('databay').setLevel(logging.CRITICAL)
         # logging.getLogger('databay').setLevel(logging.INFO)
-        self.planner = APSPlanner(catch_exceptions=catch_exceptions)
+        self.planner = ApsPlanner(catch_exceptions=catch_exceptions)
 
         link.transfer.side_effect = DummyException()
         link.interval.total_seconds.return_value = 0.02

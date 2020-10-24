@@ -134,7 +134,7 @@ SKIP_FULL = {'databay.link.Link._run',
              'databay.outlets.MongoOutlet',
              # 'databay.outlet.Outlet.__init__',
              # 'databay.outlet.Outlet.__repr__',
-             # 'databay.planners.aps_planner.APSPlanner.__repr__',
+             # 'databay.planners.aps_planner.ApsPlanner.__repr__',
              # 'databay.planners.schedule_planner.SchedulePlanner.__repr__',
              }
 SKIP_SUFFIXES = {"_LOGGER"}
