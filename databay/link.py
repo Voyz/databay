@@ -1,14 +1,11 @@
+import asyncio
 import copy
 import datetime
 import itertools
-from typing import List, Union, Any
-
-import asyncio
-
 import logging
+from typing import Any, List, Union
 
 from databay.errors import InvalidNodeError
-
 _LOGGER = logging.getLogger('databay.Link')
 
 class Update():
@@ -39,8 +36,7 @@ class Update():
         return s
 
 
-from databay import Inlet
-from databay import Outlet
+from databay import Inlet, Outlet
 
 class Link():
     """
@@ -50,10 +46,10 @@ class Link():
     def __init__(self, 
                  inlets: Union[Inlet, List[Inlet]],
                  outlets: Union[Outlet, List[Outlet]], 
-                 interval:datetime.timedelta, 
+                 interval: Union[datetime.timedelta, int, float], 
                  name:str='',
                  copy_records:bool=True,
-                 catch_exceptions:bool=False):
+                 catch_exceptions:bool=False):             
         """
         :type inlets: :any:`Inlet` or list[:any:`Inlet`]
         :param inlets: inlets to add to this link
@@ -61,8 +57,9 @@ class Link():
         :type outlets: :any:`Outlet` or list[:any:`Outlet`]
         :param outlets: outlets to add to this link
 
-        :type interval: datetime.timedelta
-        :param interval: Frequency at which this link should transfer.
+        :type interval: Union[datetime.timedelta, int, float]
+        :param interval: Expects :code:datetime.timedelta. Alternatively, you can provide :code:int or 
+        :code:float which will be coerced explicitly to :code:datetime.timedelta.seconds.
 
         :type name: str
         :param name: Human readable identifier of this link |default| :code:`''`
@@ -78,8 +75,11 @@ class Link():
         self._outlets = []
         self.add_inlets(inlets)
         self.add_outlets(outlets)
-        self._interval = interval
-        self._transfer_number = -1
+        if isinstance(interval, (int, float)):
+            self._interval = datetime.timedelta(seconds=interval)
+        else:
+            self._interval = interval
+        self._count = -1
         self._job = None
         self._name = name
         self._copy_records = copy_records
