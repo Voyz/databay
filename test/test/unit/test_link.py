@@ -310,26 +310,3 @@ class TestLink(TestCase):
         link = Link([], [], 1.5, name='test_float_interval_coerced')
         self.assertEquals(link._interval, timedelta(seconds=1.5))
 
-    # this rv is invalid, should be a list
-    @patch(fqname(Outlet), spec=Outlet)
-    @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock())
-    @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock(object()))
-    def xtest_non_iterable_caught(self, inlet1, inlet2, outlet1):
-        logging.getLogger('databay.Link').setLevel(logging.CRITICAL)
-        link = Link([inlet1, inlet2], [outlet1], timedelta(
-            seconds=1), name='test_non_iterable_caught', catch_exceptions=True)
-        results = asyncio.run(inlet2._pull(None))
-        link.transfer()
-        outlet1._push.assert_called_with(results, mock.ANY)
-
-    # this rv will raise DummyException
-    @patch(fqname(Outlet), spec=Outlet)
-    @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock())
-    @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock(DummyIterable()))
-    def xtest_generic_error_caught(self, inlet1, inlet2, outlet1):
-        logging.getLogger('databay.Link').setLevel(logging.CRITICAL)
-        link = Link([inlet1, inlet2], [outlet1], timedelta(
-            seconds=1), name='test_generic_error_caught', catch_exceptions=True)
-        results = asyncio.run(inlet2._pull(None))
-        link.transfer()
-        outlet1._push.assert_called_with(results, mock.ANY)
