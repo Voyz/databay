@@ -13,13 +13,13 @@ from databay.link import Link
 
 _LOGGER = logging.getLogger('databay.BasePlanner')
 
+
 class BasePlanner(ABC):
     """
     Base abstract class for a job planner. Implementations should handle scheduling link transfers based on :py:class:`datetime.timedelta` intervals.
     """
 
-
-    def __init__(self, links:Union[Link, List[Link]]=None):
+    def __init__(self, links: Union[Link, List[Link]] = None):
         """
         :type links: :any:`Link` or list[:any:`Link`]
         :param links: Links that should be added and scheduled.
@@ -38,7 +38,7 @@ class BasePlanner(ABC):
         """
         return self._links
 
-    def add_links(self, links:Union[Link, List[Link]]):
+    def add_links(self, links: Union[Link, List[Link]]):
         """
         Add new links to this planner. This can be run once planner is already running.
 
@@ -68,7 +68,8 @@ class BasePlanner(ABC):
 
         for link in links:
             if link not in self._links:
-                raise MissingLinkError(f'Planner does not contain the link: {link}')
+                raise MissingLinkError(
+                    f'Planner does not contain the link: {link}')
 
             if link.job is not None:
                 self._unschedule(link)
@@ -112,7 +113,7 @@ class BasePlanner(ABC):
             link.on_start()
         self._start_planner()
 
-    def shutdown(self, wait:bool=True):
+    def shutdown(self, wait: bool = True):
         """
         Shutdown this planner. Links will stop being scheduled after calling this method. Remaining link jobs may still execute after calling this method depending on the concrete planner implementation.
 
@@ -133,7 +134,7 @@ class BasePlanner(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def _shutdown_planner(self, wait:bool=True):
+    def _shutdown_planner(self, wait: bool = True):
         """
         Override this method to provide shutdown functionality.
         """

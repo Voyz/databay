@@ -10,6 +10,7 @@ import random
 _LOGGER = logging.getLogger('databay.basic_asynchronous')
 logging.getLogger('databay').setLevel(logging.DEBUG)
 
+
 class RandomIntInlet(Inlet):
 
     async def pull(self, update):
@@ -23,9 +24,10 @@ class RandomIntInlet(Inlet):
         _LOGGER.debug(f'{update} produced:{r}')
         return r
 
+
 class PrintOutlet(Outlet):
 
-    async def push(self, records:[Record], update):
+    async def push(self, records: [Record], update):
         _LOGGER.debug(f'{update} push starts')
 
         # create an asynchronous task for each record
@@ -41,6 +43,7 @@ class PrintOutlet(Outlet):
 
         # execute
         _LOGGER.debug(f'{update} consumed:{record.payload}')
+
 
 random_int_inletA = RandomIntInlet()
 random_int_inletB = RandomIntInlet()

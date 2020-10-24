@@ -27,7 +27,8 @@ class TestConfig(TestCase):
 
         reload(config)
 
-        self.assertIsInstance(asyncio.get_event_loop_policy(), asyncio.WindowsSelectorEventLoopPolicy, "Asyncio event loop policy should be WindowsSelectorEventLoopPolicy.")
+        self.assertIsInstance(asyncio.get_event_loop_policy(), asyncio.WindowsSelectorEventLoopPolicy,
+                              "Asyncio event loop policy should be WindowsSelectorEventLoopPolicy.")
 
     @patch('sys.version_info')
     def test_event_loop_policy_3_7(self, version_info):
@@ -40,16 +41,19 @@ class TestConfig(TestCase):
 
         reload(config)
 
-        self.assertIsInstance(asyncio.get_event_loop_policy(), asyncio.WindowsProactorEventLoopPolicy, "Asyncio event loop policy should be WindowsProactorEventLoopPolicy.")
+        self.assertIsInstance(asyncio.get_event_loop_policy(), asyncio.WindowsProactorEventLoopPolicy,
+                              "Asyncio event loop policy should be WindowsProactorEventLoopPolicy.")
 
     @patch('databay.config.sys.platform', 'win32')
     @patch('databay.config.sys.stdout', MagicMock(encoding='windows-1252'))
     @patch('databay.config.sys.stdin', MagicMock(encoding='windows-1252'))
-    @patch('logging.StreamHandler.emit', lambda x, y: None) #disable stream handler
+    # disable stream handler
+    @patch('logging.StreamHandler.emit', lambda x, y: None)
     def test_windows_1252(self):
         with self.assertLogs(logging.getLogger('databay'), level='WARNING') as cm:
             config.initialise()
-            self.assertTrue('stdin or stdout encoder is set to \'windows-1252\'' in ';'.join(cm.output))
+            self.assertTrue(
+                'stdin or stdout encoder is set to \'windows-1252\'' in ';'.join(cm.output))
 
     @patch('databay.config.sys.platform', 'win32')
     @patch('databay.config.sys.stdout', MagicMock(encoding='utf-8'))
@@ -59,9 +63,9 @@ class TestConfig(TestCase):
         temp = databay_logger.warning
         databay_logger.warning = MagicMock()
         config.initialise()
-        self.assertTrue('stdin or stdout encoder is set to \'windows-1252\'' not in databay_logger.warning.call_args_list)
+        self.assertTrue(
+            'stdin or stdout encoder is set to \'windows-1252\'' not in databay_logger.warning.call_args_list)
         databay_logger.warning = temp
-
 
     @patch('databay.config.sys.platform', 'win32')
     @patch('databay.config.sys.stdout', MagicMock(encoding='windows-1252'))
@@ -72,18 +76,20 @@ class TestConfig(TestCase):
         temp = logging.Logger.warning
         warning = logging.Logger.warning = MagicMock()
         config.initialise()
-        string_args = ';'.join([str(call[0][0]) for call in warning.call_args_list])
-        self.assertTrue('stdin or stdout encoder is set to \'windows-1252\'' not in string_args, 'Should not contain windows-1252 warning')
+        string_args = ';'.join([str(call[0][0])
+                                for call in warning.call_args_list])
+        self.assertTrue('stdin or stdout encoder is set to \'windows-1252\'' not in string_args,
+                        'Should not contain windows-1252 warning')
         logging.Logger.warning = temp
-
 
     @patch('databay.config.sys.platform', 'win32')
     @patch('databay.config.sys.stdout', MagicMock(encoding='windows-1252'))
     @patch('databay.config.sys.stdin', MagicMock(encoding='windows-1252'))
     @mock.patch.dict(os.environ, {"DATABAY_IGNORE_WARNINGS": "test_ignore"})
-    @patch('logging.StreamHandler.emit', lambda x, y: None) #disable stream handler
+    # disable stream handler
+    @patch('logging.StreamHandler.emit', lambda x, y: None)
     def test_windows_1252_incorrect_ignore(self):
         with self.assertLogs(logging.getLogger('databay'), level='WARNING') as cm:
             config.initialise()
-            self.assertTrue('stdin or stdout encoder is set to \'windows-1252\'' in ';'.join(cm.output))
-
+            self.assertTrue(
+                'stdin or stdout encoder is set to \'windows-1252\'' in ';'.join(cm.output))

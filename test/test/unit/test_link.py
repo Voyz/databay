@@ -309,4 +309,3 @@ class TestLink(TestCase):
     def test_float_to_timedelta(self):
         link = Link([], [], 1.5, name='test_float_interval_coerced')
         self.assertEquals(link._interval, timedelta(seconds=1.5))
-

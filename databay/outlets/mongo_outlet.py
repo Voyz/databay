@@ -19,6 +19,7 @@ from databay import Record
 
 _LOGGER = logging.getLogger('databay.MongoOutlet')
 
+
 class MongoCollectionNotFound(Exception):
     """ Raised when requested collection does not exist in the database."""
     pass
@@ -39,15 +40,16 @@ def ensure_connection(fn):
         return fn(self, *args, **kwargs)
     return wrapper
 
+
 class MongoOutlet(Outlet):
     """
     Outlet for pushing data into a MongoDB instance. Pushes are executed synchronously.
     """
 
-    MONGODB_COLLECTION:MetadataKey = 'MongoOutlet.MONGODB_COLLECTION'
+    MONGODB_COLLECTION: MetadataKey = 'MongoOutlet.MONGODB_COLLECTION'
     """ Name of collection to write to. """
 
-    def __init__(self, database_name:str='databay', collection:str='default_collection', host:str=None, port:str=None):
+    def __init__(self, database_name: str = 'databay', collection: str = 'default_collection', host: str = None, port: str = None):
         """
 
         :type database_name: str
@@ -73,10 +75,10 @@ class MongoOutlet(Outlet):
         self.database_name = database_name
         self.collection = collection
         self._client = None
-        self._db = None # _db == None means disconnected
+        self._db = None  # _db == None means disconnected
         self._collections = []
 
-    def _group_by_collection(self, records:List[Record]):
+    def _group_by_collection(self, records: List[Record]):
         """
         Group the provided records by the collection name specified in each record's metadata. Global collection provided on construction is used if no collection is specified.
 
@@ -88,9 +90,11 @@ class MongoOutlet(Outlet):
         collections = {}
 
         for record in records:
-            collection_name = record.metadata.get(self.MONGODB_COLLECTION, self.collection)
+            collection_name = record.metadata.get(
+                self.MONGODB_COLLECTION, self.collection)
 
-            if collection_name not in collections: collections[collection_name] = []
+            if collection_name not in collections:
+                collections[collection_name] = []
 
             if isinstance(record.payload, list):
                 collections[collection_name] += record.payload
@@ -100,7 +104,7 @@ class MongoOutlet(Outlet):
         return collections
 
     @ensure_connection
-    def push(self, records:[Record], update):
+    def push(self, records: [Record], update):
         """
         |decorated| :any:`ensure_connection`
 
@@ -133,7 +137,7 @@ class MongoOutlet(Outlet):
 
         return True
 
-    def connect(self, database_name:str=None) -> bool:
+    def connect(self, database_name: str = None) -> bool:
         """
         Connect to the specified database. Returns True if already connected to the specified database. Disconnects from any existing databases if the specified database is different.
 
@@ -146,7 +150,6 @@ class MongoOutlet(Outlet):
 
         if database_name is None:
             database_name = self.database_name
-
 
         if self._client is not None and self._db is not None:
             if self._db.name == database_name:
@@ -181,7 +184,7 @@ class MongoOutlet(Outlet):
         """
         self.disconnect()
 
-    def _get_collection(self, collection:str):
+    def _get_collection(self, collection: str):
         """
         Get a collection from the database.
 
@@ -196,12 +199,13 @@ class MongoOutlet(Outlet):
         if str(collection) not in self._collections:
             self._collections = self._db.list_collection_names()
             if str(collection) not in self._collections:
-                raise MongoCollectionNotFound('Collection called "%s" not found. Please create the collection first using add_collection(). Existing collection are: %s' % (collection, self._collections))
+                raise MongoCollectionNotFound(
+                    'Collection called "%s" not found. Please create the collection first using add_collection(). Existing collection are: %s' % (collection, self._collections))
 
         return self._db[str(collection)]
 
     @ensure_connection
-    def _add_collection(self, collection:str):
+    def _add_collection(self, collection: str):
         """
         |decorated| :any:`ensure_connection`
 

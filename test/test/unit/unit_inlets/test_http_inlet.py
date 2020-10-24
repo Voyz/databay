@@ -10,14 +10,15 @@ from test_utils import fqname
 
 logging.getLogger('databay.HttpInlet').setLevel(logging.WARNING)
 
-client = MagicMock() # for ClientSession() as session
-client_mock = CoroutineMock() # for session.get() as response
+client = MagicMock()  # for ClientSession() as session
+client_mock = CoroutineMock()  # for session.get() as response
 
 
 def set_response(payload):
     response = CoroutineMock(read=CoroutineMock(return_value=payload))
     client_mock.get.return_value.__aenter__.return_value = response
     client.return_value.__aenter__.return_value = client_mock
+
 
 @patch('aiohttp.ClientSession', new=client)
 class TestHttpInlet(inlet_tester.InletTester):
@@ -48,15 +49,13 @@ class TestHttpInlet(inlet_tester.InletTester):
         set_response(b'<html>')
         self.inlet.json = True
 
-        self.assertRaisesRegex(ValueError, 'Response does not contain valid JSON', asyncio.run, self.inlet._pull(update))
+        self.assertRaisesRegex(
+            ValueError, 'Response does not contain valid JSON', asyncio.run, self.inlet._pull(update))
 
     @patch(fqname(Update))
     def test_invalid_html(self, update):
         set_response(None)
         self.inlet.json = False
 
-        self.assertRaisesRegex(AttributeError, '\'NoneType\' object has no attribute \'decode\'', asyncio.run, self.inlet._pull(update))
-
-
-
-
+        self.assertRaisesRegex(
+            AttributeError, '\'NoneType\' object has no attribute \'decode\'', asyncio.run, self.inlet._pull(update))

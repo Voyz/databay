@@ -11,9 +11,11 @@ class DummyOutlet(Outlet):
     def push(self, records, update):
         self.records = records
 
+
 class DummyAsyncOutlet(DummyOutlet):
     async def push(self, records, update):
         self.records = records
+
 
 class DummyStartShutdownOutlet(DummyOutlet):
     start_called = False
@@ -27,7 +29,6 @@ class DummyStartShutdownOutlet(DummyOutlet):
 
 
 class TestOutlet(TestCase):
-
 
     def test_push(self):
         outlet = DummyOutlet()
@@ -96,10 +97,10 @@ class TestOutlet(TestCase):
         self.assertTrue(outlet.shutdown_called)
         self.assertFalse(outlet.start_called)
 
-
     """ This isn't easy to test properly, as race condition rarely happens. Add time.sleep(0.1) 
     to Outlet.try_start before changing self._active to generate race condition - then the _thread_lock 
     should indeed prevent it."""
+
     def test_try_start_race_condition(self):
         outlet = DummyStartShutdownOutlet()
         outlet.on_start = mock.MagicMock()
@@ -110,7 +111,7 @@ class TestOutlet(TestCase):
 
         ev = threading.Event()
         threads = []
-        for i in range (0, 10):
+        for i in range(0, 10):
             t = threading.Thread(target=worker, daemon=True, args=[ev])
             threads.append(t)
             t.start()
@@ -132,7 +133,7 @@ class TestOutlet(TestCase):
 
         ev = threading.Event()
         threads = []
-        for i in range (0, 10):
+        for i in range(0, 10):
             t = threading.Thread(target=worker, daemon=True, args=[ev])
             threads.append(t)
             t.start()

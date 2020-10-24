@@ -6,9 +6,10 @@ from databay.planners import SchedulePlanner
 from databay.record import Record
 from databay.outlet import Outlet
 
+
 class PrintOutlet(Outlet):
 
-    def push(self, records:[Record], update):
+    def push(self, records: [Record], update):
         for record in records:
             print(update, record.payload)
 

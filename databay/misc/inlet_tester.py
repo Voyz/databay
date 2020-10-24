@@ -16,24 +16,26 @@ def for_each_inlet(fn):
 
     def wrapper(test_kls, *args, **kwargs):
         for inlet in test_kls.inlets:
-            inlet._metadata = {**test_kls.inlet._metadata, **test_kls.gmetadata}
+            inlet._metadata = {
+                **test_kls.inlet._metadata, **test_kls.gmetadata}
             test_kls.inlet = inlet
             with test_kls.subTest(msg=f"Inlet {str(inlet)}"):
                 fn(test_kls, *args, **kwargs)
 
     return wrapper
 
+
 class InletTester(TestCase):
     """
     Utility class used for testing concrete implementations of :any:`Inlet`.
     """
 
-    def get_inlet(self): # pragma: no cover
+    def get_inlet(self):  # pragma: no cover
         """Implement this method to return instances of your inlet class."""
         return NullInlet()
 
     def setUp(self):
-        self.gmetadata = {'global':'global'}
+        self.gmetadata = {'global': 'global'}
         self.inlets = self.get_inlet()
         if not isinstance(self.inlets, list):
             self.inlets = [self.inlets]
@@ -48,13 +50,15 @@ class InletTester(TestCase):
 
         Test creating new records and passing local metadata.
         """
-        payload = {'test':123}
-        metadata = {'metadata':321}
+        payload = {'test': 123}
+        metadata = {'metadata': 321}
         record = self.inlet.new_record(payload=payload, metadata=metadata)
         self.assertIsInstance(record, Record)
         self.assertEqual(record.payload, payload)
-        self.assertLessEqual(metadata.items(), record.metadata.items(), 'Local metadata should be contained in record.metadata')
-        self.assertLessEqual(self.gmetadata.items(), record.metadata.items(), 'Global metadata should be contained in record.metadata')
+        self.assertLessEqual(metadata.items(), record.metadata.items(
+        ), 'Local metadata should be contained in record.metadata')
+        self.assertLessEqual(self.gmetadata.items(), record.metadata.items(
+        ), 'Global metadata should be contained in record.metadata')
 
     @for_each_inlet
     def test_new_record_override_global(self):
@@ -63,13 +67,15 @@ class InletTester(TestCase):
 
         Test creating new records and overriding global metadata.
         """
-        payload = {'test':123}
-        metadata = {'global':'local'}
+        payload = {'test': 123}
+        metadata = {'global': 'local'}
         record = self.inlet.new_record(payload=payload, metadata=metadata)
         self.assertIsInstance(record, Record)
         self.assertEqual(record.payload, payload)
-        self.assertLessEqual(metadata.items(), record.metadata.items(), 'Local metadata should be contained in record.metadata')
-        self.assertEqual(record.metadata['global'], 'local', 'Global metadata should be overridden by local metadata')
+        self.assertLessEqual(metadata.items(), record.metadata.items(
+        ), 'Local metadata should be contained in record.metadata')
+        self.assertEqual(record.metadata['global'], 'local',
+                         'Global metadata should be overridden by local metadata')
 
     @patch(fqname(Update))
     @for_each_inlet
@@ -89,7 +95,8 @@ class InletTester(TestCase):
         records = asyncio.run(self.inlet._pull(update))
         self.inlet.on_shutdown()
         self.inlet._metadata.get.assert_not_called()
-        self.assertEqual(self.inlet._metadata.__getitem__.call_count, len(self.gmetadata))
+        self.assertEqual(
+            self.inlet._metadata.__getitem__.call_count, len(self.gmetadata))
 
         self.assertIsInstance(records, (list))
         for record in records:
@@ -97,7 +104,6 @@ class InletTester(TestCase):
             self.assertIsNotNone(record.payload)
             self.assertLessEqual(self.gmetadata.items(), record.metadata.items(),
                                  'Global metadata should be contained in record.metadata')
-
 
     @for_each_inlet
     @patch(fqname(Update))
@@ -117,7 +123,3 @@ class InletTester(TestCase):
             self.assertIsNotNone(record.payload)
             self.assertLessEqual(self.gmetadata.items(), record.metadata.items(),
                                  'Global metadata should be contained in record.metadata')
-
-
-
-

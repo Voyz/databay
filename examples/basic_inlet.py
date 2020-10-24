@@ -5,6 +5,7 @@ from datetime import timedelta
 from databay import Inlet
 import random
 
+
 class RandomIntInlet(Inlet):
 
     def pull(self, update):

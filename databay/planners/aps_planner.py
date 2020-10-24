@@ -25,6 +25,7 @@ logging.getLogger('apscheduler.executors').setLevel(logging.CRITICAL)
 warnings.filterwarnings("always", category=DeprecationWarning,
                         module=__name__)
 
+
 class ApsPlanner(BasePlanner):
     """
     Planner implementing scheduling using the |APS|_. Scheduling sets the :any:`APS Job <apscheduler.job.Job>` as links' job.
@@ -35,7 +36,7 @@ class ApsPlanner(BasePlanner):
 
     """
 
-    def __init__(self, links:Union[Link, List[Link]]=None, threads:int=30, executors_override:dict=None, job_defaults_override:dict=None, catch_exceptions:bool=False):
+    def __init__(self, links: Union[Link, List[Link]] = None, threads: int = 30, executors_override: dict = None, job_defaults_override: dict = None, catch_exceptions: bool = False):
         """
 
         :type links: :any:`Link` or list[:any:`Link`]
@@ -59,22 +60,25 @@ class ApsPlanner(BasePlanner):
             |default| :code:`False`
         """
 
-
         self._threads = threads
         self._catch_exceptions = catch_exceptions
 
-        if executors_override is None: executors_override = {}
-        if job_defaults_override is None: job_defaults_override = {}
+        if executors_override is None:
+            executors_override = {}
+        if job_defaults_override is None:
+            job_defaults_override = {}
 
-        executors = {'default': ThreadPoolExecutor(threads), **executors_override}
-        job_defaults = {'coalesce': False, 'max_instances': threads, **job_defaults_override}
+        executors = {'default': ThreadPoolExecutor(
+            threads), **executors_override}
+        job_defaults = {'coalesce': False,
+                        'max_instances': threads, **job_defaults_override}
 
-        self._scheduler = BlockingScheduler(executors=executors, job_defaults=job_defaults, timezone='UTC')
+        self._scheduler = BlockingScheduler(
+            executors=executors, job_defaults=job_defaults, timezone='UTC')
         # self._scheduler = BackgroundScheduler(executors=executors, job_defaults=job_defaults, timezone=utc)
         self._scheduler.add_listener(self._on_exception, EVENT_JOB_ERROR)
 
         super().__init__(links)
-
 
     def _on_exception(self, event):
         if event.code is EVENT_JOB_ERROR:
@@ -85,19 +89,19 @@ class ApsPlanner(BasePlanner):
                 traceback = event.exception.__traceback__
 
                 try:
-                    raise type(event.exception)(exception_message).with_traceback(traceback)
+                    raise type(event.exception)(
+                        exception_message).with_traceback(traceback)
                 except TypeError as type_exception:
                     # Some custom exceptions won't let you use the common constructor and will throw an error on initialisation. We catch these and just throw a generic RuntimeError.
-                    raise Exception(exception_message).with_traceback(traceback) from None
+                    raise Exception(exception_message).with_traceback(
+                        traceback) from None
             except Exception as e:
                 _LOGGER.exception(e)
 
             if not self._catch_exceptions and self.running:
                 self.shutdown(False)
 
-
-
-    def _schedule(self, link:Link):
+    def _schedule(self, link: Link):
         """
         Schedule a link. Sets :any:`APS Job <apscheduler.job.Job>` as this link's job.
 
@@ -105,11 +109,11 @@ class ApsPlanner(BasePlanner):
         :param link: Link to be scheduled
         """
 
-        job = self._scheduler.add_job(link.transfer, trigger=IntervalTrigger(seconds=link.interval.total_seconds()))
+        job = self._scheduler.add_job(link.transfer, trigger=IntervalTrigger(
+            seconds=link.interval.total_seconds()))
         link.set_job(job)
 
-
-    def _unschedule(self, link:Link):
+    def _unschedule(self, link: Link):
         """
         Unschedule a link.
 
@@ -120,7 +124,6 @@ class ApsPlanner(BasePlanner):
             link.job.remove()
             link.set_job(None)
 
-
     def start(self):
         """
         Start this planner. Calls :any:`APS Scheduler.start() <apscheduler.schedulers.base.BaseScheduler.start>`
@@ -129,10 +132,8 @@ class ApsPlanner(BasePlanner):
         """
         super().start()
 
-
     def _start_planner(self):
         self._scheduler.start()
-
 
     def pause(self):
         """
@@ -141,7 +142,6 @@ class ApsPlanner(BasePlanner):
         _LOGGER.info('Pausing %s' % str(self))
         self._scheduler.pause()
 
-
     def resume(self):
         """
         Resume this planner. Calls :any:`APScheduler.resume() <apscheduler.schedulers.base.BaseScheduler.resume>`
@@ -149,8 +149,7 @@ class ApsPlanner(BasePlanner):
         _LOGGER.info('Resuming %s' % str(self))
         self._scheduler.resume()
 
-
-    def shutdown(self, wait:bool=True):
+    def shutdown(self, wait: bool = True):
         """
         Shutdown this planner. Calls :any:`APScheduler.shutdown() <apscheduler.schedulers.base.BaseScheduler.shutdown>`
 
@@ -162,7 +161,7 @@ class ApsPlanner(BasePlanner):
         """
         super().shutdown(wait)
 
-    def _shutdown_planner(self, wait:bool=True):
+    def _shutdown_planner(self, wait: bool = True):
         """
         Shutdown this planner. Calls :any:`APScheduler.shutdown() <apscheduler.schedulers.base.BaseScheduler.shutdown>`
 
@@ -172,7 +171,6 @@ class ApsPlanner(BasePlanner):
         """
         self._scheduler.shutdown(wait=wait)
 
-
     def purge(self):
         """
         Unschedule and clear all links. It can be used while planner is running. APS automatically removes jobs, so we only clear the links.
@@ -181,7 +179,7 @@ class ApsPlanner(BasePlanner):
             try:
                 link.job.remove()
             except JobLookupError:
-                pass # APS already removed jobs if shutdown was called before purge, otherwise let's do it ourselves
+                pass  # APS already removed jobs if shutdown was called before purge, otherwise let's do it ourselves
             link.set_job(None)
 
         self._links = []
@@ -201,7 +199,8 @@ class ApsPlanner(BasePlanner):
         return 'ApsPlanner(threads:%s)' % (self._threads)
 
 
-class APSPlanner(ApsPlanner): # pragma: no cover
+class APSPlanner(ApsPlanner):  # pragma: no cover
     def __init__(self, *args, **kwargs):
-        warnings.warn('APSPlanner was renamed to ApsPlanner in version 0.1.7 and will be permanently changed in version 1.0', DeprecationWarning)
+        warnings.warn(
+            'APSPlanner was renamed to ApsPlanner in version 0.1.7 and will be permanently changed in version 1.0', DeprecationWarning)
         super().__init__(*args, **kwargs)

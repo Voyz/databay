@@ -6,6 +6,7 @@ from databay.planners import ApsPlanner
 from databay.record import Record
 from databay.outlet import Outlet
 
+
 class FileOutlet(Outlet):
 
     FILEPATH = 'FileOutlet.FILEPATH'
@@ -15,18 +16,20 @@ class FileOutlet(Outlet):
     """Write mode to use when writing into the csv file."""
 
     def __init__(self,
-                 default_filepath:str='outputs/default_output.txt',
-                 default_file_mode:str='a'):
+                 default_filepath: str = 'outputs/default_output.txt',
+                 default_file_mode: str = 'a'):
 
         super().__init__()
 
         self.default_filepath = default_filepath
         self.default_file_mode = default_file_mode
 
-    def push(self, records:[Record], update):
+    def push(self, records: [Record], update):
         for record in records:
-            filepath = record.metadata.get(self.FILEPATH, self.default_filepath)
-            file_mode = record.metadata.get(self.FILE_MODE, self.default_file_mode)
+            filepath = record.metadata.get(
+                self.FILEPATH, self.default_filepath)
+            file_mode = record.metadata.get(
+                self.FILE_MODE, self.default_file_mode)
 
             with open(filepath, file_mode) as f:
                 f.write(str(record.payload)+'\n')

@@ -8,12 +8,14 @@ if sys.version_info[0] == 3 and sys.version_info[1] >= 8 and sys.platform.starts
 
 IGNORE_WARNINGS = []
 
+
 def initialise():
     import logging
 
     from databay.misc.logs import ISO8601Formatter
 
-    iso8601_formatter = ISO8601Formatter('%(asctime)s|%(levelname)-.1s| %(message)s (%(name)s)', millis_precision=3)# / %(threadName)s)')
+    iso8601_formatter = ISO8601Formatter(
+        '%(asctime)s|%(levelname)-.1s| %(message)s (%(name)s)', millis_precision=3)  # / %(threadName)s)')
     iso8601_formatter.set_pretty(True)
 
     stream_handler = logging.StreamHandler()
@@ -30,5 +32,5 @@ def initialise():
 
     if sys.platform.startswith('win') and \
         (sys.stdin.encoding == 'windows-1252' or sys.stdout.encoding == 'windows-1252') and \
-        'windows-1252' not in IGNORE_WARNINGS:
+            'windows-1252' not in IGNORE_WARNINGS:
         default_logger.warning('stdin or stdout encoder is set to \'windows-1252\'. This may cause errors with data streaming. Fix by setting following environment variables: \n\nPYTHONIOENCODING=utf-8\nPYTHONLEGACYWINDOWSSTDIO=utf-8\n\nSet DATABAY_IGNORE_WARNINGS=\'windows-1252\' to ignore this warning.')
