@@ -60,7 +60,7 @@ class SchedulePlanner(BasePlanner):
         self._exc_info = []
         self._exc_lock = threading.Lock()
         self._ignore_exceptions = ignore_exceptions
-        if catch_exceptions is not None:
+        if catch_exceptions is not None: # pragma: no cover
             self._ignore_exceptions = catch_exceptions
             warnings.warn('\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
 
