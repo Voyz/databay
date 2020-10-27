@@ -79,7 +79,7 @@ class Link():
             self._interval = datetime.timedelta(seconds=interval)
         else:
             self._interval = interval
-        self._count = -1
+        self._transfer_number = -1
         self._job = None
         self._name = name
         self._copy_records = copy_records
