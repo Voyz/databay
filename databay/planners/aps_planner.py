@@ -93,7 +93,7 @@ class ApsPlanner(BasePlanner):
                 _LOGGER.exception(e)
 
             if not self._catch_exceptions and self.running:
-                self.shutdown(False)
+                self.shutdown(wait=False)
 
 
 

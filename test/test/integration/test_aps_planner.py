@@ -77,7 +77,7 @@ class TestApsPlanner(TestCase):
         th = Thread(target=self.planner.start, daemon=True)
         th.start()
         self.assertTrue(self.planner.running, 'Scheduler should be running')
-        self.planner.shutdown(False)
+        self.planner.shutdown(wait=False)
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
 
@@ -88,7 +88,7 @@ class TestApsPlanner(TestCase):
         self.planner.pause()
         self.assertRaises(SchedulerAlreadyRunningError, self.planner.start)
         self.assertEqual(self.planner._scheduler.state, STATE_PAUSED, 'Scheduler should be paused')
-        self.planner.shutdown(False)
+        self.planner.shutdown(wait=False)
 
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
@@ -96,7 +96,7 @@ class TestApsPlanner(TestCase):
     def test_shutdown(self):
         th = Thread(target=self.planner.start, daemon=True)
         th.start()
-        self.planner.shutdown(False)
+        self.planner.shutdown(wait=False)
         self.assertFalse(self.planner.running, 'Scheduler should not be running')
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
@@ -106,7 +106,7 @@ class TestApsPlanner(TestCase):
         th.start()
         self.planner.pause()
         self.assertEqual(self.planner._scheduler.state, STATE_PAUSED, 'Scheduler should be paused')
-        self.planner.shutdown(False)
+        self.planner.shutdown(wait=False)
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
 
@@ -117,7 +117,7 @@ class TestApsPlanner(TestCase):
         self.assertEqual(self.planner._scheduler.state, STATE_PAUSED, 'Scheduler should be paused')
         self.planner.resume()
         self.assertTrue(self.planner.running, 'Scheduler should not be paused')
-        self.planner.shutdown(False)
+        self.planner.shutdown(wait=False)
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
 
@@ -126,7 +126,7 @@ class TestApsPlanner(TestCase):
         th.start()
         self.planner.pause()
         self.assertEqual(self.planner._scheduler.state, STATE_PAUSED, 'Scheduler should be paused')
-        self.planner.shutdown(False)
+        self.planner.shutdown(wait=False)
         self.assertFalse(self.planner.running, 'Scheduler should not be running')
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
@@ -134,7 +134,7 @@ class TestApsPlanner(TestCase):
     def test_pause_shutdown(self):
         th = Thread(target=self.planner.start, daemon=True)
         th.start()
-        self.planner.shutdown(False)
+        self.planner.shutdown(wait=False)
         self.assertRaises(SchedulerNotRunningError, self.planner.pause)
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
@@ -142,7 +142,7 @@ class TestApsPlanner(TestCase):
     def test_resume_shutdown(self):
         th = Thread(target=self.planner.start, daemon=True)
         th.start()
-        self.planner.shutdown(False)
+        self.planner.shutdown(wait=False)
         self.assertRaises(SchedulerNotRunningError, self.planner.resume)
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
@@ -150,7 +150,7 @@ class TestApsPlanner(TestCase):
     def test_start_shutdown(self):
         th = Thread(target=self.planner.start, daemon=True)
         th.start()
-        self.planner.shutdown(False)
+        self.planner.shutdown(wait=False)
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread 1 should be stopped.')
         self.assertFalse(self.planner.running, 'Scheduler should not be running')
@@ -158,7 +158,7 @@ class TestApsPlanner(TestCase):
         th2 = Thread(target=self.planner.start, daemon=True)
         th2.start()
         self.assertTrue(self.planner.running, 'Scheduler should be running')
-        self.planner.shutdown(False)
+        self.planner.shutdown(wait=False)
         th2.join(timeout=2)
         self.assertFalse(th2.is_alive(), 'Thread 2 should be stopped.')
 
@@ -172,7 +172,7 @@ class TestApsPlanner(TestCase):
         time.sleep(0.04)
         self.link.transfer.assert_called()
 
-        self.planner.shutdown(False)
+        self.planner.shutdown(wait=False)
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
 
@@ -193,7 +193,7 @@ class TestApsPlanner(TestCase):
 
         if catch_exceptions:
             self.assertTrue(self.planner.running, 'Scheduler should be running')
-            self.planner.shutdown(False)
+            self.planner.shutdown(wait=False)
             th.join(timeout=2)
             self.assertFalse(th.is_alive(), 'Thread should be stopped.')
 
