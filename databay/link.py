@@ -49,7 +49,8 @@ class Link():
                  interval: Union[datetime.timedelta, int, float], 
                  name:str='',
                  copy_records:bool=True,
-                 ignore_exceptions:bool=False):
+                 ignore_exceptions:bool=False,
+                 catch_exceptions:bool=None):
         """
         :type inlets: :any:`Inlet` or list[:any:`Inlet`]
         :param inlets: inlets to add to this link
@@ -68,7 +69,7 @@ class Link():
         :param copy_records: Whether to copy records before passing them to outlets. |default| :code:`True`
 
         :type ignore_exceptions: bool
-        :param ignore_exceptions: Whether exceptions in inlets and outlets should be caught or let through. |default| :code:`True`
+        :param ignore_exceptions: Whether exceptions in inlets and outlets should be logged and ignored, or raised. |default| :code:`True`
         """
 
         self._inlets = []
@@ -84,6 +85,9 @@ class Link():
         self._name = name
         self._copy_records = copy_records
         self._ignore_exceptions = ignore_exceptions
+        if catch_exceptions is not None:
+            self._ignore_exceptions = catch_exceptions
+            warnings.warn('\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
 
     @property
     def inlets(self) -> List[Inlet]:
