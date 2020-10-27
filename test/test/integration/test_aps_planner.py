@@ -177,10 +177,10 @@ class TestApsPlanner(TestCase):
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
 
 
-    def _with_exception(self, link, catch_exceptions):
+    def _with_exception(self, link, ignore_exceptions):
         logging.getLogger('databay').setLevel(logging.CRITICAL)
         # logging.getLogger('databay').setLevel(logging.INFO)
-        self.planner = ApsPlanner(catch_exceptions=catch_exceptions)
+        self.planner = ApsPlanner(ignore_exceptions=ignore_exceptions)
 
         link.transfer.side_effect = DummyException()
         link.interval.total_seconds.return_value = 0.02
@@ -191,7 +191,7 @@ class TestApsPlanner(TestCase):
         time.sleep(0.04)
         link.transfer.assert_called()
 
-        if catch_exceptions:
+        if ignore_exceptions:
             self.assertTrue(self.planner.running, 'Scheduler should be running')
             self.planner.shutdown(False)
             th.join(timeout=2)
@@ -200,7 +200,7 @@ class TestApsPlanner(TestCase):
         self.assertFalse(self.planner.running, 'Scheduler should be stopped')
 
 
-    def test_catch_exception(self):
+    def test_ignore_exception(self):
         self._with_exception(self.link, True)
 
 

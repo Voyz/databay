@@ -30,7 +30,7 @@ class SchedulePlanner(BasePlanner):
 
     """
 
-    def __init__(self, links:Union[Link, List[Link]]=None, threads:int=30, refresh_interval:float=1.0, catch_exceptions:bool=False):
+    def __init__(self, links:Union[Link, List[Link]]=None, threads:int=30, refresh_interval:float=1.0, ignore_exceptions:bool=False):
         """
 
         :type links: :any:`Link` or list[:any:`Link`]
@@ -47,8 +47,8 @@ class SchedulePlanner(BasePlanner):
             links with intervals smaller than this value will raise a :any:`ScheduleIntervalError`.
             |default| :code:`1.0`
 
-        :type catch_exceptions: bool
-        :param catch_exceptions: Whether exceptions should be caught or halt the planner.
+        :type ignore_exceptions: bool
+        :param ignore_exceptions: Whether exceptions should be caught or halt the planner.
             |default| :code:`False`
         """
         self._refresh_interval = refresh_interval
@@ -58,7 +58,7 @@ class SchedulePlanner(BasePlanner):
         self._thread_pool = None
         self._exc_info = []
         self._exc_lock = threading.Lock()
-        self._catch_exceptions = catch_exceptions
+        self._ignore_exceptions = ignore_exceptions
 
     @property
     def refresh_interval(self) -> float:
@@ -170,7 +170,7 @@ class SchedulePlanner(BasePlanner):
                                 raise RuntimeError(exception_message).with_traceback(traceback) from None
                         except Exception as e:
                             _LOGGER.exception(e)
-                            if not self._catch_exceptions and self.running:
+                            if not self._ignore_exceptions and self.running:
                                 self.shutdown(False)
 
                     self._exc_info = []

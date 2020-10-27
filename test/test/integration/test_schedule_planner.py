@@ -121,9 +121,9 @@ class TestSchedulePlanner(TestCase):
 
         self.assertRaises(ScheduleIntervalError, self.planner.add_links, self.link)
 
-    def _with_exception(self, link, catch_exceptions):
+    def _with_exception(self, link, ignore_exceptions):
         logging.getLogger('databay').setLevel(logging.CRITICAL)
-        self.planner = SchedulePlanner(catch_exceptions=catch_exceptions)
+        self.planner = SchedulePlanner(ignore_exceptions=ignore_exceptions)
         link.transfer.side_effect = DummyException()
         link.interval.total_seconds.return_value = 0.02
         self.planner._refresh_interval = 0.02
@@ -137,7 +137,7 @@ class TestSchedulePlanner(TestCase):
         time.sleep(0.04)
         link.transfer.assert_called()
 
-        if catch_exceptions:
+        if ignore_exceptions:
             self.assertTrue(self.planner.running, 'Scheduler should be running')
             self.planner.shutdown(False)
             th.join(timeout=2)
@@ -145,7 +145,7 @@ class TestSchedulePlanner(TestCase):
 
         self.assertFalse(self.planner.running, 'Scheduler should be stopped')
 
-    def test_catch_exception(self):
+    def test_ignore_exception(self):
         self._with_exception(self.link, True)
 
     def test_raise_exception(self):
