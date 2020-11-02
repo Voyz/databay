@@ -288,11 +288,11 @@ class TestLink(TestCase):
 
     def test_integer_to_timedelta(self):
         link = Link([], [], 1, name='test_integer_interval_coerced')
-        self.assertEquals(link._interval, timedelta(seconds=1))
+        self.assertEqual(link._interval, timedelta(seconds=1))
 
     def test_float_to_timedelta(self):
         link = Link([], [], 1.5, name='test_float_interval_coerced')
-        self.assertEquals(link._interval, timedelta(seconds=1.5))
+        self.assertEqual(link._interval, timedelta(seconds=1.5))
 
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Inlet), spec=Inlet)
