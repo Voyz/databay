@@ -1,15 +1,12 @@
+import asyncio
 import copy
 import datetime
 import itertools
 import warnings
-from typing import List, Union, Any
-
-import asyncio
-
 import logging
+from typing import Any, List, Union
 
 from databay.errors import InvalidNodeError
-
 _LOGGER = logging.getLogger('databay.Link')
 
 class Update():
@@ -40,8 +37,7 @@ class Update():
         return s
 
 
-from databay import Inlet
-from databay import Outlet
+from databay import Inlet, Outlet
 
 class Link():
     """
@@ -50,8 +46,8 @@ class Link():
 
     def __init__(self,
                  inlets: Union[Inlet, List[Inlet]],
-                 outlets: Union[Outlet, List[Outlet]],
-                 interval:datetime.timedelta,
+                 outlets: Union[Outlet, List[Outlet]], 
+                 interval: Union[datetime.timedelta, int, float],
                  tags:Union[str, List[str]]=None,
                  copy_records:bool=True,
                  catch_exceptions:bool=False,
@@ -63,8 +59,9 @@ class Link():
         :type outlets: :any:`Outlet` or list[:any:`Outlet`]
         :param outlets: outlets to add to this link.
 
-        :type interval: datetime.timedelta
-        :param interval: Frequency at which this link should transfer.
+        :type interval: Union[datetime.timedelta, int, float]
+        :param interval: Expects :code:datetime.timedelta. Alternatively, you can provide :code:int or
+        :code:float which will be coerced explicitly to :code:datetime.timedelta.seconds.
 
         :type tags: Union[str, List[str]]
         :param tags: List of tags of this link. |default| :code:`[]`
@@ -80,7 +77,10 @@ class Link():
         self._outlets = []
         self.add_inlets(inlets)
         self.add_outlets(outlets)
-        self._interval = interval
+        if isinstance(interval, (int, float)):
+            self._interval = datetime.timedelta(seconds=interval)
+        else:
+            self._interval = interval
         self._transfer_number = -1
         self._job = None
         if name != None:
