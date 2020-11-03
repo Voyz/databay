@@ -38,8 +38,7 @@ class TestLink(TestCase):
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock())
     def test_transfer(self, inlet, outlet):
-        link = Link([inlet], [outlet], timedelta(
-            seconds=1), name='test_update')
+        link = Link([inlet], [outlet], timedelta(seconds=1), tags='test_update')
 
         link.transfer()
 
@@ -50,8 +49,7 @@ class TestLink(TestCase):
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock())
     def test_run(self, inlet, outlet):
         async def task():
-            link = Link([inlet], [outlet], timedelta(seconds=1),
-                        name='test_run', copy_records=False)
+            link = Link([inlet], [outlet], timedelta(seconds=1), tags='test_run', copy_records=False)
 
             inlet_result = await inlet._pull(None)
             await link._run()
@@ -65,8 +63,7 @@ class TestLink(TestCase):
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock())
     def test_exception_inlet(self, inlet, outlet):
         inlet._pull.side_effect = DummyException('Test exception')
-        link = Link([inlet], [outlet], timedelta(seconds=1),
-                    catch_exceptions=False, name='test_exception_inlet')
+        link = Link([inlet], [outlet], timedelta(seconds=1), catch_exceptions=False, tags='test_exception_inlet')
 
         self.assertRaises(DummyException, link.transfer)
 
@@ -80,8 +77,7 @@ class TestLink(TestCase):
         # inlet._pull.side_effect = pull_mock
         # inlet._pull.return_value = Future()
         outlet._push.side_effect = DummyException('Test exception')
-        link = Link([inlet], [outlet], timedelta(seconds=1),
-                    catch_exceptions=False, name='test_exception_outlet')
+        link = Link([inlet], [outlet], timedelta(seconds=1), catch_exceptions=False, tags='test_exception_outlet')
 
         self.assertRaises(DummyException, link.transfer)
 
@@ -94,8 +90,7 @@ class TestLink(TestCase):
         logging.getLogger('databay.Link').setLevel(logging.CRITICAL)
         inlet._pull.side_effect = DummyException('Test inlet exception')
         outlet._push.side_effect = DummyException('Test outlet exception')
-        link = Link([inlet], [outlet], timedelta(seconds=1),
-                    name='test_exception_caught', catch_exceptions=True)
+        link = Link([inlet], [outlet], timedelta(seconds=1), tags='test_exception_caught', catch_exceptions=True)
 
         try:
             link.transfer()
@@ -120,8 +115,7 @@ class TestLink(TestCase):
                 'Test outlet1 exception')
             # inlet1._pull.return_value = inlet_future
             # inlet2._pull.return_value = inlet_future
-            link = Link([inlet1, inlet2], [outlet1, outlet2], timedelta(
-                seconds=1), name='test_catch_partial_exception', copy_records=False, catch_exceptions=True)
+            link = Link([inlet1, inlet2], [outlet1, outlet2], timedelta(seconds=1), tags='test_catch_partial_exception', copy_records=False, catch_exceptions=True)
 
             # results = [object()]
             results = await inlet2._pull(None)
@@ -141,8 +135,7 @@ class TestLink(TestCase):
     def test_on_start(self, inlet1, outlet1):
         type(inlet1).active = mock.PropertyMock(return_value=False)
         type(outlet1).active = mock.PropertyMock(return_value=False)
-        link = Link([inlet1], [outlet1], timedelta(
-            seconds=1), name='test_on_start')
+        link = Link([inlet1], [outlet1], timedelta(seconds=1), tags='test_on_start')
 
         link.on_start()
 
@@ -154,8 +147,7 @@ class TestLink(TestCase):
     def test_on_start_already_active(self, inlet1, outlet1):
         type(inlet1).active = mock.PropertyMock(return_value=True)
         type(outlet1).active = mock.PropertyMock(return_value=True)
-        link = Link([inlet1], [outlet1], timedelta(seconds=1),
-                    name='test_on_start_already_active')
+        link = Link([inlet1], [outlet1], timedelta(seconds=1), tags='test_on_start_already_active')
 
         link.on_start()
 
@@ -167,8 +159,7 @@ class TestLink(TestCase):
     def test_on_shutdown(self, inlet1, outlet1):
         type(inlet1).active = mock.PropertyMock(return_value=True)
         type(outlet1).active = mock.PropertyMock(return_value=True)
-        link = Link([inlet1], [outlet1], timedelta(
-            seconds=1), name='test_on_shutdown')
+        link = Link([inlet1], [outlet1], timedelta(seconds=1), tags='test_on_shutdown')
 
         link.on_shutdown()
 
@@ -180,8 +171,7 @@ class TestLink(TestCase):
     def test_on_shutdown_already_inactive(self, inlet1, outlet1):
         type(inlet1).active = mock.PropertyMock(return_value=False)
         type(outlet1).active = mock.PropertyMock(return_value=False)
-        link = Link([inlet1], [outlet1], timedelta(seconds=1),
-                    name='test_on_shutdown_already_inactive')
+        link = Link([inlet1], [outlet1], timedelta(seconds=1), tags='test_on_shutdown_already_inactive')
 
         link.on_shutdown()
 
@@ -190,7 +180,7 @@ class TestLink(TestCase):
 
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock())
     def test_add_inlet(self, inlet1):
-        link = Link([], [], timedelta(seconds=1), name='test_add_inlet')
+        link = Link([], [], timedelta(seconds=1), tags='test_add_inlet')
 
         link.add_inlets(inlet1)
 
@@ -199,8 +189,7 @@ class TestLink(TestCase):
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock())
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock())
     def test_add_inlet_multiple(self, inlet1, inlet2):
-        link = Link([], [], timedelta(seconds=1),
-                    name='test_add_inlet_multiple')
+        link = Link([], [], timedelta(seconds=1), tags='test_add_inlet_multiple')
 
         link.add_inlets([inlet1, inlet2])
 
@@ -208,7 +197,7 @@ class TestLink(TestCase):
 
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock())
     def test_add_inlet_same(self, inlet1):
-        link = Link([], [], timedelta(seconds=1), name='test_add_inlet_same')
+        link = Link([], [], timedelta(seconds=1), tags='test_add_inlet_same')
 
         link.add_inlets(inlet1)
         self.assertRaises(InvalidNodeError, link.add_inlets, inlet1)
@@ -218,7 +207,7 @@ class TestLink(TestCase):
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock())
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock())
     def test_remove_inlet(self, inlet1, inlet2):
-        link = Link([], [], timedelta(seconds=1), name='test_remove_inlet')
+        link = Link([], [], timedelta(seconds=1), tags='test_remove_inlet')
 
         link.add_inlets([inlet1, inlet2])
         link.remove_inlets(inlet2)
@@ -228,8 +217,7 @@ class TestLink(TestCase):
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock())
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock())
     def test_remove_inlet_invalid(self, inlet1, inlet2):
-        link = Link([], [], timedelta(seconds=1),
-                    name='test_remove_inlet_invalid')
+        link = Link([], [], timedelta(seconds=1), tags='test_remove_inlet_invalid')
 
         link.add_inlets([inlet1])
 
@@ -238,7 +226,7 @@ class TestLink(TestCase):
 
     @patch(fqname(Outlet), spec=Outlet)
     def test_add_outlet(self, outlet1):
-        link = Link([], [], timedelta(seconds=1), name='test_add_outlet')
+        link = Link([], [], timedelta(seconds=1), tags='test_add_outlet')
 
         link.add_outlets(outlet1)
 
@@ -247,8 +235,7 @@ class TestLink(TestCase):
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Outlet), spec=Outlet)
     def test_add_outlet_multiple(self, outlet1, outlet2):
-        link = Link([], [], timedelta(seconds=1),
-                    name='test_add_outlet_multiple')
+        link = Link([], [], timedelta(seconds=1), tags='test_add_outlet_multiple')
 
         link.add_outlets([outlet1, outlet2])
 
@@ -256,7 +243,7 @@ class TestLink(TestCase):
 
     @patch(fqname(Outlet), spec=Outlet)
     def test_add_outlet_same(self, outlet1):
-        link = Link([], [], timedelta(seconds=1), name='test_add_outlet_same')
+        link = Link([], [], timedelta(seconds=1), tags='test_add_outlet_same')
 
         link.add_outlets(outlet1)
         self.assertRaises(InvalidNodeError, link.add_outlets, outlet1)
@@ -266,7 +253,7 @@ class TestLink(TestCase):
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Outlet), spec=Outlet)
     def test_remove_outlet(self, outlet1, outlet2):
-        link = Link([], [], timedelta(seconds=1), name='test_remove_outlet')
+        link = Link([], [], timedelta(seconds=1), tags='test_remove_outlet')
 
         link.add_outlets([outlet1, outlet2])
         link.remove_outlets(outlet2)
@@ -276,8 +263,7 @@ class TestLink(TestCase):
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Outlet), spec=Outlet)
     def test_remove_outlet_invalid(self, outlet1, outlet2):
-        link = Link([], [], timedelta(seconds=1),
-                    name='test_remove_outlet_invalid')
+        link = Link([], [], timedelta(seconds=1), tags='test_remove_outlet_invalid')
 
         link.add_outlets([outlet1])
 
@@ -288,8 +274,7 @@ class TestLink(TestCase):
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock(object()))
     def xtest_non_iterable_raised(self, inlet1):
         logging.getLogger('databay.Link').setLevel(logging.ERROR)
-        link = Link([inlet1], [], timedelta(seconds=1),
-                    name='test_non_iterable_raised')
+        link = Link([inlet1], [], timedelta(seconds=1), tags='test_non_iterable_raised')
         with self.assertRaisesRegex(TypeError, 'Inlets must return iterable'):
             link.transfer()
 
@@ -297,24 +282,23 @@ class TestLink(TestCase):
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock(DummyIterable()))
     def test_generic_error_raised(self, inlet1):
         logging.getLogger('databay.Link').setLevel(logging.ERROR)
-        link = Link([inlet1], [], timedelta(seconds=1),
-                    name='test_generic_error_raised')
+        link = Link([inlet1], [], timedelta(seconds=1), tags='test_generic_error_raised')
         # with self.assertRaisesRegex(TypeError, databay.link._ITERABLE_EXCEPTION):
         self.assertRaises(DummyException, link.transfer)
 
     def test_integer_to_timedelta(self):
         link = Link([], [], 1, name='test_integer_interval_coerced')
-        self.assertEquals(link._interval, timedelta(seconds=1))
+        self.assertEqual(link._interval, timedelta(seconds=1))
 
     def test_float_to_timedelta(self):
         link = Link([], [], 1.5, name='test_float_interval_coerced')
-        self.assertEquals(link._interval, timedelta(seconds=1.5))
+        self.assertEqual(link._interval, timedelta(seconds=1.5))
 
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Inlet), spec=Inlet)
     def test_on_start_inlet_exception_raise(self, inlet1, outlet1):
         inlet1.try_start.side_effect = lambda: exec('raise(RuntimeError())')
-        link = Link([inlet1], [outlet1], timedelta(seconds=1), name='test_on_start')
+        link = Link([inlet1], [outlet1], timedelta(seconds=1), tags='test_on_start')
 
         self.assertRaises(RuntimeError, link.on_start)
 
@@ -326,7 +310,7 @@ class TestLink(TestCase):
     def test_on_start_inlet_exception_catch(self, inlet1, outlet1):
         logging.getLogger('databay.Link').setLevel(logging.WARNING)
         inlet1.try_start.side_effect = lambda: exec('raise(RuntimeError())')
-        link = Link([inlet1], [outlet1], timedelta(seconds=1), name='test_on_start', catch_exceptions=True)
+        link = Link([inlet1], [outlet1], timedelta(seconds=1), tags='test_on_start', catch_exceptions=True)
 
         with self.assertLogs(logging.getLogger('databay.Link'), level='ERROR') as cm:
             link.on_start()
@@ -340,7 +324,7 @@ class TestLink(TestCase):
     @patch(fqname(Inlet), spec=Inlet)
     def test_on_start_outlet_exception_raise(self, inlet1, outlet1, outlet2):
         outlet1.try_start.side_effect = lambda: exec('raise(RuntimeError())')
-        link = Link([inlet1], [outlet1, outlet2], timedelta(seconds=1), name='test_on_start')
+        link = Link([inlet1], [outlet1, outlet2], timedelta(seconds=1), tags='test_on_start')
 
         self.assertRaises(RuntimeError, link.on_start)
 
@@ -354,7 +338,7 @@ class TestLink(TestCase):
     def test_on_start_outlet_exception_catch(self, inlet1, outlet1, outlet2):
         logging.getLogger('databay.Link').setLevel(logging.WARNING)
         outlet1.try_start.side_effect = lambda: exec('raise(RuntimeError())')
-        link = Link([inlet1], [outlet1, outlet2], timedelta(seconds=1), name='test_on_start', catch_exceptions=True)
+        link = Link([inlet1], [outlet1, outlet2], timedelta(seconds=1), tags='test_on_start', catch_exceptions=True)
 
         with self.assertLogs(logging.getLogger('databay.Link'), level='ERROR') as cm:
             link.on_start()
@@ -368,7 +352,7 @@ class TestLink(TestCase):
     @patch(fqname(Inlet), spec=Inlet)
     def test_on_shutdown_inlet_exception_raise(self, inlet1, outlet1):
         inlet1.try_shutdown.side_effect = lambda: exec('raise(RuntimeError())')
-        link = Link([inlet1], [outlet1], timedelta(seconds=1), name='test_on_shutdown')
+        link = Link([inlet1], [outlet1], timedelta(seconds=1), tags='test_on_shutdown')
 
         self.assertRaises(RuntimeError, link.on_shutdown)
 
@@ -380,7 +364,7 @@ class TestLink(TestCase):
     def test_on_shutdown_inlet_exception_catch(self, inlet1, outlet1):
         logging.getLogger('databay.Link').setLevel(logging.WARNING)
         inlet1.try_shutdown.side_effect = lambda: exec('raise(RuntimeError())')
-        link = Link([inlet1], [outlet1], timedelta(seconds=1), name='test_on_shutdown', catch_exceptions=True)
+        link = Link([inlet1], [outlet1], timedelta(seconds=1), tags='test_on_shutdown', catch_exceptions=True)
 
         with self.assertLogs(logging.getLogger('databay.Link'), level='ERROR') as cm:
             link.on_shutdown()
@@ -394,7 +378,7 @@ class TestLink(TestCase):
     @patch(fqname(Inlet), spec=Inlet)
     def test_on_shutdown_outlet_exception_raise(self, inlet1, outlet1, outlet2):
         outlet1.try_shutdown.side_effect = lambda: exec('raise(RuntimeError())')
-        link = Link([inlet1], [outlet1, outlet2], timedelta(seconds=1), name='test_on_shutdown')
+        link = Link([inlet1], [outlet1, outlet2], timedelta(seconds=1), tags='test_on_shutdown')
 
         self.assertRaises(RuntimeError, link.on_shutdown)
 
@@ -408,7 +392,7 @@ class TestLink(TestCase):
     def test_on_shutdown_outlet_exception_catch(self, inlet1, outlet1, outlet2):
         logging.getLogger('databay.Link').setLevel(logging.WARNING)
         outlet1.try_shutdown.side_effect = lambda: exec('raise(RuntimeError())')
-        link = Link([inlet1], [outlet1, outlet2], timedelta(seconds=1), name='test_on_shutdown', catch_exceptions=True)
+        link = Link([inlet1], [outlet1, outlet2], timedelta(seconds=1), tags='test_on_shutdown', catch_exceptions=True)
 
         with self.assertLogs(logging.getLogger('databay.Link'), level='ERROR') as cm:
             link.on_shutdown()
@@ -417,3 +401,24 @@ class TestLink(TestCase):
         inlet1.try_shutdown.assert_called()
         outlet1.try_shutdown.assert_called()
         outlet2.try_shutdown.assert_called()
+
+    def test_single_tag(self):
+        tag = 'tagA'
+        link = Link([], [], timedelta(seconds=1), tags=tag)
+        self.assertEqual(link.tags, [tag])
+
+    def test_multiple_tags(self):
+        tagA = 'tagA'
+        tagB = 'tagB'
+        link = Link([], [], timedelta(seconds=1), tags=[tagA, tagB])
+        self.assertEqual(link.tags, [tagA, tagB])
+
+    def test_tag_as_name(self):
+        link_name = 'link_name'
+        link = Link([], [], timedelta(seconds=1), name=link_name)
+        self.assertEqual(link_name, link.tags[0])
+
+    def test_name_from_tag(self):
+        link_name = 'link_name'
+        link = Link([], [], timedelta(seconds=1), tags=[link_name])
+        self.assertEqual(link.name, link.tags[0])

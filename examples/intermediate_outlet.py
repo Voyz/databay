@@ -42,7 +42,7 @@ file_outlet = FileOutlet()
 link = Link(random_int_inlet,
             file_outlet,
             interval=timedelta(seconds=2),
-            name='file_outlet')
+            tags='file_outlet')
 
 planner = ApsPlanner(link)
 planner.start()

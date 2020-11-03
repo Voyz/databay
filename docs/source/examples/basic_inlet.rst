@@ -27,7 +27,7 @@ Basic Inlet
     .. literalinclude:: ../../examples/basic_inlet.py
         :language: python
         :start-at: link = Link
-        :end-at: name='random_ints'
+        :end-at: tags='random_ints'
 
     #. Add to a planner and schedule.
 

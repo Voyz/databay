@@ -42,7 +42,7 @@ Simple example
 
     Above setup will produce a random integer every 5 seconds (:ref:`See full example <basic-inlet>`).
 
-Each pull call is provided with an :any:`Update` object as a parameter. It contains the name of the governing link (if specified) and an incremental integer index. Use the :code:`str(update)` to get a formatted string of that update. See :any:`Transfer Update <transfer-update>` for more.
+Each pull call is provided with an :any:`Update` object as a parameter. It contains the tags of the governing link (if specified) and an incremental integer index. Use the :code:`str(update)` to get a formatted string of that update. See :any:`Transfer Update <transfer-update>` for more.
 
 Your inlet may skip producing data by returning an empty :any:`list`.
 
