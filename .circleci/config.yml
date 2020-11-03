@@ -1,22 +1,30 @@
 version: 2.1
 
 orbs:
-  python: circleci/python@0.2.1
+  python: circleci/python@0.3.2
 
 jobs:
-  build-and-test:
-    executor: python/default
+  run-test-suite:
+    working_directory: ~/databay
+    docker:
+      - image: circleci/python:3.8
     steps:
       - checkout
       - python/load-cache
       - python/install-deps
       - python/save-cache
       - run:
-          command: ./manage.py test
-          name: Test
+          name: Run all tests
+          command: |
+            python -m unittest discover test -v
+
 
 workflows:
   main:
     jobs:
-      - build-and-test
-
+      - run-test-suite:
+          filters:
+            branches:
+              only:
+                - dev
+                - master
