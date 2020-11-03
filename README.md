@@ -14,7 +14,11 @@
         <img src="https://img.shields.io/pypi/v/databay?label=version"/> 
     </a>
 </p>
-
+<p align="center">
+    <a href="https://app.circleci.com/pipelines/github/Voyz/databay">
+        <img src="https://circleci.com/gh/Voyz/databay.svg?style=shield&circle-token=51082d07f8d554abdbc4ed022aa48282c555c0cd"/> 
+    </a>
+</p>
 
           
 
