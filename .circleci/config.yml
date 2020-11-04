@@ -22,7 +22,7 @@ jobs:
 workflows:
   main:
     jobs:
-      - run-test-suite:
+      - run-test-suite
           # filters:
           #   branches:
           #     only:
