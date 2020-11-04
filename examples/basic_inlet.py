@@ -18,7 +18,7 @@ print_outlet = PrintOutlet(only_payload=True)
 link = Link(random_int_inlet,
             print_outlet,
             interval=timedelta(seconds=5),
-            name='random_ints')
+            tags='random_ints')
 
 planner = SchedulePlanner(link)
 planner.start()

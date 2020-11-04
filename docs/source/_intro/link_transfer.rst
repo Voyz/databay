@@ -21,7 +21,7 @@ Both pulling and pushing is executed asynchronously, yet pushing only starts onc
 
 .. rubric:: Transfer Update
 
-Each transfer is identified by a unique :any:`Update` object that is available to all inlets and outlets affected by that transfer. It contains the name of the governing link (if specified) and an incremental integer index. Use the :code:`str(update)` to get a formatted string of that update.
+Each transfer is identified by a unique :any:`Update` object that is available to all inlets and outlets affected by that transfer. It contains the tags of the governing link (if specified) and an incremental integer index. Use the :code:`str(update)` to get a formatted string of that update.
 
 .. code-block:: python
 

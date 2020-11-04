@@ -2,6 +2,7 @@ import asyncio
 import copy
 import datetime
 import itertools
+import warnings
 import logging
 import warnings
 from typing import Any, List, Union
@@ -11,28 +12,28 @@ _LOGGER = logging.getLogger('databay.Link')
 
 class Update():
     """
-    Data structure representing one Link transfer. When converted to string returns :code:`{name}.{transfer_number}`
+    Data structure representing one Link transfer. When converted to string returns :code:`{tags}.{transfer_number}`
     """
-    def __init__(self, name:str, transfer_number:int):
+    def __init__(self, tags:List[str], transfer_number:int):
         """
 
-        :type name: str
-        :param name: Human readable identifier of the link, see: :class:`Link`.
+        :type tags: List[str]
+        :param tags: Tags of the link, see: :class:`Link`.
 
         :type transfer_number: int
         :param transfer_number: Incremental identifier of the current transfer.
         """
-        self.name = name
+        self.tags = tags
         self.transfer_number = transfer_number
 
     def __repr__(self):
         """
         Provides the formatted transfer string.
 
-        :returns: "{name}.{transfer_number}"
+        :returns: "{tags}.{transfer_number}"
         """
         s = ''
-        if self.name != '': s += f'{self.name}.'
+        if self.tags != []: s += f'{".".join(self.tags)}.'
         s += f'{self.transfer_number}'
         return s
 
@@ -44,27 +45,28 @@ class Link():
     Link in the relationship graph. Use this class to define relationships between inlets and outlets.
     """
 
-    def __init__(self, 
+    def __init__(self,
                  inlets: Union[Inlet, List[Inlet]],
                  outlets: Union[Outlet, List[Outlet]], 
-                 interval: Union[datetime.timedelta, int, float], 
-                 name:str='',
+                 interval: Union[datetime.timedelta, int, float],
+                 tags:Union[str, List[str]]=None,
                  copy_records:bool=True,
                  ignore_exceptions:bool=False,
-                 catch_exceptions:bool=None):
+                 catch_exceptions:bool=False,
+                 name=None):
         """
         :type inlets: :any:`Inlet` or list[:any:`Inlet`]
-        :param inlets: inlets to add to this link
+        :param inlets: inlets to add to this link.
 
         :type outlets: :any:`Outlet` or list[:any:`Outlet`]
-        :param outlets: outlets to add to this link
+        :param outlets: outlets to add to this link.
 
         :type interval: Union[datetime.timedelta, int, float]
-        :param interval: Expects :code:datetime.timedelta. Alternatively, you can provide :code:int or 
+        :param interval: Expects :code:datetime.timedelta. Alternatively, you can provide :code:int or
         :code:float which will be coerced explicitly to :code:datetime.timedelta.seconds.
 
-        :type name: str
-        :param name: Human readable identifier of this link |default| :code:`''`
+        :type tags: Union[str, List[str]]
+        :param tags: List of tags of this link. |default| :code:`[]`
 
         :type copy_records: bool
         :param copy_records: Whether to copy records before passing them to outlets. |default| :code:`True`
@@ -83,12 +85,19 @@ class Link():
             self._interval = interval
         self._transfer_number = -1
         self._job = None
-        self._name = name
+        if name != None:
+            warnings.warn('\'name\' parameter was deprecated in 0.2.0 and will be removed in version 1.0. Use \'tags\' instead.')
+            tags = [name]
+
+        if isinstance(tags, str): tags = [tags]
+        self._tags = tags if tags is not None else []
         self._copy_records = copy_records
         self._ignore_exceptions = ignore_exceptions
         if catch_exceptions is not None: # pragma: no cover
             self._ignore_exceptions = catch_exceptions
             warnings.warn('\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
+
+
 
     @property
     def inlets(self) -> List[Inlet]:
@@ -214,12 +223,26 @@ class Link():
     @property
     def name(self) -> str:
         """
-        The human readable identifier of this link. |default| :code:`''`
+        Deprecated in 0.1.8, will be removed in 1.0. Use :any:`Link.tags` instead.
+
+        Name of this Link, equivalent to first tag of this link.
 
         :returns: Name of this link
         :rtype: str
         """
-        return self._name
+        warnings.warn(
+            '\'Link.name\' property was deprecated in 0.2.0 and will be removed in version 1.0. Use \'Link.tags\' instead.')
+        return self.tags[0] if len(self.tags) else ''
+
+    @property
+    def tags(self) -> List[str]:
+        """
+        The tags of this link. |default| :code:`[]`
+
+        :returns: Tags of this link
+        :rtype: List[str]
+        """
+        return self._tags
 
     def transfer(self):
         """
@@ -235,7 +258,7 @@ class Link():
         """
 
         self._transfer_number += 1
-        update = Update(name=self.name, transfer_number=self._transfer_number)
+        update = Update(tags=self.tags, transfer_number=self._transfer_number)
         _LOGGER.debug(f'{update} transfer')
 
         async def inlet_task(inlet):
@@ -339,7 +362,7 @@ class Link():
 
     def __repr__(self):
         """
-        :returns: Link(name:%s, inlets:%s, outlets:%s, interval:%s)
+        :returns: Link(tags:%s, inlets:%s, outlets:%s, interval:%s)
         """
 
-        return 'Link(name:\'%s\', inlets:%s, outlets:%s, interval:%s)' % (self.name, self.inlets, self.outlets, self.interval)
+        return 'Link(tags:%s, inlets:%s, outlets:%s, interval:%s)' % (self.tags, self.inlets, self.outlets, self.interval)

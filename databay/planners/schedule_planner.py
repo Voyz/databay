@@ -175,7 +175,7 @@ class SchedulePlanner(BasePlanner):
                         except Exception as e:
                             _LOGGER.exception(e)
                             if not self._ignore_exceptions and self.running:
-                                self.shutdown(False)
+                                self.shutdown(wait=False)
 
                     self._exc_info = []
 
