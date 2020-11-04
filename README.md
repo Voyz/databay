@@ -5,6 +5,11 @@
         <img src="https://github.com/Voyz/databay/blob/master/media/databay_title.png" alt="Databay title" title="Databay title" width="600"/>
     </a>
 </p>
+<p align="center">
+    <a href="https://app.circleci.com/pipelines/github/Voyz/databay">
+        <img src="https://circleci.com/gh/Voyz/databay.svg?style=shield&circle-token=e5671b4d01ac416b0857d024f2ba8b5df907d4b0">
+    </a>
+</p>
 
 <p align="center">
     <a href="https://opensource.org/licenses/Apache-2.0">
@@ -14,11 +19,7 @@
         <img src="https://img.shields.io/pypi/v/databay?label=version"/> 
     </a>
 </p>
-<p align="center">
-    <a href="https://app.circleci.com/pipelines/github/Voyz/databay">
-        <img src="https://circleci.com/gh/Voyz/databay.svg?style=shield&circle-token=51082d07f8d554abdbc4ed022aa48282c555c0cd"/> 
-    </a>
-</p>
+
 
           
 
