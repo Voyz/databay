@@ -23,8 +23,8 @@ workflows:
   main:
     jobs:
       - run-test-suite:
-          filters:
-            branches:
-              only:
-                - dev
-                - master
+          # filters:
+          #   branches:
+          #     only:
+          #       - dev
+          #       - master
