@@ -52,7 +52,7 @@ class Link():
                  tags:Union[str, List[str]]=None,
                  copy_records:bool=True,
                  ignore_exceptions:bool=False,
-                 catch_exceptions:bool=False,
+                 catch_exceptions:bool=None,
                  name=None):
         """
         :type inlets: :any:`Inlet` or list[:any:`Inlet`]
