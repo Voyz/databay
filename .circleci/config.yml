@@ -4,7 +4,7 @@ orbs:
   python: circleci/python@0.3.2
 
 jobs:
-  run-test-suite:
+  build-and-test:
     working_directory: ~/databay
     docker:
       - image: circleci/python:3.8
@@ -22,7 +22,7 @@ jobs:
 workflows:
   main:
     jobs:
-      - run-test-suite
+      - build-and-test
           # filters:
           #   branches:
           #     only:
