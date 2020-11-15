@@ -139,6 +139,15 @@ class BasePlanner(ABC):
         """
         raise NotImplementedError()
 
+    def purge(self):
+        """
+        Unschedule and clear all links. It can be used while planner is running.
+        """
+        for link in self.links:
+            self._unschedule(link)
+
+        self._links = []
+
     @property
     @abstractmethod
     def running(self):

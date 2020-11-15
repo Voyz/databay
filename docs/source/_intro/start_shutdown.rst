@@ -6,7 +6,7 @@ Start and shutdown
 .. rubric::
     Start
 
-To begin scheduling links you need to call :any:`start <BasePlanner.start>` on the planner you're using. Both :any:`APSPlanner` and :any:`SchedulePlanner` handle :any:`start <BasePlanner.start>` as a synchronous blocking function. To run :any:`start <BasePlanner.start>` without blocking the current thread, wrap its call within a new thread or a process:
+To begin scheduling links you need to call :any:`start <BasePlanner.start>` on the planner you're using. Both :any:`ApsPlanner` and :any:`SchedulePlanner` handle :any:`start <BasePlanner.start>` as a synchronous blocking function. To run :any:`start <BasePlanner.start>` without blocking the current thread, wrap its call within a new thread or a process:
 
 .. code-block:: python
 
@@ -17,7 +17,7 @@ To begin scheduling links you need to call :any:`start <BasePlanner.start>` on t
 .. rubric::
     Shutdown
 
-To stop scheduling links you need to call :any:`shutdown(wait:bool=True) <BasePlanner.shutdown>` on the planner you're using. Note that this may or may not let the currently transferring links finish, depending on the implementation of the :any:`BasePlanner` that you're using. Both :any:`APSPlanner` and :any:`SchedulePlanner` allow waiting for the links if :any:`shutdown <BasePlanner.shutdown>` is called passing :code:`True` as the :code:`wait` parameter.
+To stop scheduling links you need to call :any:`shutdown(wait:bool=True) <BasePlanner.shutdown>` on the planner you're using. Note that this may or may not let the currently transferring links finish, depending on the implementation of the :any:`BasePlanner` that you're using. Both :any:`ApsPlanner` and :any:`SchedulePlanner` allow waiting for the links if :any:`shutdown <BasePlanner.shutdown>` is called passing :code:`True` as the :code:`wait` parameter.
 
 .. rubric::
     on_start and on_shutdown

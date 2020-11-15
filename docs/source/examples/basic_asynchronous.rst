@@ -27,7 +27,7 @@ Basic asynchronous
     .. literalinclude:: ../../examples/basic_asynchronous.py
         :language: python
         :start-at: random_int_inletA =
-        :end-at: name='async'
+        :end-at: tags='async'
 
     #. Add to a planner and schedule.
 

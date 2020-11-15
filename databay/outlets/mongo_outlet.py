@@ -14,7 +14,7 @@ from typing import List
 
 import pymongo
 
-from databay.outlet import Outlet, metadata
+from databay.outlet import Outlet, MetadataKey
 from databay import Record
 
 _LOGGER = logging.getLogger('databay.MongoOutlet')
@@ -44,7 +44,7 @@ class MongoOutlet(Outlet):
     Outlet for pushing data into a MongoDB instance. Pushes are executed synchronously.
     """
 
-    MONGODB_COLLECTION:metadata = 'MongoOutlet.MONGODB_COLLECTION'
+    MONGODB_COLLECTION:MetadataKey = 'MongoOutlet.MONGODB_COLLECTION'
     """ Name of collection to write to. """
 
     def __init__(self, database_name:str='databay', collection:str='default_collection', host:str=None, port:str=None):
@@ -148,14 +148,12 @@ class MongoOutlet(Outlet):
             database_name = self.database_name
 
 
-        # if isinstance(self._client, pymongo.MongoClient) and isinstance(self._db, pymongo.database.Database):
         if self._client is not None and self._db is not None:
             if self._db.name == database_name:
                 return True
             else:
                 self.disconnect()
 
-        # self._client = MongoClient(host='172.18.0.2', port=27017)
         self._client = pymongo.MongoClient(host=self.host, port=self.port)
         self._db = self._client[database_name]
         return False

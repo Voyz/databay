@@ -40,7 +40,7 @@ Simple example
 
     Above setup will print all records transferred by that link (:ref:`See full example <basic-outlet>`).
 
-Each push call is provided with an :any:`Update` object as one of parameters. It contains the name of the governing link (if specified) and an incremental integer index. Use the :code:`str(update)` to get a formatted string of that update. See :any:`Transfer Update <transfer-update>` for more.
+Each push call is provided with an :any:`Update` object as one of parameters. It contains the tags of the governing link (if specified) and an incremental integer index. Use the :code:`str(update)` to get a formatted string of that update. See :any:`Transfer Update <transfer-update>` for more.
 
 Consuming Records
 -----------------
@@ -69,7 +69,7 @@ Metadata
 
 Your outlet can be built to behave differently depending on the metadata carried by the records. Metadata is attached to each record when inlets produce data. Learn more about the difference between :ref:`Global metadata <global_metadata>` and :ref:`Local metadata <local_metadata>`.
 
-When creating an outlet it is up to you to ensure the expected metadata and its effects are clearly documented. To prevent name clashes between various outlets' metadata, it is recommended to include outlet name in the keys expected by your outlet.
+When creating an outlet it is up to you to ensure the expected metadata and its effects are clearly documented. To prevent name clashes between various outlets' metadata, it is recommended to include outlet name in the metadata keys expected by your outlet.
 
 .. rst-class:: mb-s
 
@@ -110,6 +110,16 @@ When creating an outlet it is up to you to ensure the expected metadata and its 
     random_int_inletB = RandomIntInlet(metadata={CsvOutlet.CSV_FILE: 'dog'})
 
 .. image:: ../_static/images/databay_metadata_csv.png
+
+For clarity and readability, Databay provides the :any:`MetadataKey` type for specifying metadata key class attributes.
+
+.. rst-class:: highlight-small
+.. code-block:: python
+
+    from databay.outlet import MetadataKey
+
+    class CsvOutlet(Outlet):
+        CSV_FILE:MetadataKey = 'CsvOutlet.CSV_FILE'
 
 Start and shutdown
 ------------------

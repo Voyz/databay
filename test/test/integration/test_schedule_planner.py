@@ -2,7 +2,7 @@ import logging
 import time
 from threading import Thread
 from unittest import TestCase
-from unittest.mock import patch
+from unittest.mock import MagicMock
 
 import schedule
 
@@ -21,9 +21,10 @@ class TestSchedulePlanner(TestCase):
         logging.getLogger('databay').setLevel(logging.WARNING)
 
 
-    @patch(fqname(Link), spec=Link)
-    def setUp(self, link):
+    def setUp(self):
         self.planner = SchedulePlanner(refresh_interval=0.02)
+
+        link = MagicMock(spec=Link)
 
         def set_job(job):
             link.job = job
@@ -120,9 +121,9 @@ class TestSchedulePlanner(TestCase):
 
         self.assertRaises(ScheduleIntervalError, self.planner.add_links, self.link)
 
-    def _with_exception(self, link, catch_exceptions):
+    def _with_exception(self, link, ignore_exceptions):
         logging.getLogger('databay').setLevel(logging.CRITICAL)
-        self.planner = SchedulePlanner(catch_exceptions=catch_exceptions)
+        self.planner = SchedulePlanner(ignore_exceptions=ignore_exceptions)
         link.transfer.side_effect = DummyException()
         link.interval.total_seconds.return_value = 0.02
         self.planner._refresh_interval = 0.02
@@ -136,15 +137,15 @@ class TestSchedulePlanner(TestCase):
         time.sleep(0.04)
         link.transfer.assert_called()
 
-        if catch_exceptions:
+        if ignore_exceptions:
             self.assertTrue(self.planner.running, 'Scheduler should be running')
-            self.planner.shutdown(False)
+            self.planner.shutdown(wait=False)
             th.join(timeout=2)
             self.assertFalse(th.is_alive(), 'Thread should be stopped.')
 
         self.assertFalse(self.planner.running, 'Scheduler should be stopped')
 
-    def test_catch_exception(self):
+    def test_ignore_exception(self):
         self._with_exception(self.link, True)
 
     def test_raise_exception(self):
@@ -163,3 +164,28 @@ class TestSchedulePlanner(TestCase):
         self.link.transfer.assert_called()
 
         self.assertFalse(self.planner.running, 'Scheduler should be stopped')
+
+
+    def test_purge(self):
+        self.link.interval.total_seconds.return_value = 0.02
+        self.planner.add_links(self.link)
+        self.planner.purge()
+
+        self.link.set_job.assert_called_with(None)
+        self.assertEqual(self.planner.links, [])
+        self.assertEqual(schedule.jobs, [])
+
+
+    def test_purge_while_running(self):
+        self.planner.add_links(self.link)
+        th = Thread(target=self.planner.start, daemon=True)
+        th.start()
+        self.planner.purge()
+
+        self.link.set_job.assert_called_with(None)
+        self.assertEqual(self.planner.links, [])
+        self.assertEqual(schedule.jobs, [])
+
+        self.planner.shutdown()
+        th.join(timeout=2)
+        self.assertFalse(th.is_alive(), 'Thread should be stopped.')

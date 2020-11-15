@@ -4,7 +4,7 @@ import time
 from datetime import timedelta, datetime
 from unittest import TestCase, mock
 
-from databay.errors import ImplementationError
+from databay.errors import ImplementationError, InvalidNodeError
 from databay.inlet import Inlet
 from databay.link import Link
 from databay.outlet import Outlet
@@ -122,7 +122,7 @@ class TestLink(TestCase):
 
         self.assertEqual(outlet1.records, [inlet1.record, inlet2.record, inlet3.record])
         total_wait_time = inlet1.wait_time + inlet2.wait_time + inlet3.wait_time
-        total_wait_time *= 1.1 # add a little buffer
+        total_wait_time *= 1.2 # add a little buffer
         self.assertLess(diff.total_seconds(), total_wait_time)
 
     # test if synchronous calls indeed run synchronously
@@ -203,3 +203,23 @@ class TestLink(TestCase):
     #
     # def test_outlet_invalid(self):
     #     self.assertRaises(ImplementationError, DummyOutletInvalid)
+
+
+    def test_add_inlet_same(self):
+        inlet1 = DummyInlet()
+        link = Link([], [], timedelta(seconds=1), tags='test_add_inlet_same')
+
+        link.add_inlets(inlet1)
+        self.assertRaises(InvalidNodeError, link.add_inlets, inlet1)
+
+        self.assertEqual(link.inlets, [inlet1])
+
+    def test_add_multiple_inlets_same(self):
+        inlet1 = DummyInlet()
+        inlet2 = DummyInlet()
+        link = Link([], [], timedelta(seconds=1), tags='test_add_inlet_same')
+
+        link.add_inlets(inlet1)
+        link.add_inlets(inlet2)
+
+        self.assertEqual(link.inlets, [inlet1, inlet2])

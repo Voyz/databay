@@ -1,31 +1,23 @@
-import asyncio
 import copy
 import io
 import os
-import sys
-from unittest import TestCase
 
-if sys.version_info[0] == 3 and sys.version_info[1] >= 8:
-    from unittest.mock import patch
-else:
-    from asynctest import patch
-
-
+from asynctest import TestCase, patch, asyncio
 
 from databay import Record, Update
 from databay.outlets import PrintOutlet
-from databay.outlets.csv_outlet import CsvOutlet
+from databay.outlets.file_outlet import FileOutlet
 from test_utils import fqname
 
 
-class TestCsvOutlet(TestCase):
+class TestFileOutlet(TestCase):
 
     @classmethod
     def setUpClass(cls):
         cls.this_filepath = os.path.abspath(os.path.dirname(__file__))
-        cls.target_filepath = os.path.join(cls.this_filepath, '_csv_outlet_target.csv')
-        cls.attempt_filepath = os.path.join(cls.this_filepath, '_csv_outlet_attempt.csv')
-        cls.custom_filepath = os.path.join(cls.this_filepath, '_csv_outlet_custom_attempt.csv')
+        cls.target_filepath = os.path.join(cls.this_filepath, 'data/_file_outlet_target.txt')
+        cls.attempt_filepath = os.path.join(cls.this_filepath, 'data/_file_outlet_attempt.txt')
+        cls.custom_filepath = os.path.join(cls.this_filepath, 'data/_file_outlet_custom_attempt.txt')
         with open(cls.target_filepath, 'r') as f:
             cls.target = f.read()
 
@@ -38,11 +30,11 @@ class TestCsvOutlet(TestCase):
         if os.path.exists(self.custom_filepath):
             os.remove(self.custom_filepath)
 
-        self.csv_outlet = CsvOutlet(self.attempt_filepath)
+        self.file_outlet = FileOutlet(self.attempt_filepath)
         self.update = update
         self.record = record
 
-        record.payload = {'foo': 'bar', 'baz': 'qux'}
+        record.payload = 'test'
         record.metadata = {}
 
         record.__repr__ = lambda x: 'TestRecord(test)'
@@ -51,7 +43,7 @@ class TestCsvOutlet(TestCase):
         self.records = [copy.copy(record) for i in range(0,4)]
 
     def test_push_append_mode(self):
-        asyncio.run(self.csv_outlet._push(self.records, self.update))
+        asyncio.run(self.file_outlet._push(self.records, self.update))
 
         self.assertTrue(os.path.exists(self.attempt_filepath), 'File should exist')
 
@@ -63,30 +55,30 @@ class TestCsvOutlet(TestCase):
     def test_push_write_mode(self):
 
         for record in self.records:
-            record.metadata = {CsvOutlet.FILE_MODE: 'w'}
+            record.metadata = {FileOutlet.FILE_MODE: 'w'}
 
-        asyncio.run(self.csv_outlet._push(self.records, self.update))
+        asyncio.run(self.file_outlet._push(self.records, self.update))
 
         self.assertTrue(os.path.exists(self.attempt_filepath), 'File should exist')
 
         with open(self.attempt_filepath, 'r') as f:
-            self.assertEqual(f.read(), 'foo,baz\nbar,qux\n', 'Each write should have overridden the previous.')
+            self.assertEqual(f.read(), 'test\n', 'Each write should have overridden the previous.')
 
         os.remove(self.attempt_filepath)
 
     def test_push_custom_files(self):
-        self.records[0].metadata = {CsvOutlet.CSV_FILE: self.custom_filepath}
+        self.records[0].metadata = {FileOutlet.FILEPATH: self.custom_filepath}
 
-        asyncio.run(self.csv_outlet._push(self.records, self.update))
+        asyncio.run(self.file_outlet._push(self.records, self.update))
 
         self.assertTrue(os.path.exists(self.attempt_filepath), 'File should exist')
         self.assertTrue(os.path.exists(self.custom_filepath), 'File should exist')
 
         with open(self.attempt_filepath, 'r') as f:
-            self.assertEqual(f.read(), 'foo,baz\nbar,qux\nbar,qux\nbar,qux\n', 'Should miss one record')
+            self.assertEqual(f.read(), 'test\ntest\ntest\n', 'Should miss one record')
 
         with open(self.custom_filepath, 'r') as f:
-            self.assertEqual(f.read(), 'foo,baz\nbar,qux\n', 'Should contain the one record')
+            self.assertEqual(f.read(), 'test\n', 'Should contain the one record')
 
         os.remove(self.attempt_filepath)
         os.remove(self.custom_filepath)

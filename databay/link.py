@@ -1,91 +1,103 @@
+import asyncio
 import copy
 import datetime
 import itertools
-from typing import List, Union, Any
-
-import asyncio
-
+import warnings
 import logging
+import warnings
+from typing import Any, List, Union
 
 from databay.errors import InvalidNodeError
-
 _LOGGER = logging.getLogger('databay.Link')
 
 class Update():
     """
-    Data structure representing one Link transfer. When converted to string returns :code:`{name}.{index}`
+    Data structure representing one Link transfer. When converted to string returns :code:`{tags}.{transfer_number}`
     """
-    def __init__(self, name:str, index:int):
+    def __init__(self, tags:List[str], transfer_number:int):
         """
 
-        :type name: str
-        :param name: Human readable identifier of the link, see: :class:`Link`.
+        :type tags: List[str]
+        :param tags: Tags of the link, see: :class:`Link`.
 
-        :type index: int
-        :param index: Integer identifier of the current transfer.
+        :type transfer_number: int
+        :param transfer_number: Incremental identifier of the current transfer.
         """
-        self.name = name
-        self.index = index
+        self.tags = tags
+        self.transfer_number = transfer_number
 
     def __repr__(self):
         """
         Provides the formatted transfer string.
 
-        :returns: "{name}.{index}"
+        :returns: "{tags}.{transfer_number}"
         """
         s = ''
-        if self.name != '': s += f'{self.name}.'
-        s += f'{self.index}'
+        if self.tags != []: s += f'{".".join(self.tags)}.'
+        s += f'{self.transfer_number}'
         return s
 
 
-from databay import Inlet
-from databay import Outlet
-
-_ITERABLE_EXCEPTION = "is not iterable"
+from databay import Inlet, Outlet
 
 class Link():
     """
     Link in the relationship graph. Use this class to define relationships between inlets and outlets.
     """
 
-    def __init__(self, 
+    def __init__(self,
                  inlets: Union[Inlet, List[Inlet]],
                  outlets: Union[Outlet, List[Outlet]], 
-                 interval:datetime.timedelta, 
-                 name:str='',
+                 interval: Union[datetime.timedelta, int, float],
+                 tags:Union[str, List[str]]=None,
                  copy_records:bool=True,
-                 catch_exceptions:bool=False):
+                 ignore_exceptions:bool=False,
+                 catch_exceptions:bool=None,
+                 name=None):
         """
         :type inlets: :any:`Inlet` or list[:any:`Inlet`]
-        :param inlets: inlets to add to this link
+        :param inlets: inlets to add to this link.
 
         :type outlets: :any:`Outlet` or list[:any:`Outlet`]
-        :param outlets: outlets to add to this link
+        :param outlets: outlets to add to this link.
 
-        :type interval: datetime.timedelta
-        :param interval: Frequency at which this link should transfer.
+        :type interval: Union[datetime.timedelta, int, float]
+        :param interval: Expects :code:datetime.timedelta. Alternatively, you can provide :code:int or
+        :code:float which will be coerced explicitly to :code:datetime.timedelta.seconds.
 
-        :type name: str
-        :param name: Human readable identifier of this link |default| :code:`''`
+        :type tags: Union[str, List[str]]
+        :param tags: List of tags of this link. |default| :code:`[]`
 
         :type copy_records: bool
         :param copy_records: Whether to copy records before passing them to outlets. |default| :code:`True`
 
-        :type catch_exceptions: bool
-        :param catch_exceptions: Whether exceptions in inlets and outlets should be caught or let through. |default| :code:`True`
+        :type ignore_exceptions: bool
+        :param ignore_exceptions: Whether exceptions in inlets and outlets should be logged and ignored, or raised. |default| :code:`True`
         """
 
         self._inlets = []
         self._outlets = []
         self.add_inlets(inlets)
         self.add_outlets(outlets)
-        self._interval = interval
-        self._count = -1
+        if isinstance(interval, (int, float)):
+            self._interval = datetime.timedelta(seconds=interval)
+        else:
+            self._interval = interval
+        self._transfer_number = -1
         self._job = None
-        self._name = name
+        if name != None:
+            warnings.warn('\'name\' parameter was deprecated in 0.2.0 and will be removed in version 1.0. Use \'tags\' instead.')
+            tags = [name]
+
+        if isinstance(tags, str): tags = [tags]
+        self._tags = tags if tags is not None else []
         self._copy_records = copy_records
-        self._catch_exceptions = catch_exceptions
+        self._ignore_exceptions = ignore_exceptions
+        if catch_exceptions is not None: # pragma: no cover
+            self._ignore_exceptions = catch_exceptions
+            warnings.warn('\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
+
+
 
     @property
     def inlets(self) -> List[Inlet]:
@@ -211,12 +223,26 @@ class Link():
     @property
     def name(self) -> str:
         """
-        The human readable identifier of this link. |default| :code:`''`
+        Deprecated in 0.1.8, will be removed in 1.0. Use :any:`Link.tags` instead.
+
+        Name of this Link, equivalent to first tag of this link.
 
         :returns: Name of this link
         :rtype: str
         """
-        return self._name
+        warnings.warn(
+            '\'Link.name\' property was deprecated in 0.2.0 and will be removed in version 1.0. Use \'Link.tags\' instead.')
+        return self.tags[0] if len(self.tags) else ''
+
+    @property
+    def tags(self) -> List[str]:
+        """
+        The tags of this link. |default| :code:`[]`
+
+        :returns: Tags of this link
+        :rtype: List[str]
+        """
+        return self._tags
 
     def transfer(self):
         """
@@ -231,17 +257,15 @@ class Link():
         Coroutine handling the transfer.
         """
 
-        self._count += 1
-        count = self._count
-        update = Update(name=self.name, index=count)
-        # print(count, 'transfer')
+        self._transfer_number += 1
+        update = Update(tags=self.tags, transfer_number=self._transfer_number)
         _LOGGER.debug(f'{update} transfer')
 
         async def inlet_task(inlet):
             try:
                 return await inlet._pull(update)
             except Exception as e:
-                if self._catch_exceptions:
+                if self._ignore_exceptions:
                     _LOGGER.exception(f'Inlet exception: "{e}" for inlet: {inlet}, in: {self}, during: {update}', exc_info=True)
                     return []
                 else:
@@ -249,48 +273,14 @@ class Link():
 
         inlet_tasks = [inlet_task(inlet) for inlet in self._inlets]
         results_raw = await asyncio.gather(*inlet_tasks)
-        # print(results_raw)
-
-        # records = []
-        # def add_to_records(records, results):
-        #     try:
-        #         records += results
-        #     except Exception as e:
-        #         if _ITERABLE_EXCEPTION in str(e):
-        #             records = add_to_records(records, [results])
-        #         else:
-        #             if self._catch_exceptions:
-        #                 _LOGGER.exception(f'Unknown Inlet results exception: "{e}" for results: {results}, in link: {self}, during: {update}', exc_info=True)
-        #             else:
-        #                 raise e
-        #
-        #     return records
-        #
-        #
-        # for results in results_raw:
-        #     records = add_to_records(records, results)
-                # iterable_message = f'Inlets must return iterable, found: {results}, in link: {self}, during: {update}'
-                #
-                # if not self._catch_exceptions:
-                #     if _ITERABLE_EXCEPTION in str(e): # format the common iterable error for readability
-                #         raise TypeError(iterable_message)
-                #     else:
-                #         raise e
-                #
-                # elif _ITERABLE_EXCEPTION in str(e):
-                #     _LOGGER.exception(iterable_message, exc_info=False)
-                # else:
-                #     _LOGGER.exception(f'Unknown Inlet results exception: "{e}" for results: {results}, in link: {self}, during: {update}', exc_info=True)
-
         records = list(itertools.chain.from_iterable(results_raw))
 
 
         async def outlet_task(outlet, records_copy):
-            # asyncio.run_coroutine_threadsafe(outlet.push(records), asyncio.get_event_loop())
             try:
                 await outlet._push(records_copy, update)
             except Exception as e:
-                if self._catch_exceptions:
+                if self._ignore_exceptions:
                     _LOGGER.exception(f'Outlet exception: "{e}" for outlet: {outlet}, in link: {self}, during: {update}', exc_info=True)
                 else:
                     raise e
@@ -302,7 +292,6 @@ class Link():
             else:
                 task = outlet_task(outlet, records)
             outlet_tasks.append(task)
-        # outlet_tasks = [outlet_task(outlet, copy.deepcopy(records)) for outlet in self._outlets]
         await asyncio.gather(*outlet_tasks)
 
         _LOGGER.debug(f'{update} done')
@@ -318,13 +307,27 @@ class Link():
         once by whichever link executes first.
         """
 
-        # todo: catch exceptions
-
         for inlet in self._inlets:
-            inlet.try_start()
+            try:
+                inlet.try_start()
+            except Exception as e:
+                if self._ignore_exceptions:
+                    _LOGGER.exception(
+                        f'on_start inlet exception: "{e}" for inlet: {inlet}, in link: {self}',
+                        exc_info=True)
+                else:
+                    raise e
 
         for outlet in self._outlets:
-            outlet.try_start()
+            try:
+                outlet.try_start()
+            except Exception as e:
+                if self._ignore_exceptions:
+                    _LOGGER.exception(
+                        f'on_start outlet exception: "{e}" for outlet: {outlet}, in link: {self}',
+                        exc_info=True)
+                else:
+                    raise e
 
     def on_shutdown(self):
         """
@@ -335,17 +338,31 @@ class Link():
         once by whichever link executes first.
         """
 
-        # todo: catch exceptions
-
         for inlet in self._inlets:
-            inlet.try_shutdown()
+            try:
+                inlet.try_shutdown()
+            except Exception as e:
+                if self._ignore_exceptions:
+                    _LOGGER.exception(
+                        f'on_shutdown inlet exception: "{e}" for inlet: {inlet}, in link: {self}',
+                        exc_info=True)
+                else:
+                    raise e
 
         for outlet in self._outlets:
-            outlet.try_shutdown()
+            try:
+                outlet.try_shutdown()
+            except Exception as e:
+                if self._ignore_exceptions:
+                    _LOGGER.exception(
+                        f'on_shutdown outlet exception: "{e}" for outlet: {outlet}, in link: {self}',
+                        exc_info=True)
+                else:
+                    raise e
 
     def __repr__(self):
         """
-        :returns: Link(name:%s, inlets:%s, outlets:%s, interval:%s)
+        :returns: Link(tags:%s, inlets:%s, outlets:%s, interval:%s)
         """
 
-        return 'Link(name:\'%s\', inlets:%s, outlets:%s, interval:%s)' % (self.name, self.inlets, self.outlets, self.interval)
+        return 'Link(tags:%s, inlets:%s, outlets:%s, interval:%s)' % (self.tags, self.inlets, self.outlets, self.interval)

@@ -7,6 +7,7 @@
 import logging
 import threading
 import time
+import warnings
 from concurrent import futures
 from typing import List, Union
 
@@ -30,7 +31,7 @@ class SchedulePlanner(BasePlanner):
 
     """
 
-    def __init__(self, links:Union[Link, List[Link]]=None, threads:int=30, refresh_interval:float=1.0, catch_exceptions:bool=False):
+    def __init__(self, links:Union[Link, List[Link]]=None, threads:int=30, refresh_interval:float=1.0, ignore_exceptions:bool=False, catch_exceptions:bool=None):
         """
 
         :type links: :any:`Link` or list[:any:`Link`]
@@ -47,8 +48,8 @@ class SchedulePlanner(BasePlanner):
             links with intervals smaller than this value will raise a :any:`ScheduleIntervalError`.
             |default| :code:`1.0`
 
-        :type catch_exceptions: bool
-        :param catch_exceptions: Whether exceptions should be caught or halt the planner.
+        :type ignore_exceptions: bool
+        :param ignore_exceptions: Whether exceptions should be ignored, or halt the planner.
             |default| :code:`False`
         """
         self._refresh_interval = refresh_interval
@@ -58,9 +59,10 @@ class SchedulePlanner(BasePlanner):
         self._thread_pool = None
         self._exc_info = []
         self._exc_lock = threading.Lock()
-        self._catch_exceptions = catch_exceptions
-
-        # self._create_thread_pool()
+        self._ignore_exceptions = ignore_exceptions
+        if catch_exceptions is not None: # pragma: no cover
+            self._ignore_exceptions = catch_exceptions
+            warnings.warn('\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
 
     @property
     def refresh_interval(self) -> float:
@@ -171,12 +173,9 @@ class SchedulePlanner(BasePlanner):
                                 # Some custom exceptions won't let you use the common constructor and will throw an error on initialisation. We catch these and just throw a generic RuntimeError.
                                 raise RuntimeError(exception_message).with_traceback(traceback) from None
                         except Exception as e:
-                            # if self._catch_exceptions:
                             _LOGGER.exception(e)
-                            if not self._catch_exceptions and self.running:
-                            # else:
-                                self.shutdown(False)
-                                # raise e
+                            if not self._ignore_exceptions and self.running:
+                                self.shutdown(wait=False)
 
                     self._exc_info = []
 

@@ -11,6 +11,8 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from databay import Record
+import databay as da
+
 
 
 
@@ -29,8 +31,6 @@ class Inlet(ABC):
         self._active = False
 
         self._uses_coroutine = asyncio.iscoroutinefunction(self.pull)
-        # if not asyncio.iscoroutinefunction(self.pull):
-        #     raise ImplementationError('Inlet.pull() function must be a coroutine. Fix by adding \'async\' keyword.')
         self._thread_lock = threading.Lock()
 
     @property
@@ -45,7 +45,7 @@ class Inlet(ABC):
         """
         return self._metadata
 
-    async def _pull(self, update):
+    async def _pull(self, update:'da.Update'):
         if self._uses_coroutine:
             data = await self.pull(update)
         else:
@@ -64,7 +64,7 @@ class Inlet(ABC):
 
 
     @abstractmethod
-    async def pull(self, update) -> List[Record]:
+    def pull(self, update:'da.Update') -> List[Record]:
         """
         Produce new data.
 
@@ -103,15 +103,27 @@ class Inlet(ABC):
         Wrapper around on_start call that will ensure it only gets executed once.
         """
 
-        should_on_start = False
+        """ 
+        This is a tricky situation we're trying to protect against, and as such this may be redundant.
+        The way this is constructed anticipates the on* callback to take very long time, and it prevents
+        multiple threads being held waiting for the _thread_lock being released.
+        It is questionable whether this function could be called by multiple threads in first place.
+        An inlet or outlet would have to be added to multiple links, which in turn would need to be added
+        to multiple Planners, all of which would need to request start or shutdown at the same time. 
+        Still given how GIL is handled when threading, the race condition may never actually occur.
+        We're keeping this logic for now, as it doesn't really waste resources and doesn't inflate complexity
+        in any way, while theoretically should protect against callback race conditions, even ones 
+        we may not yet be aware of.
+        """
+
+        allow_run_on_start = False
 
         with self._thread_lock:
             if not self._active:
-                #
                 self._active = True
-                should_on_start = True
+                allow_run_on_start = True
 
-        if should_on_start:
+        if allow_run_on_start:
             self.on_start()
 
     def on_start(self):
@@ -127,14 +139,27 @@ class Inlet(ABC):
         Wrapper around on_shutdown call that will ensure it only gets executed once.
         """
 
-        should_on_shutdown = False
+        """ 
+        This is a tricky situation we're trying to protect against, and as such this may be redundant.
+        The way this is constructed anticipates the on* callback to take very long time, and it prevents
+        multiple threads being held waiting for the _thread_lock being released.
+        It is questionable whether this function could be called by multiple threads in first place.
+        An inlet or outlet would have to be added to multiple links, which in turn would need to be added
+        to multiple Planners, all of which would need to request start or shutdown at the same time. 
+        Still given how GIL is handled when threading, the race condition may never actually occur.
+        We're keeping this logic for now, as it doesn't really waste resources and doesn't inflate complexity
+        in any way, while theoretically should protect against callback race conditions, even ones 
+        we may not yet be aware of.
+        """
+
+        allow_run_on_shutdown = False
 
         with self._thread_lock:
             if self._active:
                 self._active = False
-                should_on_shutdown = True
+                allow_run_on_shutdown = True
 
-        if should_on_shutdown:
+        if allow_run_on_shutdown:
             self.on_shutdown()
 
     def on_shutdown(self):
@@ -166,78 +191,3 @@ class Inlet(ABC):
         s += ')'
 
         return s
-
-
-
-# class RandomIntInlet(Inlet):
-#
-#     def pull(self, update):
-#         if cat >= 10:
-#             record = self.new_record(cat)
-#         return random.randint(0, 100)
-#
-#
-# class Filter():
-#
-#
-# class CsvOutlet(Outlet):
-#
-#     # Name of csv file to write records to.
-#     CSV_FILE = 'CsvOutlet.CSV_FILE'
-#
-#     def __init__(self, override=False, default_name:str):
-#         self.override = override
-#         self.default_name = default_name
-#
-#     def push(self, records:[Record], update):
-#         for record in records:
-#             if self.CSV_FILE in record.metadata:
-#                 csv_file = record.metadata[self.CSV_FILE] + '.cvs'
-#             else:
-#                 csv_file = self.default_name
-#
-#             method = 'w' if self.override == True else 'a'
-#
-#             with open(csv_file, method) as f:
-#                 writer = csv.DictWriter(f, record.payload.keys())
-#                 writer.writerow(record.payload)
-#
-#
-# ...
-#
-# random_int_inletA = RandomIntInlet(metadata={CsvOutlet.CSV_FILE: 'cat'})
-# random_int_inletB = RandomIntInlet(metadata={CsvOutlet.CSV_FILE: 'dog'})
-#
-# csv1 = CsvOutlet(True)
-#
-# link1 = Link([random_int_inletA, random_int_inletB], csv1)
-#
-# planner.add_links([link1, link2])
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-# class CsvOutlet(Outlet):
-#
-#     # Name of csv file to write records to.
-#     CSV_FILE = 'CsvOutlet.CSV_FILE'
-#
-#     def push(self, records:[Record], update):
-#         for record in records:
-#             if 'name' in record.metadata:
-#                 csv_file = record.metadata[self.CSV_FILE] + '.csv'
-#                 ...
-#                 # write to csv_file specified
-#
-#
-# ...
-#
-# random_int_inletA = RandomIntInlet(metadata={'name': 'cat'})
-# random_int_inletA = RandomIntInlet(metadata={CsvOutlet.CSV_FILE: 'cat', MongoOutlet.collenction_name: 'animals'})
-# random_int_inletB = RandomIntInlet(metadata={CsvOutlet.CSV_FILE: 'dog'})

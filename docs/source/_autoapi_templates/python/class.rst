@@ -37,8 +37,8 @@
     {% else %}
     {% set visible_attributes = obj.attributes | rejectattr("inherited") | selectattr("display") | list %}
     {% endif %}
-    {% set metadata = visible_attributes | selectattr("obj.annotation", "eq", "metadata") | list %}
-    {% set visible_attributes = visible_attributes | rejectattr("obj.annotation", "eq", "metadata") | list %}
+    {% set metadata = visible_attributes | selectattr("obj.annotation", "eq", "MetadataKey") | list %}
+    {% set visible_attributes = visible_attributes | rejectattr("obj.annotation", "eq", "MetadataKey") | list %}
     {% if metadata %}
     :raw-html:`<div class='section-metadata'>`
     Record metadata supported:
