@@ -27,6 +27,14 @@ Databay is a Python interface for **scheduled data transfer**. It facilitates tr
 pip install databay
 ```
 
+| Python Version 	| Supported 	|
+|----------------	|-----------	|
+| 3.6            	| ❌         	|
+| 3.7            	| ✅         	|
+| 3.8            	| ✅         	|
+| 3.9            	| Planned   	|
+
+
 ## Documentation
 
 See full **[Databay documentation][docs]**.
