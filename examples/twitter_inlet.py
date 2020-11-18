@@ -3,19 +3,19 @@ import os
 import tweepy
 from databay import Inlet, Link, Record
 from databay.outlets import PrintOutlet
-from databay.planners import ApsPlanner
+from databay.planners import ApsPlanner, SchedulePlanner
 from tweepy.models import Status
 
 
 class TwitterTimelineInlet(Inlet):
 
-    def __init__(self, api: tweepy.API, most_recent_id=None * args, **kwargs):
+    def __init__(self, api: tweepy.API, most_recent_id=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.api = api
         self.most_recent_id = most_recent_id
 
     def pull(self, update):
-        if self.most_recent_id:
+        if self.most_recent_id is not None:
             public_tweets = self.api.home_timeline(
                 since_id=self.most_recent_id)
         else:
@@ -29,14 +29,14 @@ class TwitterTimelineInlet(Inlet):
 
 
 class TwitterUserInlet(Inlet):
-    def __init__(self, api: tweepy.API, user: str, most_recent_id * args, **kwargs):
+    def __init__(self, api: tweepy.API, user: str, most_recent_id=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.api = api
         self.user = user
         self.most_recent_id = most_recent_id
 
     def pull(self, update):
-        if self.most_recent_id:
+        if self.most_recent_id is not None:
             public_tweets = self.api.user_timeline(
                 self.user, since_id=self.most_recent_id)
         else:
@@ -72,7 +72,7 @@ api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
 twitter_user_inlet = TwitterUserInlet(api, "@BarackObama")
 link = Link(twitter_user_inlet, PrintOutlet(only_payload=True),
-            interval=120, tags='twitter_timeline')
+            interval=30, tags='twitter_timeline')
 
-planner = ApsPlanner(link)
+planner = SchedulePlanner(link)
 planner.start()
