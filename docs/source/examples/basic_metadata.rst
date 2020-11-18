@@ -37,7 +37,7 @@ Basic metadata
     .. literalinclude:: ../../examples/basic_metadata.py
         :language: python
         :start-at: print_outlet =
-        :end-at: name='should_print_metadata'
+        :end-at: tags='should_print_metadata'
 
     #. Add to a planner and schedule.
 

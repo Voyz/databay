@@ -27,7 +27,7 @@ Basic Outlet
     .. literalinclude:: ../../examples/basic_outlet.py
         :language: python
         :start-at: link = Link(
-        :end-at: name='print_outlet'
+        :end-at: tags='print_outlet'
 
     #. Add to a planner and schedule.
 
