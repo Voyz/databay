@@ -2,7 +2,7 @@ import asyncio
 import threading
 from unittest import TestCase
 
-from asynctest import mock
+from config_test import mock
 
 from databay import Inlet, Record
 

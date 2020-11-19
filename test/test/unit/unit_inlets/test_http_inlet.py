@@ -2,11 +2,8 @@ import asyncio
 import logging
 import sys
 
-# if sys.version_info[0] == 3 and sys.version_info[1] >= 8:
-#     from unittest.mock import MagicMock, patch, AsyncMock
-# else:
-from asynctest import CoroutineMock, MagicMock, patch
-# AsyncMock = CoroutineMock
+
+from config_test import CoroutineMock, MagicMock, patch
 
 from databay import Update
 from databay.inlets import HttpInlet

@@ -1,19 +1,12 @@
 import asyncio
 import copy
-import io
 import os
-import sys
 from unittest import TestCase
 
-if sys.version_info[0] == 3 and sys.version_info[1] >= 8:
-    from unittest.mock import patch
-else:
-    from asynctest import patch
-
+from config_test import patch
 
 
 from databay import Record, Update
-from databay.outlets import PrintOutlet
 from databay.outlets.csv_outlet import CsvOutlet
 from test_utils import fqname
 

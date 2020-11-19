@@ -3,12 +3,13 @@ import os
 import sys
 from unittest import TestCase, mock
 
-from asynctest import patch, MagicMock
+from config_test import patch, MagicMock
 import asyncio
 from importlib import reload
 
 from databay import config
 
+_sys_version_info = sys.version_info
 
 class TestConfig(TestCase):
 
@@ -19,7 +20,10 @@ class TestConfig(TestCase):
     @patch('sys.version_info')
     def test_event_loop_policy_3_8(self, version_info):
         if sys.platform != 'win32':
-            self.skipTest('Only testable on Windows')
+            self.skipTest('Only testable on Windows.')
+        if _sys_version_info[0] >= 3 and _sys_version_info[1] <= 6:
+            self.skipTest('Only testable on Python 3.7+')
+
         version_info.__getitem__.side_effect = lambda x: [3, 8][x]
 
         # fake a 3.8 default setup
@@ -33,6 +37,10 @@ class TestConfig(TestCase):
     def test_event_loop_policy_3_7(self, version_info):
         if sys.platform != 'win32':
             self.skipTest('Only testable on Windows')
+
+        if _sys_version_info[0] >= 3 and _sys_version_info[1] <= 6:
+            self.skipTest('Only testable on Python 3.7+')
+
         version_info.__getitem__.side_effect = lambda x: [3, 7][x]
 
         # fake a manual 3.8 default setup
