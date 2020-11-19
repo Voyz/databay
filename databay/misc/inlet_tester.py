@@ -4,7 +4,7 @@ import unittest
 from unittest import TestCase
 from unittest.mock import patch
 
-from asynctest import mock
+from config_test import mock
 
 from databay import Record, Update
 from databay.inlets import NullInlet
