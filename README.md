@@ -31,12 +31,6 @@ Databay is a Python interface for **scheduled data transfer**. It facilitates tr
 pip install databay
 ```
 
-| Python Version 	| Supported 	|
-|----------------	|-----------	|
-| 3.6            	| ❌         	|
-| 3.7            	| ✅         	|
-| 3.8            	| ✅         	|
-| 3.9            	| Planned   	|
 
 
 ## Documentation
@@ -104,6 +98,14 @@ Example use:
 ---- 
 
 While Databay comes with a handful of built-in inlets and outlets, its strength lies in extendability. To use Databay in your project, create concrete implementations of `Inlet` and `Outlet` classes that handle the data production and consumption functionality you require. Databay will then make sure data can repeatedly flow between the inlets and outlets you create. [Extending inlets][extending_inlets] and [extending outlets][extending_outlets] is easy and has a wide range of customization. Head over to [Extending Databay][extending] section for a detailed explanation or to [Examples][examples] for real use cases. 
+
+## Supported Python Versions
+
+| Python Version 	| <3.6 	| 3.6 	| 3.7 	| 3.8 	| 3.9 	|
+|----------------	|------	|-----	|-----	|-----	|-----	|
+| Supported      	| ❌    	| ✅   	| ✅   	| ✅   	| ✅   	|
+
+
 
 ## <a name="community"></a>Community Contributions
 
