@@ -1,15 +1,29 @@
 import logging
 import os
 import sys
+import warnings
 from unittest import TestCase, mock
 
-from config_test import patch, MagicMock
+from unittest.mock import patch, MagicMock
 import asyncio
 from importlib import reload
 
 from databay import config
+from test_utils import DummyException
 
 _sys_version_info = sys.version_info
+
+
+async def test_coroutine():
+    return 123
+
+def no_loop_error():
+    raise RuntimeError('There is no current event loop')
+
+def generic_error():
+    raise RuntimeError('Dummy runtime error.')
+
+test_loop = MagicMock()
 
 class TestConfig(TestCase):
 
@@ -95,3 +109,51 @@ class TestConfig(TestCase):
             config.initialise()
             self.assertTrue('stdin or stdout encoder is set to \'windows-1252\'' in ';'.join(cm.output))
 
+
+    @patch('sys.version_info')
+    @patch('asyncio.get_event_loop', MagicMock(return_value=test_loop))
+    def test_asyncio_monkey_patch(self, version_info):
+        version_info.__getitem__.side_effect = lambda x: [3, 6][x]
+
+        config.initialise()
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=RuntimeWarning)
+            coro = test_coroutine()
+            asyncio.run(coro)
+
+            asyncio.get_event_loop.assert_called()
+            test_loop.run_until_complete.assert_called_with(coro)
+
+    @patch('sys.version_info')
+    @patch('asyncio.get_event_loop', MagicMock(side_effect=no_loop_error))
+    @patch('asyncio.new_event_loop', MagicMock(return_value=test_loop))
+    @patch('asyncio.set_event_loop',MagicMock())
+    def test_asyncio_monkey_patch_no_loop(self, version_info):
+        version_info.__getitem__.side_effect = lambda x: [3, 6][x]
+
+        config.initialise()
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=RuntimeWarning)
+            coro = test_coroutine()
+            asyncio.run(coro)
+
+            asyncio.get_event_loop.assert_called()
+            asyncio.new_event_loop.assert_called()
+            asyncio.set_event_loop.assert_called_with(test_loop)
+            test_loop.run_until_complete.assert_called_with(coro)
+
+    @patch('sys.version_info')
+    @patch('asyncio.get_event_loop', MagicMock(side_effect=generic_error))
+    def test_asyncio_monkey_patch_other_error(self, version_info):
+        version_info.__getitem__.side_effect = lambda x: [3, 6][x]
+
+        async def coroutine():
+            return 123
+
+        config.initialise()
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=RuntimeWarning)
+            self.assertRaises(RuntimeError, asyncio.run, coroutine())

@@ -2,7 +2,8 @@ import asyncio
 import logging
 import time
 from datetime import timedelta, datetime
-from unittest import TestCase, mock
+from unittest import TestCase
+from unittest.mock import MagicMock
 
 from databay.errors import ImplementationError, InvalidNodeError
 from databay.inlet import Inlet
@@ -160,8 +161,8 @@ class TestLink(TestCase):
     def test_on_start_already_active(self):
         inlet1 = DummyInlet()
         outlet1 = DummyOutlet()
-        inlet1.on_start = mock.Mock()
-        outlet1.on_start = mock.Mock()
+        inlet1.on_start = MagicMock()()
+        outlet1.on_start = MagicMock()()
         inlet1._active = True
         outlet1._active = True
         link = Link([inlet1], [outlet1], timedelta(seconds=1))
@@ -188,8 +189,8 @@ class TestLink(TestCase):
     def test_on_shutdown_already_inactive(self):
         inlet1 = DummyInlet()
         outlet1 = DummyOutlet()
-        inlet1.on_shutdown = mock.Mock()
-        outlet1.on_shutdown = mock.Mock()
+        inlet1.on_shutdown = MagicMock()()
+        outlet1.on_shutdown = MagicMock()()
         link = Link([inlet1], [outlet1], timedelta(seconds=1))
 
         link.on_shutdown()

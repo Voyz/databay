@@ -1,7 +1,7 @@
 import logging
 from datetime import timedelta
 from unittest import TestCase, mock
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 import databay
 from databay import BasePlanner, Link
@@ -18,10 +18,10 @@ class TestBasePlanner(TestCase):
     @patch.multiple(BasePlanner,  __abstractmethods__=set())
     def setUp(self):
         self.planner = BasePlanner()
-        self.planner._schedule = mock.Mock(side_effect=lambda link: link.set_job(object()))
-        self.planner._unschedule = mock.Mock(side_effect=lambda link: link.set_job(None))
-        self.planner._start_planner = mock.Mock()
-        self.planner._shutdown_planner = mock.Mock()
+        self.planner._schedule = MagicMock(side_effect=lambda link: link.set_job(object()))
+        self.planner._unschedule = MagicMock(side_effect=lambda link: link.set_job(None))
+        self.planner._start_planner = MagicMock()
+        self.planner._shutdown_planner = MagicMock()
 
     @patch(fqname(Link), spec=Link)
     def test_add_links(self, link):

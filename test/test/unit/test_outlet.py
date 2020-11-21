@@ -1,8 +1,8 @@
 import asyncio
 import threading
 from unittest import TestCase
+from unittest.mock import MagicMock
 
-from config_test import mock
 
 from databay import Outlet, Record
 
@@ -102,7 +102,7 @@ class TestOutlet(TestCase):
     should indeed prevent it."""
     def test_try_start_race_condition(self):
         outlet = DummyStartShutdownOutlet()
-        outlet.on_start = mock.MagicMock()
+        outlet.on_start = MagicMock()
 
         def worker(event):
             event.wait()
@@ -124,7 +124,7 @@ class TestOutlet(TestCase):
     def test_try_shutdown_race_condition(self):
         outlet = DummyStartShutdownOutlet()
         outlet._active = True
-        outlet.on_shutdown = mock.MagicMock()
+        outlet.on_shutdown = MagicMock()
 
         def worker(event):
             event.wait()

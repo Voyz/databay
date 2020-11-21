@@ -4,7 +4,7 @@ import io
 import os
 from unittest import TestCase
 
-from config_test import patch
+from unittest.mock import patch
 
 from databay import Record, Update
 from databay.outlets import PrintOutlet

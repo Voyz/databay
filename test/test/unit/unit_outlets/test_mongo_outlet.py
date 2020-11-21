@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 import mongomock
-from config_test import patch, MagicMock
+from unittest.mock import patch, MagicMock
 from mongomock import Collection
 
 from databay import Record, Update

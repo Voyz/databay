@@ -2,7 +2,7 @@ import asyncio
 import threading
 from unittest import TestCase
 
-from config_test import mock
+from unittest.mock import MagicMock
 
 from databay import Inlet, Record
 
@@ -163,7 +163,7 @@ class TestInlet(TestCase):
     should indeed prevent it."""
     def test_try_start_race_condition(self):
         inlet = DummyStartShutdownInlet()
-        inlet.on_start = mock.MagicMock()
+        inlet.on_start = MagicMock()
 
         def worker(event):
             event.wait()
@@ -185,7 +185,7 @@ class TestInlet(TestCase):
     def test_try_shutdown_race_condition(self):
         inlet = DummyStartShutdownInlet()
         inlet._active = True
-        inlet.on_shutdown = mock.MagicMock()
+        inlet.on_shutdown = MagicMock()
 
         def worker(event):
             event.wait()
