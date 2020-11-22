@@ -1,11 +1,10 @@
 import logging
 import random
 import time
-from datetime import timedelta
+from typing import List
 
 import elasticsearch
 from databay import Inlet, Link, Outlet
-from databay.inlets import RandomIntInlet
 from databay.planners import ApsPlanner
 from databay.record import Record
 
@@ -18,19 +17,7 @@ Integer pretium ultrices urna, id viverra mauris ultrices ut. Etiam aliquet tell
 Aliquam eget porttitor enim. 
 """
 
-
-class DummyTextInlet(Inlet):
-
-    def __init__(self, text: list, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.text = text
-        self._id = 0
-
-    def pull(self, update):
-        text_selection = random.choice(self.text)
-        self._id += 1
-        time.sleep(1)
-        return {self._id: text_selection}
+_LOGGER = logging.getLogger('databay.elasticsearch_outlet')
 
 
 class ElasticSearchIndexerOutlet(Outlet):
@@ -45,13 +32,12 @@ class ElasticSearchIndexerOutlet(Outlet):
         # otherwise we will skip indexing and log that document id exists in index.
         self.overwrite_documents = overwrite_documents
 
-        try:
-            assert self.es_client.indices.exists(self.index_name)
-
-        except:
+        if self.es_client.indices.exists(self.index_name):
+            pass
+        else:
             raise RuntimeError(f"Index '{self.index_name}' does not exist ")
 
-    def push(self, records: [Record], update):
+    def push(self, records: List[Record], update):
         for record in records:
 
             payload = record.payload
@@ -64,29 +50,46 @@ class ElasticSearchIndexerOutlet(Outlet):
                 if self.overwrite_documents:
                     self.es_client.index(
                         self.index_name, body, id=_id)
-                    logging.info(f"Indexed document with id {_id}")
+                    _LOGGER.info(f"Indexed document with id {_id}")
 
                 else:
                     if self.es_client.exists(self.index_name, _id):
                         # log that it is not possible
-                        logging.info(
+                        _LOGGER.info(
                             f"Document already exists for id {_id}. Skipping.")
                     else:
                         self.es_client.index(
                             self.index_name, body, id=_id)
-                        logging.info(f"Indexed document with id {_id}")
+                        _LOGGER.info(f"Indexed document with id {_id}")
 
 
-logging.getLogger().setLevel(logging.INFO)
+class DummyTextInlet(Inlet):
+    "A simple `Inlet` that randomly pulls a string from a list of strings."
+
+    def __init__(self, text: list, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.text = text
+        self._id = 0
+
+    def pull(self, update):
+        text_selection = random.choice(self.text)
+        self._id += 1
+        time.sleep(1)
+        return {self._id: text_selection}
+
+
+_LOGGER.setLevel(logging.INFO)
 
 es_client = elasticsearch.Elasticsearch(timeout=30)
-random_int_inlet = DummyTextInlet(TEXT.split("."))
+text_inlet = DummyTextInlet(TEXT.split("."))
+
 elasticsearch_outlet = ElasticSearchIndexerOutlet(
     es_client, "my-test-index", overwrite_documents=False)
-link = Link(random_int_inlet,
+
+link = Link(text_inlet,
             elasticsearch_outlet,
             interval=2,
-            tags='print_outlet')
+            tags='elasticsearch_outlet')
 
 planner = ApsPlanner(link)
 planner.start()
