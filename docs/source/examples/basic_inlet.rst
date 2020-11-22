@@ -1,5 +1,5 @@
 Basic Inlet
-------------
+-----------
 
 .. container:: tutorial-block
 
