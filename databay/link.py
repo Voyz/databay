@@ -4,6 +4,7 @@ import datetime
 import itertools
 import warnings
 import logging
+import warnings
 from typing import Any, List, Union
 
 from databay.errors import InvalidNodeError
@@ -50,7 +51,8 @@ class Link():
                  interval: Union[datetime.timedelta, int, float],
                  tags:Union[str, List[str]]=None,
                  copy_records:bool=True,
-                 catch_exceptions:bool=False,
+                 ignore_exceptions:bool=False,
+                 catch_exceptions:bool=None,
                  name=None):
         """
         :type inlets: :any:`Inlet` or list[:any:`Inlet`]
@@ -69,8 +71,8 @@ class Link():
         :type copy_records: bool
         :param copy_records: Whether to copy records before passing them to outlets. |default| :code:`True`
 
-        :type catch_exceptions: bool
-        :param catch_exceptions: Whether exceptions in inlets and outlets should be caught or let through. |default| :code:`True`
+        :type ignore_exceptions: bool
+        :param ignore_exceptions: Whether exceptions in inlets and outlets should be logged and ignored, or raised. |default| :code:`True`
         """
 
         self._inlets = []
@@ -90,7 +92,10 @@ class Link():
         if isinstance(tags, str): tags = [tags]
         self._tags = tags if tags is not None else []
         self._copy_records = copy_records
-        self._catch_exceptions = catch_exceptions
+        self._ignore_exceptions = ignore_exceptions
+        if catch_exceptions is not None: # pragma: no cover
+            self._ignore_exceptions = catch_exceptions
+            warnings.warn('\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
 
 
 
@@ -260,7 +265,7 @@ class Link():
             try:
                 return await inlet._pull(update)
             except Exception as e:
-                if self._catch_exceptions:
+                if self._ignore_exceptions:
                     _LOGGER.exception(f'Inlet exception: "{e}" for inlet: {inlet}, in: {self}, during: {update}', exc_info=True)
                     return []
                 else:
@@ -275,7 +280,7 @@ class Link():
             try:
                 await outlet._push(records_copy, update)
             except Exception as e:
-                if self._catch_exceptions:
+                if self._ignore_exceptions:
                     _LOGGER.exception(f'Outlet exception: "{e}" for outlet: {outlet}, in link: {self}, during: {update}', exc_info=True)
                 else:
                     raise e
@@ -306,7 +311,7 @@ class Link():
             try:
                 inlet.try_start()
             except Exception as e:
-                if self._catch_exceptions:
+                if self._ignore_exceptions:
                     _LOGGER.exception(
                         f'on_start inlet exception: "{e}" for inlet: {inlet}, in link: {self}',
                         exc_info=True)
@@ -317,7 +322,7 @@ class Link():
             try:
                 outlet.try_start()
             except Exception as e:
-                if self._catch_exceptions:
+                if self._ignore_exceptions:
                     _LOGGER.exception(
                         f'on_start outlet exception: "{e}" for outlet: {outlet}, in link: {self}',
                         exc_info=True)
@@ -337,7 +342,7 @@ class Link():
             try:
                 inlet.try_shutdown()
             except Exception as e:
-                if self._catch_exceptions:
+                if self._ignore_exceptions:
                     _LOGGER.exception(
                         f'on_shutdown inlet exception: "{e}" for inlet: {inlet}, in link: {self}',
                         exc_info=True)
@@ -348,7 +353,7 @@ class Link():
             try:
                 outlet.try_shutdown()
             except Exception as e:
-                if self._catch_exceptions:
+                if self._ignore_exceptions:
                     _LOGGER.exception(
                         f'on_shutdown outlet exception: "{e}" for outlet: {outlet}, in link: {self}',
                         exc_info=True)

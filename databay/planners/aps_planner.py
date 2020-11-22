@@ -35,7 +35,7 @@ class ApsPlanner(BasePlanner):
 
     """
 
-    def __init__(self, links:Union[Link, List[Link]]=None, threads:int=30, executors_override:dict=None, job_defaults_override:dict=None, catch_exceptions:bool=False):
+    def __init__(self, links:Union[Link, List[Link]]=None, threads:int=30, executors_override:dict=None, job_defaults_override:dict=None, ignore_exceptions:bool=False, catch_exceptions:bool=None):
         """
 
         :type links: :any:`Link` or list[:any:`Link`]
@@ -54,14 +54,17 @@ class ApsPlanner(BasePlanner):
         :param job_defaults_override: Overrides for job_defaults option of `APS configuration <configuring-scheduler_>`__
             |default| :code:`None`
 
-        :type catch_exceptions: bool
-        :param catch_exceptions: Whether exceptions should be caught or halt the planner.
+        :type ignore_exceptions: bool
+        :param ignore_exceptions: Whether exceptions should be ignored or halt the planner.
             |default| :code:`False`
         """
 
 
         self._threads = threads
-        self._catch_exceptions = catch_exceptions
+        self._ignore_exceptions = ignore_exceptions
+        if catch_exceptions is not None: # pragma: no cover
+            self._ignore_exceptions = catch_exceptions
+            warnings.warn('\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
 
         if executors_override is None: executors_override = {}
         if job_defaults_override is None: job_defaults_override = {}
@@ -92,8 +95,8 @@ class ApsPlanner(BasePlanner):
             except Exception as e:
                 _LOGGER.exception(e)
 
-            if not self._catch_exceptions and self.running:
-                self.shutdown(False)
+            if not self._ignore_exceptions and self.running:
+                self.shutdown(wait=False)
 
 
 
