@@ -30,6 +30,9 @@ You can find all examples in the GitHub repository in the `Examples folder <http
 .. _basic-asynchronous:
 .. include:: examples/basic_asynchronous.rst
 
+.. _elasticsearch-outlet:
+.. include:: examples/elasticsearch_outlet.rst
+
 .. todo: add more complex examples of utilising the system for something actually meaningful
 .. todo: add examples with multiple inlets and outlets
 .. todo: add examples with multiple links
