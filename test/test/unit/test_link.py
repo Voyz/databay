@@ -25,7 +25,7 @@ def pull_mock(rv=None):
     async def pull_coro(_):
         return rv
 
-    return mock.MagicMock(side_effect=pull_coro)
+    return MagicMock(side_effect=pull_coro)
 
 
 class DummyIterable():
