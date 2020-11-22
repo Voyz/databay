@@ -23,7 +23,10 @@ _LOGGER = logging.getLogger('databay.elasticsearch_outlet')
 class ElasticSearchIndexerOutlet(Outlet):
     " An example outlet for indexing text documents from any `Inlet`."
 
-    def __init__(self, es_client: elasticsearch.Elasticsearch, index_name: str, overwrite_documents: bool = True):
+    def __init__(self,
+                 es_client: elasticsearch.Elasticsearch,
+                 index_name: str,
+                 overwrite_documents: bool = True):
         super().__init__()
         self.es_client = es_client
         self.index_name = index_name
@@ -54,7 +57,7 @@ class ElasticSearchIndexerOutlet(Outlet):
 
                 else:
                     if self.es_client.exists(self.index_name, _id):
-                        # log that it is not possible
+                        # log that already exists
                         _LOGGER.info(
                             f"Document already exists for id {_id}. Skipping.")
                     else:
@@ -81,10 +84,10 @@ class DummyTextInlet(Inlet):
 _LOGGER.setLevel(logging.INFO)
 
 es_client = elasticsearch.Elasticsearch(timeout=30)
-text_inlet = DummyTextInlet(TEXT.split("."))
 
+text_inlet = DummyTextInlet(TEXT.split("."))
 elasticsearch_outlet = ElasticSearchIndexerOutlet(
-    es_client, "my-test-index", overwrite_documents=False)
+    es_client, "my-test-index")
 
 link = Link(text_inlet,
             elasticsearch_outlet,
