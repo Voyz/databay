@@ -1,13 +1,18 @@
 import os
 
 import tweepy
-from databay import Inlet, Link, Record
+from databay import Inlet, Link
 from databay.outlets import PrintOutlet
-from databay.planners import ApsPlanner, SchedulePlanner
-from tweepy.models import Status
+from databay.planners import SchedulePlanner
 
 
 class TwitterInlet(Inlet):
+    """
+    An implementation of an `Inlet` that uses the Tweepy (https://www.tweepy.org/)
+    Twitter client to pull tweets from either a specific users' timeline or the
+    home timeline belonging to an authenticated `tweepy.API` instance.
+    """
+
     def __init__(self, api: tweepy.API, user: str = None, most_recent_id=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.api = api
@@ -16,6 +21,8 @@ class TwitterInlet(Inlet):
         # this will ensure we only every pull tweets that haven't been handled
         self.most_recent_id = most_recent_id
 
+        # sets flag indicating whether we are pulling from as single user
+        # or from the home timeline.
         if self.user is None:
             self.is_user_timeline = False
         else:
@@ -45,6 +52,7 @@ class TwitterInlet(Inlet):
             tweets.append({"user": tweet.user.screen_name, "text": tweet.text})
         return tweets
 
+
 # gets twitter api secrets and keys from environment vars
 consumer_key = os.getenv("twitter_key")
 consumer_secret = os.getenv("twitter_secret")
@@ -65,7 +73,7 @@ api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 twitter_user_inlet = TwitterInlet(api)
 
 link = Link(twitter_user_inlet, PrintOutlet(only_payload=True),
-            interval=30, tags='twitter_user_timeline')
+            interval=30, tags='twitter_timeline')
 
 planner = SchedulePlanner(link)
 planner.start()
