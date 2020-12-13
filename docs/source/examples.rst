@@ -33,6 +33,10 @@ You can find all examples in the GitHub repository in the `Examples folder <http
 .. _elasticsearch-outlet:
 .. include:: examples/elasticsearch_outlet.rst
 
+
+.. _twitter-inlet:
+.. include:: examples/twitter_inlet.rst
+
 .. todo: add more complex examples of utilising the system for something actually meaningful
 .. todo: add examples with multiple inlets and outlets
 .. todo: add examples with multiple links
