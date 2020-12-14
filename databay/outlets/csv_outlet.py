@@ -5,6 +5,8 @@ import os
 from databay.outlet import Outlet, MetadataKey
 from databay.record import Record
 
+from pathlib import Path
+
 _LOGGER = logging.getLogger('databay.CsvOutlet')
 
 class CsvOutlet(Outlet):
@@ -49,6 +51,7 @@ class CsvOutlet(Outlet):
             _LOGGER.info(f'{update} writing into: {filepath}, file mode: {file_mode}, record: {record}')
 
             # todo: add more write options
+            Path(filepath).parent.mkdir(parents=True, exist_ok=True)
             with open(filepath, file_mode, newline="") as f:
 
                 # todo: add more DictWriter options
