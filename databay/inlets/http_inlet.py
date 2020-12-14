@@ -13,6 +13,7 @@ from json import JSONDecodeError
 from typing import List, Union
 
 import aiohttp
+import ssl
 
 from databay.inlet import Inlet
 from databay import Record
@@ -26,7 +27,7 @@ class HttpInlet(Inlet):
     .. _aiohttp.ClientSession.get: https://docs.aiohttp.org/en/stable/client_reference.html#aiohttp.ClientSession.get
     """
 
-    def __init__(self, url:str, json:str=True, *args, **kwargs):
+    def __init__(self, url:str, json:str=True, cacert=None, params=None, *args, **kwargs):
         """
         :type url: str
         :param url: URL that should be queried for data.
@@ -34,9 +35,20 @@ class HttpInlet(Inlet):
         :type json: bool
         :param json: Whether response should be parsed as JSON.
         """
+        self.tcp_connector = None
         super().__init__(*args, **kwargs)
         self.url = url
         self.json = json
+        self.cacert = cacert
+        self.params = params
+
+        if self.cacert is not None and self.cacert != False:
+            context = ssl.create_default_context()
+            context.verify_mode = ssl.CERT_REQUIRED
+            context.check_hostname = True
+            context.load_verify_locations(self.cacert)
+            self.context = context
+            self.tcp_connector = aiohttp.TCPConnector(ssl_context=self.context)
 
     async def pull(self, update) -> Union[List[Record], str]:
         """
@@ -49,8 +61,8 @@ class HttpInlet(Inlet):
         :rtype: :any:`Record` or list[:any:`Record`]
         """
         _LOGGER.info(f'{update} pulling {self.url}')
-        async with aiohttp.ClientSession() as session:
-            async with session.get(self.url) as response:
+        async with aiohttp.ClientSession(connector=self.tcp_connector) as session:
+            async with session.get(self.url, params=self.params) as response:
                 payload = await response.read()
                 _LOGGER.info(f'{update} received {self.url}')
                 try:
