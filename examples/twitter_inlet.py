@@ -60,8 +60,8 @@ access_token = os.getenv("twitter_access_token")
 access_token_secret = os.getenv("twitter_access_token_secret")
 
 
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_token_secret)
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)  # user defined values
+auth.set_access_token(access_token, access_token_secret)  # user defined values
 
 # extra params here protect against twitter rate limiting
 # set link intervals with this in mind
@@ -70,7 +70,7 @@ api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
 
 # create TwitterUserInlet() pointed at a specific account name
-twitter_user_inlet = TwitterInlet(api)
+twitter_user_inlet = TwitterInlet(api, "@BarackObama")
 
 link = Link(twitter_user_inlet, PrintOutlet(only_payload=True),
             interval=30, tags='twitter_timeline')

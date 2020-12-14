@@ -20,7 +20,7 @@ Aliquam eget porttitor enim.
 _LOGGER = logging.getLogger('databay.elasticsearch_outlet')
 
 
-class ElasticSearchIndexerOutlet(Outlet):
+class ElasticsearchIndexerOutlet(Outlet):
     " An example outlet for indexing text documents from any `Inlet`."
 
     def __init__(self,
@@ -35,9 +35,7 @@ class ElasticSearchIndexerOutlet(Outlet):
         # otherwise we will skip indexing and log that document id exists in index.
         self.overwrite_documents = overwrite_documents
 
-        if self.es_client.indices.exists(self.index_name):
-            pass
-        else:
+        if not self.es_client.indices.exists(self.index_name):
             raise RuntimeError(f"Index '{self.index_name}' does not exist ")
 
     def push(self, records: List[Record], update):
@@ -86,7 +84,7 @@ _LOGGER.setLevel(logging.INFO)
 es_client = elasticsearch.Elasticsearch(timeout=30)
 
 text_inlet = DummyTextInlet(TEXT.split("."))
-elasticsearch_outlet = ElasticSearchIndexerOutlet(
+elasticsearch_outlet = ElasticsearchIndexerOutlet(
     es_client, "my-test-index")
 
 link = Link(text_inlet,
