@@ -53,7 +53,6 @@ class Link():
                  copy_records:bool=True,
                  ignore_exceptions:bool=False,
                  catch_exceptions:bool=None,
-                 inlet_concurrency:int = 9999,
                  name=None):
         """
         :type inlets: :any:`Inlet` or list[:any:`Inlet`]
@@ -97,7 +96,7 @@ class Link():
             self._ignore_exceptions = catch_exceptions
             warnings.warn('\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
 
-        self.inlet_concurrency = inlet_concurrency
+
 
     @property
     def inlets(self) -> List[Inlet]:
@@ -121,7 +120,7 @@ class Link():
             inlets = [inlets]
 
         for inl in inlets:
-            assert isinstance(inl, Inlet), f"Requires Inlet, found {inl}"
+            assert isinstance(inl, Inlet)
             
             if inl in self._inlets:
                 raise InvalidNodeError('Link already contains inlet: %s' % (inl))
@@ -256,15 +255,14 @@ class Link():
         """
         Coroutine handling the transfer.
         """
-        semaphore = asyncio.Semaphore(self.inlet_concurrency)
+
         self._transfer_number += 1
         update = Update(tags=self.tags, transfer_number=self._transfer_number)
         _LOGGER.debug(f'{update} transfer')
 
         async def inlet_task(inlet):
             try:
-                async with semaphore:
-                    return await inlet._pull(update)
+                return await inlet._pull(update)
             except Exception as e:
                 if self._ignore_exceptions:
                     _LOGGER.exception(f'Inlet exception: "{e}" for inlet: {inlet}, in: {self}, during: {update}', exc_info=True)
