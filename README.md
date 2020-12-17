@@ -136,10 +136,12 @@ The following are inlets and outlets that others would like to see implemented. 
 
 ## <a name="roadmap"></a>Roadmap
 
+See full [Databay Roadmap][databay_roadmap]. Bare in mind this a live document that is shared to give you an idea of what can be expected in the future releases, rather than a locked schedule. Priorities and order of implementation may change without warning.
+
 #### v1.0
 1. Beta test the pre-release.
 1. ~~Complete 100% test coverage.~~
-1. Add more advanced examples.
+1. ~~Add more advanced examples.~~
 1. Release v1.0.
 1. Buy a carrot cake and celebrate.
 
@@ -175,3 +177,4 @@ See [LICENSE](https://github.com/Voyz/databay/blob/master/LICENSE)
   [voy1982_email]: mailto:voy1982@yahoo.co.uk
   [issues]: https://github.com/Voyz/databay/issues
   [community_docs]: https://databay.readthedocs.io/en/latest/extending/community_contributions.html
+  [databay_roadmap]: https://docs.google.com/spreadsheets/d/16KwzSCBMNdUS2s-gcnCftvuXdYYzJhYpDoXYX-wxzCo/edit?usp=sharing
