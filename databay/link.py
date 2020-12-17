@@ -1,4 +1,3 @@
-from databay import Inlet, Outlet
 import asyncio
 import copy
 import datetime
@@ -41,6 +40,7 @@ class Update():
         s += f'{self.transfer_number}'
         return s
 
+from databay import Inlet, Outlet
 
 class Link():
     """
