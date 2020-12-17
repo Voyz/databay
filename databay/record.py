@@ -5,7 +5,8 @@ class Record():
 
     .. warning:: You should prefer :py:func:`Inlet.new_record() <databay.inlet.Inlet.new_record>` function over instantiating this class directly.
     """
-    def __init__(self, payload, metadata:dict=None):
+
+    def __init__(self, payload, metadata: dict = None):
         """
 
         :type payload: Any
@@ -36,13 +37,9 @@ class Record():
 
         return self._metadata
 
-
-
     def __repr__(self):
         """
         :returns: Record(payload=%s, metadata=%s)
         """
 
         return ('Record(payload=%s, metadata=%s)' % (self.payload, self.metadata))
-
-

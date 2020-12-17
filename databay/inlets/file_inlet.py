@@ -2,14 +2,16 @@ from enum import Enum
 
 from databay import Inlet
 
+
 class FileInletMode(Enum):
     """Enum defining the mode in which the FileInlet should read the file."""
 
-    LINE:str = 'line'
+    LINE: str = 'line'
     """Read file one line per transfer. This will open the file and hold it open for as long as the planner is running."""
 
-    FILE:str = 'file'
+    FILE: str = 'file'
     """Read the entire file on each transfer. This will only open the file briefly during the transfer."""
+
 
 class FileInlet(Inlet):
 
@@ -17,7 +19,7 @@ class FileInlet(Inlet):
     Inlet producing data by reading a file.
     """
 
-    def __init__(self, filepath:str, read_mode:FileInletMode= FileInletMode.LINE, *args, **kwargs):
+    def __init__(self, filepath: str, read_mode: FileInletMode = FileInletMode.LINE, *args, **kwargs):
         """
         :param filepath: Path to the file.
         :type filepath: str
