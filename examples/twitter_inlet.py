@@ -60,7 +60,8 @@ access_token = os.getenv("twitter_access_token")
 access_token_secret = os.getenv("twitter_access_token_secret")
 
 
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)  # user defined values
+auth = tweepy.OAuthHandler(
+    consumer_key, consumer_secret)  # user defined values
 auth.set_access_token(access_token, access_token_secret)  # user defined values
 
 # extra params here protect against twitter rate limiting
