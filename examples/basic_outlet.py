@@ -20,7 +20,7 @@ print_outlet = PrintOutlet()
 link = Link(random_int_inlet,
             print_outlet,
             interval=timedelta(seconds=2),
-            name='print_outlet')
+            tags='print_outlet')
 
 planner = SchedulePlanner(link)
 planner.start()

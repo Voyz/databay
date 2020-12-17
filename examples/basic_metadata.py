@@ -28,7 +28,7 @@ print_outlet = ConditionalPrintOutlet()
 link = Link([random_int_inlet_on, random_int_inlet_off],
             print_outlet,
             interval=timedelta(seconds=0.5),
-            name='should_print_metadata')
+            tags='should_print_metadata')
 
 planner = SchedulePlanner(link, refresh_interval=0.5)
 planner.start()

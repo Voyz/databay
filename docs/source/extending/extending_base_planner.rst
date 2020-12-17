@@ -86,7 +86,7 @@ Example from :code:`ApsPlanner._shutdown_planner`:
 Exceptions
 ----------
 
-When implementing your planner you should consider that links may raise exceptions when executing. Your planner should anticipate this and allow handling the exceptions appropriately to ensure continuous execution. Both :any:`ApsPlanner` and :any:`SchedulePlanner` allow catching exceptions when :code:`catch_exceptions=True` is passed on construction, otherwise they will log the exception and shutdown. See :ref:`Exception handling <exception_handling>` for more.
+When implementing your planner you should consider that links may raise exceptions when executing. Your planner should anticipate this and allow handling the exceptions appropriately to ensure continuous execution. Both :any:`ApsPlanner` and :any:`SchedulePlanner` allow catching exceptions when :code:`ignore_exceptions=True` is passed on construction, otherwise they will log the exception and shutdown. See :ref:`Exception handling <exception_handling>` for more.
 
 Running property
 ----------------

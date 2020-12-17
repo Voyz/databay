@@ -1,7 +1,9 @@
+import asyncio
 import io
 import unittest
+from unittest import TestCase
 
-from asynctest import TestCase, patch, asyncio
+from unittest.mock import patch
 
 from databay import Record, Update
 from databay.outlets import PrintOutlet

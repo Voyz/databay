@@ -53,7 +53,7 @@ print_outlet = PrintOutlet()
 link = Link([random_int_inletA, random_int_inletB, random_int_inletC],
             print_outlet,
             interval=timedelta(seconds=2),
-            name='async')
+            tags='async')
 
 planner = SchedulePlanner(link)
 planner.start()

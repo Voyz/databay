@@ -33,7 +33,7 @@ api_key = os.environ.get('OPEN_WEATHER_MAP_API_KEY')
 weather_inlet = WeatherInlet(api_key, 'Bangkok')
 
 link = Link(weather_inlet, PrintOutlet(only_payload=True),
-            interval=timedelta(seconds=2), name='bangkok_weather')
+            interval=timedelta(seconds=2), tags='bangkok_weather')
 
 planner = ApsPlanner(link)
 planner.start()

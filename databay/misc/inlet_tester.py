@@ -2,9 +2,8 @@ import asyncio
 import functools
 import unittest
 from unittest import TestCase
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
-from asynctest import mock
 
 from databay import Record, Update
 from databay.inlets import NullInlet
@@ -86,7 +85,7 @@ class InletTester(TestCase):
         Test creating new records and overriding global metadata.
         """
 
-        meta = mock.MagicMock()
+        meta = MagicMock()
         meta.keys.return_value = self.gmetadata.keys()
         meta.__getitem__.side_effect = lambda x: self.gmetadata.__getitem__(x)
 
