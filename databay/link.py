@@ -64,8 +64,7 @@ class Link():
         :param outlets: outlets to add to this link.
 
         :type interval: Union[datetime.timedelta, int, float]
-        :param interval: Expects :code:datetime.timedelta. Alternatively, you can provide :code:int or
-        :code:float which will be coerced explicitly to :code:datetime.timedelta.seconds.
+        :param interval: Expects :code:`datetime.timedelta`. Alternatively, you can provide :code:`int` or :code:`float` which will be coerced explicitly to :code:`datetime.timedelta.seconds`.
 
         :type tags: Union[str, List[str]]
         :param tags: List of tags of this link. |default| :code:`[]`
