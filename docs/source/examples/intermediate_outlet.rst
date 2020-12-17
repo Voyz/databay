@@ -33,7 +33,7 @@ Intermediate Outlet
     .. literalinclude:: ../../examples/intermediate_outlet.py
         :language: python
         :start-at: def push(
-        :end-at: file_mode =
+        :end-at: self.FILE_MODE, self.default_file_mode)
 
     #. Write the record according to the :code:`filepath` and :code:`file_mode` found.
 
