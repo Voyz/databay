@@ -32,7 +32,7 @@ class SchedulePlanner(BasePlanner):
 
     """
 
-    def __init__(self, links:Union[Link, List[Link]]=None, threads:int=30, refresh_interval:float=1.0, ignore_exceptions:bool=False, catch_exceptions:bool=None):
+    def __init__(self, links: Union[Link, List[Link]] = None, threads: int = 30, refresh_interval: float = 1.0, ignore_exceptions: bool = False, catch_exceptions: bool = None):
         """
 
         :type links: :any:`Link` or list[:any:`Link`]
@@ -61,9 +61,10 @@ class SchedulePlanner(BasePlanner):
         self._exc_info = []
         self._exc_lock = threading.Lock()
         self._ignore_exceptions = ignore_exceptions
-        if catch_exceptions is not None: # pragma: no cover
+        if catch_exceptions is not None:  # pragma: no cover
             self._ignore_exceptions = catch_exceptions
-            warnings.warn('\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
+            warnings.warn(
+                '\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
 
     @property
     def refresh_interval(self) -> float:

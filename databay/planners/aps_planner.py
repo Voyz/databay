@@ -36,7 +36,7 @@ class ApsPlanner(BasePlanner):
 
     """
 
-    def __init__(self, links:Union[Link, List[Link]]=None, threads:int=30, executors_override:dict=None, job_defaults_override:dict=None, ignore_exceptions:bool=False, catch_exceptions:bool=None):
+    def __init__(self, links: Union[Link, List[Link]] = None, threads: int = 30, executors_override: dict = None, job_defaults_override: dict = None, ignore_exceptions: bool = False, catch_exceptions: bool = None):
         """
 
         :type links: :any:`Link` or list[:any:`Link`]
@@ -62,9 +62,10 @@ class ApsPlanner(BasePlanner):
 
         self._threads = threads
         self._ignore_exceptions = ignore_exceptions
-        if catch_exceptions is not None: # pragma: no cover
+        if catch_exceptions is not None:  # pragma: no cover
             self._ignore_exceptions = catch_exceptions
-            warnings.warn('\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
+            warnings.warn(
+                '\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
 
         if executors_override is None:
             executors_override = {}

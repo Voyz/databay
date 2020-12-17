@@ -18,8 +18,10 @@ class TestBasePlanner(TestCase):
     @patch.multiple(BasePlanner,  __abstractmethods__=set())
     def setUp(self):
         self.planner = BasePlanner()
-        self.planner._schedule = MagicMock(side_effect=lambda link: link.set_job(object()))
-        self.planner._unschedule = MagicMock(side_effect=lambda link: link.set_job(None))
+        self.planner._schedule = MagicMock(
+            side_effect=lambda link: link.set_job(object()))
+        self.planner._unschedule = MagicMock(
+            side_effect=lambda link: link.set_job(None))
         self.planner._start_planner = MagicMock()
         self.planner._shutdown_planner = MagicMock()
 

@@ -17,13 +17,17 @@ _sys_version_info = sys.version_info
 async def test_coroutine():
     return 123
 
+
 def no_loop_error():
     raise RuntimeError('There is no current event loop')
+
 
 def generic_error():
     raise RuntimeError('Dummy runtime error.')
 
+
 test_loop = MagicMock()
+
 
 class TestConfig(TestCase):
 
@@ -113,8 +117,8 @@ class TestConfig(TestCase):
     def test_windows_1252_incorrect_ignore(self):
         with self.assertLogs(logging.getLogger('databay'), level='WARNING') as cm:
             config.initialise()
-            self.assertTrue('stdin or stdout encoder is set to \'windows-1252\'' in ';'.join(cm.output))
-
+            self.assertTrue(
+                'stdin or stdout encoder is set to \'windows-1252\'' in ';'.join(cm.output))
 
     @patch('sys.version_info')
     @patch('asyncio.get_event_loop', MagicMock(return_value=test_loop))
@@ -134,7 +138,7 @@ class TestConfig(TestCase):
     @patch('sys.version_info')
     @patch('asyncio.get_event_loop', MagicMock(side_effect=no_loop_error))
     @patch('asyncio.new_event_loop', MagicMock(return_value=test_loop))
-    @patch('asyncio.set_event_loop',MagicMock())
+    @patch('asyncio.set_event_loop', MagicMock())
     def test_asyncio_monkey_patch_no_loop(self, version_info):
         version_info.__getitem__.side_effect = lambda x: [3, 6][x]
 

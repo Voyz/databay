@@ -147,7 +147,8 @@ class TestSchedulePlanner(TestCase):
         link.transfer.assert_called()
 
         if ignore_exceptions:
-            self.assertTrue(self.planner.running, 'Scheduler should be running')
+            self.assertTrue(self.planner.running,
+                            'Scheduler should be running')
             self.planner.shutdown(wait=False)
             th.join(timeout=2)
             self.assertFalse(th.is_alive(), 'Thread should be stopped.')
