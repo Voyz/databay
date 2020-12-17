@@ -16,9 +16,12 @@ class TestCsvOutlet(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.this_filepath = os.path.abspath(os.path.dirname(__file__))
-        cls.target_filepath = os.path.join(cls.this_filepath, 'data/_csv_outlet_target.csv')
-        cls.attempt_filepath = os.path.join(cls.this_filepath, 'data/_csv_outlet_attempt.csv')
-        cls.custom_filepath = os.path.join(cls.this_filepath, 'data/_csv_outlet_custom_attempt.csv')
+        cls.target_filepath = os.path.join(
+            cls.this_filepath, 'data/_csv_outlet_target.csv')
+        cls.attempt_filepath = os.path.join(
+            cls.this_filepath, 'data/_csv_outlet_attempt.csv')
+        cls.custom_filepath = os.path.join(
+            cls.this_filepath, 'data/_csv_outlet_custom_attempt.csv')
         with open(cls.target_filepath, 'r') as f:
             cls.target = f.read()
 
@@ -41,12 +44,13 @@ class TestCsvOutlet(TestCase):
         record.__repr__ = lambda x: 'TestRecord(test)'
         update.__repr__ = lambda x: 'TestUpdate()'
 
-        self.records = [copy.copy(record) for i in range(0,4)]
+        self.records = [copy.copy(record) for i in range(0, 4)]
 
     def test_push_append_mode(self):
         asyncio.run(self.csv_outlet._push(self.records, self.update))
 
-        self.assertTrue(os.path.exists(self.attempt_filepath), 'File should exist')
+        self.assertTrue(os.path.exists(
+            self.attempt_filepath), 'File should exist')
 
         with open(self.attempt_filepath, 'r') as f:
             self.assertEqual(f.read(), self.target)
@@ -60,10 +64,12 @@ class TestCsvOutlet(TestCase):
 
         asyncio.run(self.csv_outlet._push(self.records, self.update))
 
-        self.assertTrue(os.path.exists(self.attempt_filepath), 'File should exist')
+        self.assertTrue(os.path.exists(
+            self.attempt_filepath), 'File should exist')
 
         with open(self.attempt_filepath, 'r') as f:
-            self.assertEqual(f.read(), 'foo,baz\nbar,qux\n', 'Each write should have overridden the previous.')
+            self.assertEqual(f.read(), 'foo,baz\nbar,qux\n',
+                             'Each write should have overridden the previous.')
 
         os.remove(self.attempt_filepath)
 
@@ -72,15 +78,18 @@ class TestCsvOutlet(TestCase):
 
         asyncio.run(self.csv_outlet._push(self.records, self.update))
 
-        self.assertTrue(os.path.exists(self.attempt_filepath), 'File should exist')
-        self.assertTrue(os.path.exists(self.custom_filepath), 'File should exist')
+        self.assertTrue(os.path.exists(
+            self.attempt_filepath), 'File should exist')
+        self.assertTrue(os.path.exists(
+            self.custom_filepath), 'File should exist')
 
         with open(self.attempt_filepath, 'r') as f:
-            self.assertEqual(f.read(), 'foo,baz\nbar,qux\nbar,qux\nbar,qux\n', 'Should miss one record')
+            self.assertEqual(
+                f.read(), 'foo,baz\nbar,qux\nbar,qux\nbar,qux\n', 'Should miss one record')
 
         with open(self.custom_filepath, 'r') as f:
-            self.assertEqual(f.read(), 'foo,baz\nbar,qux\n', 'Should contain the one record')
+            self.assertEqual(f.read(), 'foo,baz\nbar,qux\n',
+                             'Should contain the one record')
 
         os.remove(self.attempt_filepath)
         os.remove(self.custom_filepath)
-

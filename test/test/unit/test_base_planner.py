@@ -18,8 +18,10 @@ class TestBasePlanner(TestCase):
     @patch.multiple(BasePlanner,  __abstractmethods__=set())
     def setUp(self):
         self.planner = BasePlanner()
-        self.planner._schedule = MagicMock(side_effect=lambda link: link.set_job(object()))
-        self.planner._unschedule = MagicMock(side_effect=lambda link: link.set_job(None))
+        self.planner._schedule = MagicMock(
+            side_effect=lambda link: link.set_job(object()))
+        self.planner._unschedule = MagicMock(
+            side_effect=lambda link: link.set_job(None))
         self.planner._start_planner = MagicMock()
         self.planner._shutdown_planner = MagicMock()
 
@@ -32,7 +34,8 @@ class TestBasePlanner(TestCase):
 
         self.planner.add_links(link)
         self.assertIsNotNone(link.job, 'Link should contain a job')
-        self.assertTrue(link in self.planner.links, 'Planner should contain the link')
+        self.assertTrue(link in self.planner.links,
+                        'Planner should contain the link')
 
     @patch(fqname(Link), spec=Link)
     def test_add_links_array(self, link):
@@ -43,7 +46,8 @@ class TestBasePlanner(TestCase):
 
         self.planner.add_links([link])
         self.assertIsNotNone(link.job, 'Link should contain a job')
-        self.assertTrue(link in self.planner.links, 'Planner should contain the link')
+        self.assertTrue(link in self.planner.links,
+                        'Planner should contain the link')
 
     @patch(fqname(Link), spec=Link)
     def test_remove_links(self, link):
@@ -55,7 +59,8 @@ class TestBasePlanner(TestCase):
         self.planner.add_links(link)
         self.planner.remove_links(link)
         self.assertIsNone(link.job, 'Link should not contain a job')
-        self.assertTrue(link not in self.planner.links, 'Planner should not contain the link')
+        self.assertTrue(link not in self.planner.links,
+                        'Planner should not contain the link')
 
     @patch(fqname(Link), spec=Link)
     def test_remove_invalid_link(self, link):
@@ -66,7 +71,8 @@ class TestBasePlanner(TestCase):
 
         self.assertRaises(MissingLinkError, self.planner.remove_links, link)
         self.assertIsNone(link.job, 'Link should not contain a job')
-        self.assertTrue(link not in self.planner.links, 'Planner should not contain the link')
+        self.assertTrue(link not in self.planner.links,
+                        'Planner should not contain the link')
 
     @patch(fqname(Link), spec=Link)
     def test_start(self, link):
@@ -106,7 +112,6 @@ class TestBasePlanner(TestCase):
         link.on_shutdown.assert_called()
         self.planner._shutdown_planner.assert_called()
 
-
     @patch(fqname(Link), spec=Link)
     def test_purge(self, link):
         self.planner.add_links(link)
@@ -114,7 +119,6 @@ class TestBasePlanner(TestCase):
 
         self.planner._unschedule.assert_called_with(link)
         self.assertEqual(self.planner.links, [])
-
 
     @patch(fqname(Link), spec=Link)
     def test_purge_while_running(self, link):

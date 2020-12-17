@@ -35,7 +35,7 @@ Twitter Inlet
     .. rst-class:: highlight-small
     .. literalinclude:: ../../examples/twitter_inlet.py
         :language: python
-        :start-at: auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+        :start-at: auth = tweepy.OAuthHandler(
         :end-at:  api = tweepy.API(
 
     #. The :any:`TwitterInlet` can then be instantiated as seen below. We are using the :any:`PrintOutlet` to print the results of each successful pull. 

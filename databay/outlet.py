@@ -14,9 +14,11 @@ from typing import List
 from databay import Record
 import databay as da
 
+
 class MetadataKey(str):
     """ Used to distinguish class attributes containing metadata keys."""
     pass
+
 
 class Outlet(ABC):
     """
@@ -31,15 +33,14 @@ class Outlet(ABC):
 
         self._thread_lock = threading.Lock()
 
-
-    async def _push(self, records:List[Record], update:'da.Update'):
+    async def _push(self, records: List[Record], update: 'da.Update'):
         if self._uses_coroutine:
             rv = await self.push(records, update)
         else:
             rv = self.push(records, update)
 
     @abstractmethod
-    def push(self, records:List[Record], update:'da.Update'):
+    def push(self, records: List[Record], update: 'da.Update'):
         """
         Push received data.
 

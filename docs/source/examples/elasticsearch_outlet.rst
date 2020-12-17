@@ -49,7 +49,7 @@ Elasticsearch Outlet
     .. literalinclude:: ../../examples/elasticsearch_outlet.py
         :language: python
         :start-at: es_client = elasticsearch.Elasticsearch(timeout=30)
-        :end-at:  elasticsearch_outlet =
+        :end-at:  es_client, "my-test-index")
     
     #. Tie it all together using :any:`Link` AND :any:`Planner`
 
