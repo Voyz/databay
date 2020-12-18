@@ -176,4 +176,4 @@ See [LICENSE](https://github.com/Voyz/databay/blob/master/LICENSE)
   [voy1982_email]: mailto:voy1982@yahoo.co.uk
   [issues]: https://github.com/Voyz/databay/issues
   [community_docs]: https://databay.readthedocs.io/en/latest/extending/community_contributions.html
-  [databay_roadmap]: https://docs.google.com/spreadsheets/d/16KwzSCBMNdUS2s-gcnCftvuXdYYzJhYpDoXYX-wxzCo/edit?usp=sharing
+  [databay_roadmap]: http://bit.ly/databay-roadmap
