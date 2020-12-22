@@ -20,6 +20,7 @@ from databay import Record
 
 _LOGGER = logging.getLogger('databay.HttpInlet')
 
+
 class HttpInlet(Inlet):
     """
     Inlet for pulling data from a specified URL using `aiohttp <aiohttp.ClientSession.get_>`__.
@@ -27,7 +28,7 @@ class HttpInlet(Inlet):
     .. _aiohttp.ClientSession.get: https://docs.aiohttp.org/en/stable/client_reference.html#aiohttp.ClientSession.get
     """
 
-    def __init__(self, url:str, json:str=True, cacert:Optional[str]=None, params:Optional[dict]=None, *args, **kwargs):
+    def __init__(self, url: str, json: str = True, cacert : Optional[str] = None, params : Optional[dict] = None, *args, **kwargs):
         """
         :type url: str
         :param url: URL that should be queried for data.
@@ -80,7 +81,8 @@ class HttpInlet(Inlet):
                         return payload.decode("utf-8")
                 except Exception as e:
                     if isinstance(e, JSONDecodeError) and 'Expecting value: line 1 column 1 (char 0)' in str(e):
-                        raise ValueError(f'Response does not contain valid JSON:\n\n{payload}') from e
+                        raise ValueError(
+                            f'Response does not contain valid JSON:\n\n{payload}') from e
                     else:
                         raise e
 
@@ -94,5 +96,3 @@ class HttpInlet(Inlet):
 
         s += ')'
         return s
-
-

@@ -9,6 +9,7 @@ from databay.outlets import MongoOutlet
 from databay.outlets.mongo_outlet import MongoCollectionNotFound, ensure_connection
 from test_utils import fqname
 
+
 class TestMongoOutlet(TestCase):
 
     def setUp(self):
@@ -86,21 +87,23 @@ class TestMongoOutlet(TestCase):
     def test__add_collection(self):
         name = 'test_collection'
         self.outlet._add_collection(name)
-        self.assertTrue(name in self.outlet._db.list_collection_names(), f'Database should contain collection \'{name}\'')
+        self.assertTrue(name in self.outlet._db.list_collection_names(
+        ), f'Database should contain collection \'{name}\'')
         self.assertIsInstance(self.outlet._db[name], Collection)
-
 
     @mongomock.patch(servers=(('localhost', 27017),))
     def test__add_collection_invalid(self):
         name = 'test_collection'
         self.outlet._add_collection(None)
-        self.assertFalse(name in self.outlet._db.list_collection_names(), f'Database should not contain collection \'{name}\'')
+        self.assertFalse(name in self.outlet._db.list_collection_names(
+        ), f'Database should not contain collection \'{name}\'')
 
     @mongomock.patch(servers=(('localhost', 27017),))
     def test__get_collection(self):
         name = 'test_collection'
         self.outlet._add_collection(name)
-        self.assertTrue(name in self.outlet._db.list_collection_names(), f'Database should contain collection \'{name}\'')
+        self.assertTrue(name in self.outlet._db.list_collection_names(
+        ), f'Database should contain collection \'{name}\'')
         self.assertIsInstance(self.outlet._db[name], Collection)
 
         collection = self.outlet._get_collection(name)
@@ -110,10 +113,12 @@ class TestMongoOutlet(TestCase):
     def test__get_collection_invalid(self):
         name = 'test_collection'
         self.outlet._add_collection(name)
-        self.assertTrue(name in self.outlet._db.list_collection_names(), f'Database should contain collection \'{name}\'')
+        self.assertTrue(name in self.outlet._db.list_collection_names(
+        ), f'Database should contain collection \'{name}\'')
         self.assertIsInstance(self.outlet._db[name], Collection)
 
-        self.assertRaises(MongoCollectionNotFound, self.outlet._get_collection, 'invalid_name')
+        self.assertRaises(MongoCollectionNotFound,
+                          self.outlet._get_collection, 'invalid_name')
 
     @mongomock.patch(servers=(('localhost', 27017),))
     @patch(fqname(Record), spec=Record)
@@ -154,7 +159,6 @@ class TestMongoOutlet(TestCase):
         self.assertEqual(collections['A'], [recordA.payload])
         self.assertEqual(collections['B'], [*recordB.payload])
 
-
     @mongomock.patch(servers=(('localhost', 27017),))
     @patch(fqname(Update), spec=Update)
     @patch(fqname(Record), spec=Record)
@@ -164,17 +168,16 @@ class TestMongoOutlet(TestCase):
         # recordB = Record(1)
         recordA.metadata = {MongoOutlet.MONGODB_COLLECTION: 'A'}
         recordB.metadata = {MongoOutlet.MONGODB_COLLECTION: 'B'}
-        recordA.payload = {'testA':1}
-        recordB.payload = [{'testB':2}, {'testB2':3}]
-
+        recordA.payload = {'testA': 1}
+        recordB.payload = [{'testB': 2}, {'testB2': 3}]
 
         records = [recordA, recordB]
         self.outlet.try_start()
         self.outlet.push(records, update)
 
-
         for record in records:
-            collection = self.outlet._get_collection(record.metadata.get(MongoOutlet.MONGODB_COLLECTION))
+            collection = self.outlet._get_collection(
+                record.metadata.get(MongoOutlet.MONGODB_COLLECTION))
             payload = record.payload
             if not isinstance(payload, list):
                 payload = [payload]
@@ -200,4 +203,3 @@ class TestMongoOutlet(TestCase):
 
         mock.connect.assert_called_once()
         mock.foo.assert_called_once()
-

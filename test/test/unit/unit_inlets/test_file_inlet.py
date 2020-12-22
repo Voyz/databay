@@ -9,4 +9,3 @@ class TestFileInlet(inlet_tester.InletTester):
             FileInlet(__file__),
             FileInlet(__file__, read_mode=FileInletMode.FILE),
         ]
-

@@ -3,12 +3,12 @@ import random
 from databay import Inlet
 
 
-class RandomIntInlet(Inlet): # pragma: no cover
+class RandomIntInlet(Inlet):  # pragma: no cover
     """
     Inlet that will generate a random integer within the specified range.
     """
 
-    def __init__(self, min:int=0, max:int=100, *args, **kwargs):
+    def __init__(self, min: int = 0, max: int = 100, *args, **kwargs):
         """
 
         :param min: Lower boundary of the random range.
