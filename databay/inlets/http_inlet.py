@@ -91,6 +91,12 @@ class HttpInlet(Inlet):
 
         s += f'url={self.url}'
 
+        if self.params:
+            s += f'params={self.params}'
+
+        if self.cacert:
+            s += f'cacert={self.cacert}'
+
         if self.metadata:
             s += ', metadata:%s' % self.metadata
 
