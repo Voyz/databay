@@ -235,7 +235,7 @@ class Link():
     @property
     def name(self) -> str:
         """
-        Deprecated in 0.1.8, will be removed in 1.0. Use :any:`Link.tags` instead.
+        Deprecated in 0.2.0, will be removed in 1.0. Use :any:`Link.tags` instead.
 
         Name of this Link, equivalent to first tag of this link.
 
