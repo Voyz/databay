@@ -426,3 +426,33 @@ class TestLink(TestCase):
         link_name = 'link_name'
         link = Link([], [], timedelta(seconds=1), tags=[link_name])
         self.assertEqual(link.name, link.tags[0])
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_inlet_concurrency(self, inlet1, inlet2, inlet3, outlet):
+        counter = {'value': 0}
+
+        # this will increment the counter on each async call, and check if they exceed the concurrency value
+        async def slow_pull(_):
+            counter['value'] += 1
+            self.assertLessEqual(counter['value'], 2, "Only 2 inlets should pull at a time")
+            await asyncio.sleep(0.01)
+            counter['value'] -= 1
+            return [123]
+
+        inlet1._pull = slow_pull
+        inlet2._pull = slow_pull
+        inlet3._pull = slow_pull
+
+        async def task():
+            link = Link([inlet1, inlet2, inlet3], [outlet],
+                        timedelta(seconds=1),
+                        tags='test_inlet_concurrency',
+                        copy_records=False,
+                        inlet_concurrency=2)
+
+            await link._run()
+
+        asyncio.run(task())
