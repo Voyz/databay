@@ -73,6 +73,9 @@ class Link():
 
         :type ignore_exceptions: bool
         :param ignore_exceptions: Whether exceptions in inlets and outlets should be logged and ignored, or raised. |default| :code:`True`
+
+        :type inlet_concurrency: int
+        :param inlet_concurrency: How many inlets are allowed to execute concurrently. |default| :code:`9999`
         """
 
         self._inlets = []
