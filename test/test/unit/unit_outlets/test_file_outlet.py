@@ -17,9 +17,12 @@ class TestFileOutlet(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.this_filepath = os.path.abspath(os.path.dirname(__file__))
-        cls.target_filepath = os.path.join(cls.this_filepath, 'data/_file_outlet_target.txt')
-        cls.attempt_filepath = os.path.join(cls.this_filepath, 'data/_file_outlet_attempt.txt')
-        cls.custom_filepath = os.path.join(cls.this_filepath, 'data/_file_outlet_custom_attempt.txt')
+        cls.target_filepath = os.path.join(
+            cls.this_filepath, 'data/_file_outlet_target.txt')
+        cls.attempt_filepath = os.path.join(
+            cls.this_filepath, 'data/_file_outlet_attempt.txt')
+        cls.custom_filepath = os.path.join(
+            cls.this_filepath, 'data/_file_outlet_custom_attempt.txt')
         with open(cls.target_filepath, 'r') as f:
             cls.target = f.read()
 
@@ -42,12 +45,13 @@ class TestFileOutlet(TestCase):
         record.__repr__ = lambda x: 'TestRecord(test)'
         update.__repr__ = lambda x: 'TestUpdate()'
 
-        self.records = [copy.copy(record) for i in range(0,4)]
+        self.records = [copy.copy(record) for i in range(0, 4)]
 
     def test_push_append_mode(self):
         asyncio.run(self.file_outlet._push(self.records, self.update))
 
-        self.assertTrue(os.path.exists(self.attempt_filepath), 'File should exist')
+        self.assertTrue(os.path.exists(
+            self.attempt_filepath), 'File should exist')
 
         with open(self.attempt_filepath, 'r') as f:
             self.assertEqual(f.read(), self.target)
@@ -61,10 +65,12 @@ class TestFileOutlet(TestCase):
 
         asyncio.run(self.file_outlet._push(self.records, self.update))
 
-        self.assertTrue(os.path.exists(self.attempt_filepath), 'File should exist')
+        self.assertTrue(os.path.exists(
+            self.attempt_filepath), 'File should exist')
 
         with open(self.attempt_filepath, 'r') as f:
-            self.assertEqual(f.read(), 'test\n', 'Each write should have overridden the previous.')
+            self.assertEqual(f.read(), 'test\n',
+                             'Each write should have overridden the previous.')
 
         os.remove(self.attempt_filepath)
 
@@ -73,15 +79,18 @@ class TestFileOutlet(TestCase):
 
         asyncio.run(self.file_outlet._push(self.records, self.update))
 
-        self.assertTrue(os.path.exists(self.attempt_filepath), 'File should exist')
-        self.assertTrue(os.path.exists(self.custom_filepath), 'File should exist')
+        self.assertTrue(os.path.exists(
+            self.attempt_filepath), 'File should exist')
+        self.assertTrue(os.path.exists(
+            self.custom_filepath), 'File should exist')
 
         with open(self.attempt_filepath, 'r') as f:
-            self.assertEqual(f.read(), 'test\ntest\ntest\n', 'Should miss one record')
+            self.assertEqual(f.read(), 'test\ntest\ntest\n',
+                             'Should miss one record')
 
         with open(self.custom_filepath, 'r') as f:
-            self.assertEqual(f.read(), 'test\n', 'Should contain the one record')
+            self.assertEqual(f.read(), 'test\n',
+                             'Should contain the one record')
 
         os.remove(self.attempt_filepath)
         os.remove(self.custom_filepath)
-

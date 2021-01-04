@@ -29,7 +29,7 @@ Basic metadata
     .. literalinclude:: ../../examples/basic_metadata.py
         :language: python
         :start-at: random_int_inlet_on =
-        :end-at: random_int_inlet_off =
+        :end-at: metadata={ConditionalPrintOutlet.SHOULD_PRINT: False})
 
     #. Instantiate :code:`ConditionalPrintOutlet` and add all nodes to a link
 

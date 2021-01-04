@@ -10,11 +10,13 @@ from typing import Any, List, Union
 from databay.errors import InvalidNodeError
 _LOGGER = logging.getLogger('databay.Link')
 
+
 class Update():
     """
     Data structure representing one Link transfer. When converted to string returns :code:`{tags}.{transfer_number}`
     """
-    def __init__(self, tags:List[str], transfer_number:int):
+
+    def __init__(self, tags: List[str], transfer_number: int):
         """
 
         :type tags: List[str]
@@ -33,10 +35,10 @@ class Update():
         :returns: "{tags}.{transfer_number}"
         """
         s = ''
-        if self.tags != []: s += f'{".".join(self.tags)}.'
+        if self.tags != []:
+            s += f'{".".join(self.tags)}.'
         s += f'{self.transfer_number}'
         return s
-
 
 from databay import Inlet, Outlet
 
@@ -47,13 +49,13 @@ class Link():
 
     def __init__(self,
                  inlets: Union[Inlet, List[Inlet]],
-                 outlets: Union[Outlet, List[Outlet]], 
+                 outlets: Union[Outlet, List[Outlet]],
                  interval: Union[datetime.timedelta, int, float],
-                 tags:Union[str, List[str]]=None,
-                 copy_records:bool=True,
-                 ignore_exceptions:bool=False,
-                 catch_exceptions:bool=None,
-                 inlet_concurrency:int = 9999,
+                 tags: Union[str, List[str]] = None,
+                 copy_records: bool = True,
+                 ignore_exceptions: bool = False,
+                 catch_exceptions: bool = None,
+                 inlet_concurrency : int = 9999,
                  name=None):
         """
         :type inlets: :any:`Inlet` or list[:any:`Inlet`]
@@ -89,16 +91,19 @@ class Link():
         self._transfer_number = -1
         self._job = None
         if name != None:
-            warnings.warn('\'name\' parameter was deprecated in 0.2.0 and will be removed in version 1.0. Use \'tags\' instead.')
+            warnings.warn(
+                '\'name\' parameter was deprecated in 0.2.0 and will be removed in version 1.0. Use \'tags\' instead.')
             tags = [name]
 
-        if isinstance(tags, str): tags = [tags]
+        if isinstance(tags, str):
+            tags = [tags]
         self._tags = tags if tags is not None else []
         self._copy_records = copy_records
         self._ignore_exceptions = ignore_exceptions
-        if catch_exceptions is not None: # pragma: no cover
+        if catch_exceptions is not None:  # pragma: no cover
             self._ignore_exceptions = catch_exceptions
-            warnings.warn('\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
+            warnings.warn(
+                '\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
 
         self.inlet_concurrency = inlet_concurrency
 
@@ -125,12 +130,13 @@ class Link():
 
         for inl in inlets:
             assert isinstance(inl, Inlet), f"Requires Inlet, found {inl}"
-            
+
             if inl in self._inlets:
-                raise InvalidNodeError('Link already contains inlet: %s' % (inl))
+                raise InvalidNodeError(
+                    'Link already contains inlet: %s' % (inl))
 
         self._inlets = self._inlets + inlets
-        
+
     def remove_inlets(self, inlets: Union[Inlet, List[Inlet]]):
         """
         Remove inlets from this link.
@@ -145,8 +151,9 @@ class Link():
 
         for inl in inlets:
             if inl not in self._inlets:
-                raise InvalidNodeError('Link does not contain inlet: %s' % (inl))
-             
+                raise InvalidNodeError(
+                    'Link does not contain inlet: %s' % (inl))
+
             self._inlets.remove(inl)
 
     @property
@@ -158,7 +165,7 @@ class Link():
         """
         return self._outlets
 
-    def add_outlets(self, outlets:Union[Outlet, List[Outlet]]):
+    def add_outlets(self, outlets: Union[Outlet, List[Outlet]]):
         """
         Add outlets to this link. Outlets must be of type Outlet and not currently added to this link.
 
@@ -174,7 +181,8 @@ class Link():
             assert isinstance(outl, Outlet)
 
             if outl in self._outlets:
-                raise InvalidNodeError('Link already contains outlet: %s' % (outl))
+                raise InvalidNodeError(
+                    'Link already contains outlet: %s' % (outl))
 
         self._outlets = self._outlets + outlets
 
@@ -192,7 +200,8 @@ class Link():
 
         for outl in outlets:
             if outl not in self._outlets:
-                raise InvalidNodeError('Link does not contain outlet: %s' % (outl))
+                raise InvalidNodeError(
+                    'Link does not contain outlet: %s' % (outl))
 
             self._outlets.remove(outl)
 
@@ -206,7 +215,7 @@ class Link():
         """
         return self._interval
 
-    def set_job(self, job): # pragma: no cover
+    def set_job(self, job):  # pragma: no cover
         """
         :type job: Any
         :param job: specify the job this link is executed with.
@@ -214,7 +223,7 @@ class Link():
         self._job = job
 
     @property
-    def job(self) -> Any: # pragma: no cover
+    def job(self) -> Any:  # pragma: no cover
         """
         The job this link is executed with. Job should persist between link transfers.
         |default| :code:`None`
@@ -270,7 +279,8 @@ class Link():
                     return await inlet._pull(update)
             except Exception as e:
                 if self._ignore_exceptions:
-                    _LOGGER.exception(f'Inlet exception: "{e}" for inlet: {inlet}, in: {self}, during: {update}', exc_info=True)
+                    _LOGGER.exception(
+                        f'Inlet exception: "{e}" for inlet: {inlet}, in: {self}, during: {update}', exc_info=True)
                     return []
                 else:
                     raise e
@@ -279,13 +289,13 @@ class Link():
         results_raw = await asyncio.gather(*inlet_tasks)
         records = list(itertools.chain.from_iterable(results_raw))
 
-
         async def outlet_task(outlet, records_copy):
             try:
                 await outlet._push(records_copy, update)
             except Exception as e:
                 if self._ignore_exceptions:
-                    _LOGGER.exception(f'Outlet exception: "{e}" for outlet: {outlet}, in link: {self}, during: {update}', exc_info=True)
+                    _LOGGER.exception(
+                        f'Outlet exception: "{e}" for outlet: {outlet}, in link: {self}, during: {update}', exc_info=True)
                 else:
                     raise e
 
@@ -299,8 +309,6 @@ class Link():
         await asyncio.gather(*outlet_tasks)
 
         _LOGGER.debug(f'{update} done')
-
-
 
     def on_start(self):
         """
