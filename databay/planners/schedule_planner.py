@@ -176,23 +176,6 @@ class SchedulePlanner(BasePlanner):
             # TODO: adjust interval to avoid drift - look how APS does it in BlockingScheduler
             time.sleep(self._refresh_interval)
 
-    # def _on_exception(self, exception : Exception, link : Link = None):
-    #     try:  # weird try/catch in order to get whole traceback into logger
-    #         extra_info = f'\n\nRaised when executing {link}'
-    #         exception_message = str(exception) + f'{extra_info}'
-    #         traceback = exception.__traceback__
-    #
-    #         try:
-    #             raise type(exception)(
-    #                 exception_message).with_traceback(traceback)
-    #         except TypeError as type_exception:
-    #             # Some custom exceptions won't let you use the common constructor and will throw an error on initialisation. We catch these and just throw a generic RuntimeError.
-    #             raise RuntimeError(exception_message).with_traceback(
-    #                 traceback) from None
-    #     except Exception as e:
-    #         _LOGGER.exception(e)
-    #         if not self._ignore_exceptions and self.running:
-    #             self.shutdown(wait=False)
 
     def shutdown(self, wait: bool = True):
         """

@@ -101,25 +101,6 @@ class ApsPlanner(BasePlanner):
         if event.code is EVENT_JOB_ERROR:
             self._on_exception(event.exception, self.links_by_jobid[event.job_id])
 
-    # def _on_exception(self, exception : Exception, link : Link = None):
-    #     try:
-    #         extra_info = f'\n\nRaised when executing {link}'
-    #         exception_message = str(exception) + f'{extra_info}'
-    #         traceback = exception.__traceback__
-    #
-    #         try:
-    #             raise type(exception)(
-    #                 exception_message).with_traceback(traceback)
-    #         except TypeError as type_exception:
-    #             # Some custom exceptions won't let you use the common constructor and will throw an error on initialisation. We catch these and just throw a generic RuntimeError.
-    #             raise Exception(exception_message).with_traceback(
-    #                 traceback) from None
-    #     except Exception as e:
-    #         _LOGGER.exception(e)
-    #
-    #     if not self._ignore_exceptions and self.running:
-    #         self.shutdown(wait=False)
-
     def _schedule(self, link: Link):
         """
         Schedule a link. Sets :any:`APS Job <apscheduler.job.Job>` as this link's job.
