@@ -236,6 +236,8 @@ You may implement asynchronous data production by defining :any:`Inlet.pull` as 
 
 See :ref:`Basic Asynchronous <basic-asynchronous>` for a full example of implementing asynchronous code in Databay.
 
+You can limit (throttle) how many inlets can execute simultaneously by setting :any:`inlet_concurrency <Link>` parameter when constructing a link.
+
 Test your inlet
 ---------------
 

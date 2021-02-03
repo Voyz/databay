@@ -55,6 +55,7 @@ class Link():
                  copy_records: bool = True,
                  ignore_exceptions: bool = False,
                  catch_exceptions: bool = None,
+                 inlet_concurrency : int = 9999,
                  name=None):
         """
         :type inlets: :any:`Inlet` or list[:any:`Inlet`]
@@ -74,6 +75,9 @@ class Link():
 
         :type ignore_exceptions: bool
         :param ignore_exceptions: Whether exceptions in inlets and outlets should be logged and ignored, or raised. |default| :code:`True`
+
+        :type inlet_concurrency: int
+        :param inlet_concurrency: How many inlets are allowed to execute concurrently. |default| :code:`9999`
         """
 
         self._inlets = []
@@ -101,6 +105,8 @@ class Link():
             warnings.warn(
                 '\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
 
+        self.inlet_concurrency = inlet_concurrency
+
     @property
     def inlets(self) -> List[Inlet]:
         """
@@ -123,7 +129,7 @@ class Link():
             inlets = [inlets]
 
         for inl in inlets:
-            assert isinstance(inl, Inlet)
+            assert isinstance(inl, Inlet), f"Requires Inlet, found {inl}"
 
             if inl in self._inlets:
                 raise InvalidNodeError(
@@ -229,7 +235,7 @@ class Link():
     @property
     def name(self) -> str:
         """
-        Deprecated in 0.1.8, will be removed in 1.0. Use :any:`Link.tags` instead.
+        Deprecated in 0.2.0, will be removed in 1.0. Use :any:`Link.tags` instead.
 
         Name of this Link, equivalent to first tag of this link.
 
@@ -262,14 +268,15 @@ class Link():
         """
         Coroutine handling the transfer.
         """
-
+        semaphore = asyncio.Semaphore(self.inlet_concurrency)
         self._transfer_number += 1
         update = Update(tags=self.tags, transfer_number=self._transfer_number)
         _LOGGER.debug(f'{update} transfer')
 
         async def inlet_task(inlet):
             try:
-                return await inlet._pull(update)
+                async with semaphore:
+                    return await inlet._pull(update)
             except Exception as e:
                 if self._ignore_exceptions:
                     _LOGGER.exception(
