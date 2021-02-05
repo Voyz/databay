@@ -98,6 +98,17 @@ class TestSchedulePlanner(TestCase):
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
 
+    def test_start_when_already_running(self):
+        th = Thread(target=self.planner.start, daemon=True)
+        th.start()
+        self.assertTrue(self.planner._running, 'Planner should be running')
+        th2 = Thread(target=self.planner.start, daemon=True)
+        th2.start()
+        self.assertFalse(th2.is_alive(), 'Starting again should instantly exit.')
+        self.planner.shutdown()
+        th.join(timeout=2)
+        self.assertFalse(th.is_alive(), 'Thread should be stopped.')
+
     def test_shutdown(self):
         th = Thread(target=self.planner.start, daemon=True)
         th.start()
