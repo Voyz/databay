@@ -1,3 +1,4 @@
+import atexit
 import logging
 from datetime import timedelta
 from unittest import TestCase, mock
@@ -16,8 +17,8 @@ class TestBasePlanner(TestCase):
         logging.getLogger('databay').setLevel(logging.WARNING)
 
     @patch.multiple(BasePlanner,  __abstractmethods__=set())
-    def setUp(self):
-        self.planner = BasePlanner()
+    def setUp(self, *args, **kwargs):
+        self.planner = BasePlanner(*args, **kwargs)
         self.planner._schedule = MagicMock(
             side_effect=lambda link: link.set_job(object()))
         self.planner._unschedule = MagicMock(
@@ -108,6 +109,8 @@ class TestBasePlanner(TestCase):
         self.planner.add_links(link)
         self.planner.shutdown()
 
+        self.planner._shutdown_planner.side_effect = None
+
         # finally both should be called
         link.on_shutdown.assert_called()
         self.planner._shutdown_planner.assert_called()
@@ -130,3 +133,18 @@ class TestBasePlanner(TestCase):
         self.assertEqual(self.planner.links, [])
 
         self.planner.shutdown()
+    @patch('atexit._run_exitfuncs')
+    @patch(fqname(Link), spec=Link)
+    def test_shutdown_at_exit(self, link, atexit_run_exitfuncs):
+        self.setUp(shutdown_at_exit=True)
+        self.planner.add_links(link)
+        self.planner.start()
+        atexit_run_exitfuncs.side_effect = lambda: self.planner._at_exit_callback()
+
+        with self.assertLogs(logging.getLogger('databay'), level='INFO') as cm:
+            atexit_run_exitfuncs()
+
+            self.assertTrue('Attempting to shutdown planner' in ';'.join(cm.output))
+
+        self.planner._shutdown_planner.assert_called()
+        link.on_shutdown.assert_called()

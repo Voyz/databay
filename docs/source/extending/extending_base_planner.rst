@@ -94,6 +94,11 @@ Running property
 Apart from extending the necessary methods described above, you may optionally implement the :any:`running <BasePlanner.running>` property. It should return a boolean value indicating whether the scheduler is currently running. This property is exposed for your convenience and is not used by Databay.
 
 
+Shutdown atexit
+---------------
+
+Each :any:`BasePlanner` registers an :any:`atexit` callback, which will attempt to gracefully shut the planner down if it is created with :any:`shutdown_at_exit <BasePlanner>` parameter set to :code:`True`.
+
 ----
 
 .. rubric:: Next Steps
