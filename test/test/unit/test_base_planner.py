@@ -132,14 +132,14 @@ class TestBasePlanner(TestCase):
         self.planner.shutdown()
 
     @patch(fqname(Link), spec=Link)
-    def test_immediate(self, link):
+    def test_immediate_transfer(self, link):
         self.planner.add_links(link)
         self.planner.start()
         link.transfer.assert_called()
         self.planner.shutdown()
 
     @patch(fqname(Link), spec=Link)
-    def test_immediate_exception(self, link):
+    def test_immediate_transfer_exception(self, link):
         link.transfer.side_effect = DummyException('First transfer exception!')
         self.planner.add_links(link)
         with self.assertLogs(logging.getLogger('databay.BasePlanner'), level='WARNING') as cm:
@@ -163,8 +163,8 @@ class TestBasePlanner(TestCase):
 
 
     @patch(fqname(Link), spec=Link)
-    def test_immediate_off(self, link):
-        self.planner.immediate = False
+    def test_immediate_transfer_off(self, link):
+        self.planner.immediate_transfer = False
         self.planner.add_links(link)
         self.planner.start()
         link.transfer.assert_not_called()

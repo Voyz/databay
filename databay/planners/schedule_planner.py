@@ -32,7 +32,7 @@ class SchedulePlanner(BasePlanner):
 
     """
 
-    def __init__(self, links: Union[Link, List[Link]] = None, threads: int = 30, refresh_interval: float = 1.0, ignore_exceptions: bool = False, catch_exceptions: bool = None, immediate: bool = True):
+    def __init__(self, links: Union[Link, List[Link]] = None, threads: int = 30, refresh_interval: float = 1.0, ignore_exceptions: bool = False, catch_exceptions: bool = None, immediate_transfer: bool = True):
         """
         :type links: :any:`Link` or list[:any:`Link`]
         :param links: Links that should be added and scheduled.
@@ -52,12 +52,12 @@ class SchedulePlanner(BasePlanner):
         :param ignore_exceptions: Whether exceptions should be ignored, or halt the planner.
             |default| :code:`False`
 
-        :type immediate: :class:`bool`
-        :param immediate: Whether planner should execute one transfer immediately upon starting. |default| :code:`True`
+        :type immediate_transfer: :class:`bool`
+        :param immediate_transfer: Whether planner should execute one transfer immediately upon starting. |default| :code:`True`
         """
 
         self._refresh_interval = refresh_interval
-        super().__init__(links=links, ignore_exceptions=ignore_exceptions, immediate=immediate)
+        super().__init__(links=links, ignore_exceptions=ignore_exceptions, immediate_transfer=immediate_transfer)
         self._running = False
         self._threads = threads
         self._thread_pool = None

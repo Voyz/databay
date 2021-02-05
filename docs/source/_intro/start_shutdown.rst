@@ -25,6 +25,6 @@ To stop scheduling links you need to call :any:`shutdown(wait:bool=True) <BasePl
 Just before scheduling starts, :any:`Inlet.on_start` and :any:`Outlet.on_start` callbacks will be propagated through all inlets and outlets. Consequently, just after scheduling shuts down, :any:`Inlet.on_shutdown` and :any:`Outlet.on_shutdown` callbacks will be propagated through all inlets and outlets. In both cases, these callbacks will be called only once for each inlet and outlet. Override these callback methods to implement custom starting and shutdown behaviour in your inlets and outlets.
 
 .. rubric::
-    immediate
+    immediate_transfer
 
-By default BasePlanner will execute :any:`Link.transfer` function on all its links once upon calling :any:`BasePlanner.start`. This is to avoid having to wait for the link's interval to expire before the first transfer. You can disable this behaviour by passing :code:`immediate=False` parameter on construction.
+By default BasePlanner will execute :any:`Link.transfer` function on all its links once upon calling :any:`BasePlanner.start`. This is to avoid having to wait for the link's interval to expire before the first transfer. You can disable this behaviour by passing :code:`immediate_transfer=False` parameter on construction.

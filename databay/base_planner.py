@@ -19,7 +19,7 @@ class BasePlanner(ABC):
     Base abstract class for a job planner. Implementations should handle scheduling link transfers based on :py:class:`datetime.timedelta` intervals.
     """
 
-    def __init__(self, links: Union[Link, List[Link]] = None, ignore_exceptions: bool = False, immediate: bool = True):
+    def __init__(self, links: Union[Link, List[Link]] = None, ignore_exceptions: bool = False, immediate_transfer: bool = True):
         """
         :type links: :any:`Link` or list[:any:`Link`]
         :param links: Links that should be added and scheduled.
@@ -28,15 +28,15 @@ class BasePlanner(ABC):
         :param ignore_exceptions: Whether exceptions should be ignored, or halt the planner.
             |default| :code:`False`
 
-        :type immediate: :class:`bool`
-        :param immediate: Whether planner should execute one transfer immediately upon starting.
+        :type immediate_transfer: :class:`bool`
+        :param immediate_transfer: Whether planner should execute one transfer immediately upon starting.
             |default| :code:`True`
         """
         self._links = []
         if links is not None:
             self.add_links(links)
 
-        self.immediate = immediate
+        self.immediate_transfer = immediate_transfer
         self._ignore_exceptions = ignore_exceptions
 
     @property
@@ -116,7 +116,7 @@ class BasePlanner(ABC):
 
         This will also loop over all links and call the on_start callback before starting the planner.
 
-        If :any:`BasePlanner.immediate` is set to True, this function will additionally call :any:`Link.transfer` once for each link managed by this planner before starting.
+        If :any:`BasePlanner.immediate_transfer` is set to True, this function will additionally call :any:`Link.transfer` once for each link managed by this planner before starting.
 
         See :ref:`Start and Shutdown <start_shutdown>` to learn more about starting and shutdown.
         """
@@ -130,7 +130,7 @@ class BasePlanner(ABC):
                 except Exception as ee:
                     self._on_exception(ee, link)
 
-        if self.immediate:
+        if self.immediate_transfer:
             for link in self.links:
                 try:
                     link.transfer()

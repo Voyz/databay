@@ -132,7 +132,7 @@ class TestSchedulePlanner(TestCase):
 
     def _with_exception(self, link, ignore_exceptions):
         self.planner = SchedulePlanner(ignore_exceptions=ignore_exceptions)
-        self.planner.immediate = False # otherwise planner will never start
+        self.planner.immediate_transfer = False # otherwise planner will never start
         link.transfer.side_effect = DummyException()
         link.interval.total_seconds.return_value = 0.02
         self.planner._refresh_interval = 0.02
@@ -218,7 +218,7 @@ class TestSchedulePlanner(TestCase):
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
 
-    def test_immediate(self):
+    def test_immediate_transfer(self):
         self.link.interval.total_seconds.return_value = 10
         self.planner.add_links(self.link)
         th = Thread(target=self.planner.start, daemon=True)
@@ -229,7 +229,7 @@ class TestSchedulePlanner(TestCase):
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
 
-    def test_immediate_exception(self):
+    def test_immediate_transfer_exception(self):
         self.link.interval.total_seconds.return_value = 10
         self.planner._ignore_exceptions = False
         self.link.transfer.side_effect = DummyException('First transfer exception!')
@@ -245,9 +245,9 @@ class TestSchedulePlanner(TestCase):
                 'First transfer exception!' in ';'.join(cm.output))
 
 
-    def test_immediate_off(self):
+    def test_immediate_transfer_off(self):
         self.link.interval.total_seconds.return_value = 10
-        self.planner.immediate = False
+        self.planner.immediate_transfer = False
         self.planner.add_links(self.link)
         th = Thread(target=self.planner.start, daemon=True)
         th.start()

@@ -43,7 +43,7 @@ class ApsPlanner(BasePlanner):
                  job_defaults_override: dict = None,
                  ignore_exceptions: bool = False,
                  catch_exceptions: bool = None,
-                 immediate: bool = True):
+                 immediate_transfer: bool = True):
         """
 
         :type links: :any:`Link` or list[:any:`Link`]
@@ -66,8 +66,8 @@ class ApsPlanner(BasePlanner):
         :param ignore_exceptions: Whether exceptions should be ignored or halt the planner.
             |default| :code:`False`
 
-        :type immediate: :class:`bool`
-        :param immediate: Whether planner should execute one transfer immediately upon starting. |default| :code:`True`
+        :type immediate_transfer: :class:`bool`
+        :param immediate_transfer: Whether planner should execute one transfer immediately upon starting. |default| :code:`True`
         """
 
         self._threads = threads
@@ -89,7 +89,7 @@ class ApsPlanner(BasePlanner):
 
         self.links_by_jobid = {}
 
-        super().__init__(links=links, ignore_exceptions=ignore_exceptions, immediate=immediate)
+        super().__init__(links=links, ignore_exceptions=ignore_exceptions, immediate_transfer=immediate_transfer)
 
         if catch_exceptions is not None:  # pragma: no cover
             self._ignore_exceptions = catch_exceptions
