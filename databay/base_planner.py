@@ -220,6 +220,8 @@ class BasePlanner(ABC):
 
         Override this property to indicate when the underlying scheduling functionality is currently running.
         """
+        return True
+
     def __repr__(self):
         return f"BasePlanner(links={len(self.links)}, shutdown_at_exit={self.shutdown_at_exit})"
 
