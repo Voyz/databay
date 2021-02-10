@@ -107,5 +107,12 @@ class TestHttpInlet(inlet_tester.InletTester):
         asyncio.run(inlet._pull(update))
         client_mock.get.assert_called_with(_TEST_URL, params=params)
 
+    @patch(fqname(Update))
+    def test_headers(self, update):
+        headers = {'foo': 'bar'}
+        inlet = HttpInlet(_TEST_URL, headers=headers)
+        asyncio.run(inlet._pull(update))
+        client.assert_called_with(connector=None, headers=headers)
+
 
 
