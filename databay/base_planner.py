@@ -19,15 +19,25 @@ class BasePlanner(ABC):
     Base abstract class for a job planner. Implementations should handle scheduling link transfers based on :py:class:`datetime.timedelta` intervals.
     """
 
-    def __init__(self, links: Union[Link, List[Link]] = None):
+    def __init__(self, links: Union[Link, List[Link]] = None, ignore_exceptions: bool = False, immediate_transfer: bool = True):
         """
         :type links: :any:`Link` or list[:any:`Link`]
         :param links: Links that should be added and scheduled.
-        """
 
+        :type ignore_exceptions: :class:`bool`
+        :param ignore_exceptions: Whether exceptions should be ignored, or halt the planner.
+            |default| :code:`False`
+
+        :type immediate_transfer: :class:`bool`
+        :param immediate_transfer: Whether planner should execute one transfer immediately upon starting.
+            |default| :code:`True`
+        """
         self._links = []
         if links is not None:
             self.add_links(links)
+
+        self.immediate_transfer = immediate_transfer
+        self._ignore_exceptions = ignore_exceptions
 
     @property
     def links(self):
@@ -86,7 +96,7 @@ class BasePlanner(ABC):
         :type link: :any:`Link`
         :param link: Link to be scheduled
         """
-        raise NotImplementedError()
+        raise NotImplementedError() # pragma: no cover
 
     @abstractmethod
     def _unschedule(self, link: Link):
@@ -98,7 +108,7 @@ class BasePlanner(ABC):
         :type link: :any:`Link`
         :param link: Link to be unscheduled
         """
-        raise NotImplementedError()
+        raise NotImplementedError() # pragma: no cover
 
     def start(self):
         """
@@ -106,11 +116,30 @@ class BasePlanner(ABC):
 
         This will also loop over all links and call the on_start callback before starting the planner.
 
+        If :any:`BasePlanner.immediate_transfer` is set to True, this function will additionally call :any:`Link.transfer` once for each link managed by this planner before starting.
+
         See :ref:`Start and Shutdown <start_shutdown>` to learn more about starting and shutdown.
         """
         _LOGGER.info('Starting %s' % str(self))
         for link in self.links:
-            link.on_start()
+            try:
+                link.on_start()
+            except Exception as e:
+                try:
+                    raise RuntimeError(f'on_start link exception: "{e}" for link: {link}') from e
+                except Exception as ee:
+                    self._on_exception(ee, link)
+
+        if self.immediate_transfer:
+            for link in self.links:
+                try:
+                    link.transfer()
+                except Exception as e:
+                    self._on_exception(e, link)
+
+                    if not self._ignore_exceptions:
+                        return
+
         self._start_planner()
 
     def shutdown(self, wait: bool = True):
@@ -131,14 +160,38 @@ class BasePlanner(ABC):
         """
         Override this method to provide starting functionality.
         """
-        raise NotImplementedError()
+        raise NotImplementedError() # pragma: no cover
 
     @abstractmethod
     def _shutdown_planner(self, wait: bool = True):
         """
         Override this method to provide shutdown functionality.
         """
-        raise NotImplementedError()
+        raise NotImplementedError() # pragma: no cover
+
+    def _on_exception(self,
+                      exception : Exception,
+                      link : Link = None):
+        """
+        Override this method to provide exception handling functionality
+        """
+        try: # weird try/catch in order to get whole traceback into logger
+            extra_info = f'\n\nRaised when executing {link}'
+            exception_message = str(exception) + f'{extra_info}'
+            traceback = exception.__traceback__
+
+            try:
+                raise type(exception)(
+                    exception_message).with_traceback(traceback)
+            except TypeError as type_exception:
+                # Some custom exceptions won't let you use the common constructor and will throw an error on initialisation. We catch these and just throw a generic RuntimeError.
+                raise RuntimeError(exception_message).with_traceback(
+                    traceback) from None
+        except Exception as e:
+            _LOGGER.exception(e)
+
+        if not self._ignore_exceptions and self.running:
+            self.shutdown(wait=False)
 
     def purge(self):
         """
@@ -155,6 +208,8 @@ class BasePlanner(ABC):
         """
         Whether this planner is currently running.
 
+        By default always returns True.
+
         Override this property to indicate when the underlying scheduling functionality is currently running.
         """
-        raise NotImplementedError()
+        return True

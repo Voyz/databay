@@ -36,7 +36,14 @@ class ApsPlanner(BasePlanner):
 
     """
 
-    def __init__(self, links: Union[Link, List[Link]] = None, threads: int = 30, executors_override: dict = None, job_defaults_override: dict = None, ignore_exceptions: bool = False, catch_exceptions: bool = None):
+    def __init__(self,
+                 links: Union[Link, List[Link]] = None,
+                 threads: int = 30,
+                 executors_override: dict = None,
+                 job_defaults_override: dict = None,
+                 ignore_exceptions: bool = False,
+                 catch_exceptions: bool = None,
+                 immediate_transfer: bool = True):
         """
 
         :type links: :any:`Link` or list[:any:`Link`]
@@ -58,14 +65,12 @@ class ApsPlanner(BasePlanner):
         :type ignore_exceptions: bool
         :param ignore_exceptions: Whether exceptions should be ignored or halt the planner.
             |default| :code:`False`
+
+        :type immediate_transfer: :class:`bool`
+        :param immediate_transfer: Whether planner should execute one transfer immediately upon starting. |default| :code:`True`
         """
 
         self._threads = threads
-        self._ignore_exceptions = ignore_exceptions
-        if catch_exceptions is not None:  # pragma: no cover
-            self._ignore_exceptions = catch_exceptions
-            warnings.warn(
-                '\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
 
         if executors_override is None:
             executors_override = {}
@@ -80,30 +85,21 @@ class ApsPlanner(BasePlanner):
         self._scheduler = BlockingScheduler(
             executors=executors, job_defaults=job_defaults, timezone='UTC')
         # self._scheduler = BackgroundScheduler(executors=executors, job_defaults=job_defaults, timezone=utc)
-        self._scheduler.add_listener(self._on_exception, EVENT_JOB_ERROR)
+        self._scheduler.add_listener(self._exception_listener, EVENT_JOB_ERROR)
 
-        super().__init__(links)
+        self.links_by_jobid = {}
 
-    def _on_exception(self, event):
+        super().__init__(links=links, ignore_exceptions=ignore_exceptions, immediate_transfer=immediate_transfer)
+
+        if catch_exceptions is not None:  # pragma: no cover
+            self._ignore_exceptions = catch_exceptions
+            warnings.warn(
+                '\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
+
+
+    def _exception_listener(self, event):
         if event.code is EVENT_JOB_ERROR:
-            try:
-                # It would be amazing if we could print the entire Link, but APS serialises Link.transfer to a string and that's all we have from Job's perspective.
-                extra_info = f'\n\nRaised when executing {self._scheduler.get_job(event.job_id)}'
-                exception_message = str(event.exception) + f'{extra_info}'
-                traceback = event.exception.__traceback__
-
-                try:
-                    raise type(event.exception)(
-                        exception_message).with_traceback(traceback)
-                except TypeError as type_exception:
-                    # Some custom exceptions won't let you use the common constructor and will throw an error on initialisation. We catch these and just throw a generic RuntimeError.
-                    raise Exception(exception_message).with_traceback(
-                        traceback) from None
-            except Exception as e:
-                _LOGGER.exception(e)
-
-            if not self._ignore_exceptions and self.running:
-                self.shutdown(wait=False)
+            self._on_exception(event.exception, self.links_by_jobid[event.job_id])
 
     def _schedule(self, link: Link):
         """
@@ -116,6 +112,7 @@ class ApsPlanner(BasePlanner):
         job = self._scheduler.add_job(link.transfer, trigger=IntervalTrigger(
             seconds=link.interval.total_seconds()))
         link.set_job(job)
+        self.links_by_jobid[job.id] = link
 
     def _unschedule(self, link: Link):
         """
@@ -126,6 +123,7 @@ class ApsPlanner(BasePlanner):
         """
         if link.job is not None:
             link.job.remove()
+            self.links_by_jobid.pop(link.job.id, None)
             link.set_job(None)
 
     def start(self):
@@ -180,6 +178,7 @@ class ApsPlanner(BasePlanner):
         Unschedule and clear all links. It can be used while planner is running. APS automatically removes jobs, so we only clear the links.
         """
         for link in self.links:
+            self.links_by_jobid.pop(link.job.id, None)
             try:
                 link.job.remove()
             except JobLookupError:
