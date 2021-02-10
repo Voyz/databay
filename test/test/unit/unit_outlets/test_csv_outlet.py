@@ -1,11 +1,12 @@
+import asyncio
 import copy
-import io
 import os
+from unittest import TestCase
 
-from asynctest import TestCase, patch, asyncio
+from unittest.mock import patch
+
 
 from databay import Record, Update
-from databay.outlets import PrintOutlet
 from databay.outlets.csv_outlet import CsvOutlet
 from test_utils import fqname
 
@@ -15,9 +16,9 @@ class TestCsvOutlet(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.this_filepath = os.path.abspath(os.path.dirname(__file__))
-        cls.target_filepath = os.path.join(cls.this_filepath, '_csv_outlet_target.csv')
-        cls.attempt_filepath = os.path.join(cls.this_filepath, '_csv_outlet_attempt.csv')
-        cls.custom_filepath = os.path.join(cls.this_filepath, '_csv_outlet_custom_attempt.csv')
+        cls.target_filepath = os.path.join(cls.this_filepath, 'data/_csv_outlet_target.csv')
+        cls.attempt_filepath = os.path.join(cls.this_filepath, 'data/_csv_outlet_attempt.csv')
+        cls.custom_filepath = os.path.join(cls.this_filepath, 'data/_csv_outlet_custom_attempt.csv')
         with open(cls.target_filepath, 'r') as f:
             cls.target = f.read()
 

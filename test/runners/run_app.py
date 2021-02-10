@@ -5,7 +5,7 @@ from threading import Thread
 
 from databay import Link
 from databay.inlets.file_inlet import FileInlet, FileInletMode
-from databay.planners import APSPlanner, SchedulePlanner
+from databay.planners import ApsPlanner, SchedulePlanner
 from databay.inlets import HttpInlet
 from databay.outlets import CsvOutlet
 from databay.outlets import MongoOutlet
@@ -18,8 +18,8 @@ class Run_App():
         pass
 
     def run(self):
-        # planner = APSPlanner()
-        planner = SchedulePlanner(refresh_interval=0.5)
+        planner = ApsPlanner()
+        # planner = SchedulePlanner(refresh_interval=0.5)
 
 
         http_inlet = HttpInlet('https://jsonplaceholder.typicode.com/todos/1', metadata={CsvOutlet.FILE_MODE:'a'})
@@ -32,8 +32,8 @@ class Run_App():
 
         planner.add_links(Link([file_inlet], [print_outlet], timedelta(seconds=0.5)))
         planner.add_links(Link([http_inlet, http_inlet, http_inlet], [csv_outlet], timedelta(seconds=2)))
-        # planner.add_links(Link([http_inlet], [mongo_outlet], timedelta(seconds=1), name='first'))
-        # planner.add_links(Link([http_inlet2, http_inlet2, http_inlet2], [mongo_outlet], timedelta(seconds=5), name='second'))
+        # planner.add_links(Link([http_inlet], [mongo_outlet], timedelta(seconds=1), tags='first'))
+        # planner.add_links(Link([http_inlet2, http_inlet2, http_inlet2], [mongo_outlet], timedelta(seconds=5), tags='second'))
         # planner.add_links(Link([], [], timedelta(seconds=1.5)))
         # planner.add_links(Link([alphavantage_inlet], [mongo_outlet], timedelta(seconds=5)))
         # planner.add_links(Link([iex_inlet], [mongo_outlet], timedelta(seconds=5)))

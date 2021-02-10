@@ -5,6 +5,11 @@
         <img src="https://github.com/Voyz/databay/blob/master/media/databay_title.png" alt="Databay title" title="Databay title" width="600"/>
     </a>
 </p>
+<p align="center">
+    <a href="https://app.circleci.com/pipelines/github/Voyz/databay">
+        <img src="https://circleci.com/gh/Voyz/databay.svg?style=shield&circle-token=e5671b4d01ac416b0857d024f2ba8b5df907d4b0">
+    </a>
+</p>
 
 <p align="center">
     <a href="https://opensource.org/licenses/Apache-2.0">
@@ -26,6 +31,8 @@ Databay is a Python interface for **scheduled data transfer**. It facilitates tr
 ```python
 pip install databay
 ```
+
+
 
 ## Documentation
 
@@ -76,7 +83,7 @@ outlet = MongoOutlet('databay', 'test_collection')
 link = Link(inlet, outlet, datetime.timedelta(seconds=5))
 
 # Start scheduling
-planner = APSPlanner(link)
+planner = ApsPlanner(link)
 planner.start()
 ```
 
@@ -92,6 +99,14 @@ Example use:
 ---- 
 
 While Databay comes with a handful of built-in inlets and outlets, its strength lies in extendability. To use Databay in your project, create concrete implementations of `Inlet` and `Outlet` classes that handle the data production and consumption functionality you require. Databay will then make sure data can repeatedly flow between the inlets and outlets you create. [Extending inlets][extending_inlets] and [extending outlets][extending_outlets] is easy and has a wide range of customization. Head over to [Extending Databay][extending] section for a detailed explanation or to [Examples][examples] for real use cases. 
+
+## Supported Python Versions
+
+| Python Version 	| <3.6 	| 3.6 	| 3.7 	| 3.8 	| 3.9 	|
+|----------------	|------	|-----	|-----	|-----	|-----	|
+| Supported      	| ❌    	| ✅   	| ✅   	| ✅   	| ✅   	|
+
+
 
 ## <a name="community"></a>Community Contributions
 

@@ -1,6 +1,9 @@
+import asyncio
 import io
+import unittest
+from unittest import TestCase
 
-from asynctest import TestCase, patch, asyncio
+from unittest.mock import patch
 
 from databay import Record, Update
 from databay.outlets import PrintOutlet
@@ -45,3 +48,5 @@ class TestPrintOutlet(TestCase):
 
         self.assertEqual(stdout.getvalue(), 'TestRecord(test)\n')
 
+if __name__ == '__main__':
+    unittest.main()

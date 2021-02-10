@@ -28,6 +28,6 @@ All classes in Databay are configured to utilise a :any:`Python Logger <python:l
 
     # Or do it only for a particular child logger:
 
-    logging.getLogger('databay.APSPlanner').setLevel(logging.DEBUG)
+    logging.getLogger('databay.ApsPlanner').setLevel(logging.DEBUG)
 
 You can attach new handlers to any of these loggers in order to implement custom logging behaviour - such as a :any:`FileHandler <logging.FileHandler>` to log into a file, or a separate :any:`StreamHandler <logging.StreamHandler>` to customise the print signature.
