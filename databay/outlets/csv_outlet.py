@@ -5,20 +5,23 @@ import os
 from databay.outlet import Outlet, MetadataKey
 from databay.record import Record
 
+from pathlib import Path
+
 _LOGGER = logging.getLogger('databay.CsvOutlet')
+
 
 class CsvOutlet(Outlet):
     """
     Outlet that writes records to a csv file.
     """
 
-    CSV_FILE:MetadataKey = 'CsvOutlet.CSV_FILE'
+    CSV_FILE: MetadataKey = 'CsvOutlet.CSV_FILE'
     """Filepath of the csv file to write records to."""
 
-    FILE_MODE:MetadataKey = 'CsvOutlet.FILE_MODE'
+    FILE_MODE: MetadataKey = 'CsvOutlet.FILE_MODE'
     """Write mode to use when writing into the csv file."""
 
-    def __init__(self, default_filepath:str, default_file_mode:str='a'):
+    def __init__(self, default_filepath: str, default_file_mode: str = 'a'):
         """
 
         :param default_filepath: Filepath of the default csv file to write records to.
@@ -31,8 +34,7 @@ class CsvOutlet(Outlet):
         self.default_filepath = default_filepath
         self.default_file_mode = default_file_mode
 
-
-    def push(self, records:[Record], update):
+    def push(self, records: [Record], update):
         """
         Writes records to a csv file.
 
@@ -43,12 +45,16 @@ class CsvOutlet(Outlet):
         :param update: Update object representing the particular Link transfer.
         """
         for record in records:
-            filepath = record.metadata.get(self.CSV_FILE, self.default_filepath)
-            file_mode = record.metadata.get(self.FILE_MODE, self.default_file_mode)
+            filepath = record.metadata.get(
+                self.CSV_FILE, self.default_filepath)
+            file_mode = record.metadata.get(
+                self.FILE_MODE, self.default_file_mode)
 
-            _LOGGER.info(f'{update} writing into: {filepath}, file mode: {file_mode}, record: {record}')
+            _LOGGER.info(
+                f'{update} writing into: {filepath}, file mode: {file_mode}, record: {record}')
 
             # todo: add more write options
+            Path(filepath).parent.mkdir(parents=True, exist_ok=True)
             with open(filepath, file_mode, newline="") as f:
 
                 # todo: add more DictWriter options

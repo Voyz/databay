@@ -24,9 +24,11 @@ class DummyInlet(Inlet):
 
         return rv
 
+
 class DummyAsyncInlet(DummyInlet):
     async def pull(self, update):
         return super().pull(update)
+
 
 class DummyMultiInlet(DummyInlet):
     async def pull(self, update):
@@ -34,6 +36,7 @@ class DummyMultiInlet(DummyInlet):
         b = super().pull(update)
         c = super().pull(update)
         return [a, b, c]
+
 
 class DummyStartShutdownInlet(DummyInlet):
     start_called = False
@@ -44,6 +47,7 @@ class DummyStartShutdownInlet(DummyInlet):
 
     def on_shutdown(self):
         self.shutdown_called = True
+
 
 def sync_async(array, raw):
     def fn_wrapper(fn):
@@ -56,8 +60,8 @@ def sync_async(array, raw):
         return wrapper
     return fn_wrapper
 
-class TestInlet(TestCase):
 
+class TestInlet(TestCase):
 
     @sync_async(array=False, raw=True)
     def test_pull_raw(self, inlet):
@@ -72,7 +76,8 @@ class TestInlet(TestCase):
         rv = asyncio.run(inlet._pull(None))
         self.assertIsInstance(rv, list, 'Should wrap data in an array')
         self.assertIsInstance(rv[0], Record, 'Should return a record')
-        self.assertEqual(rv[0], inlet.record, 'Record returned should be same as inlet\'s')
+        self.assertEqual(rv[0], inlet.record,
+                         'Record returned should be same as inlet\'s')
 
     @sync_async(array=True, raw=True)
     def test_pull_raw_array(self, inlet):
@@ -87,7 +92,8 @@ class TestInlet(TestCase):
         rv = asyncio.run(inlet._pull(None))
         self.assertIsInstance(rv, list, 'Should return an array')
         self.assertIsInstance(rv[0], Record, 'Should return a record')
-        self.assertEqual(rv[0], inlet.record, 'Record returned should be same as inlet\'s')
+        self.assertEqual(rv[0], inlet.record,
+                         'Record returned should be same as inlet\'s')
 
     def test_pull_multiple_raw(self):
         inlet = DummyMultiInlet(array=True, raw=True)
@@ -102,7 +108,6 @@ class TestInlet(TestCase):
         self.assertIsInstance(rv, list, 'Should return an array')
         self.assertIsInstance(rv[0], Record, 'Should return a record')
         self.assertEqual(len(rv), 3, 'Should return 3 records')
-
 
     def test_try_start(self):
         inlet = DummyStartShutdownInlet()
@@ -157,10 +162,10 @@ class TestInlet(TestCase):
         self.assertTrue(inlet.shutdown_called)
         self.assertFalse(inlet.start_called)
 
-
     """ This isn't easy to test properly, as race condition rarely happens. Add time.sleep(0.1) 
     to Inlet.try_start before changing self._active to generate race condition - then the _thread_lock 
     should indeed prevent it."""
+
     def test_try_start_race_condition(self):
         inlet = DummyStartShutdownInlet()
         inlet.on_start = MagicMock()
@@ -171,7 +176,7 @@ class TestInlet(TestCase):
 
         ev = threading.Event()
         threads = []
-        for i in range (0, 10):
+        for i in range(0, 10):
             t = threading.Thread(target=worker, daemon=True, args=[ev])
             threads.append(t)
             t.start()
@@ -193,7 +198,7 @@ class TestInlet(TestCase):
 
         ev = threading.Event()
         threads = []
-        for i in range (0, 10):
+        for i in range(0, 10):
             t = threading.Thread(target=worker, daemon=True, args=[ev])
             threads.append(t)
             t.start()

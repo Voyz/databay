@@ -7,7 +7,7 @@ class PrintOutlet(Outlet):
     Outlet that will print all records one by one.
     """
 
-    def __init__(self, only_payload:bool=False, skip_update:bool=False):
+    def __init__(self, only_payload: bool = False, skip_update: bool = False):
         """
         :param only_payload: If True, prints only the payload of records.
         :type only_payload: bool
@@ -20,7 +20,7 @@ class PrintOutlet(Outlet):
         self.only_payload = only_payload
         self.skip_update = skip_update
 
-    async def push(self, records:[Record], update):
+    async def push(self, records: [Record], update):
         """
         Prints the records.
 

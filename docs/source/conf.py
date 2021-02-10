@@ -10,6 +10,7 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+import sphinx_rtd_theme
 import os
 from setuptools import find_packages
 from pkgutil import iter_modules
@@ -65,14 +66,11 @@ exclude_patterns = [
 ]
 
 
-
-
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-import sphinx_rtd_theme
 
 # html_theme = 'alabaster'
 # html_theme = 'nature'
@@ -80,7 +78,6 @@ import sphinx_rtd_theme
 # html_theme = 'f5_sphinx_theme'
 # html_theme = 'zerovm-sphinx-theme'
 
-import sphinx_rtd_theme
 
 extensions.append("sphinx_rtd_theme")
 
@@ -114,8 +111,9 @@ autoapi_ignore = [
     # '*outlets/print_outlet.py',
     # '*outlets/csv_outlet.py',
     '*config.py',
-  ]
-autoapi_options = [ 'members', 'undoc-members', 'xprivate-members', 'show-inheritance', 'show-module-summary', 'xspecial-members', 'ximported-members']
+]
+autoapi_options = ['members', 'undoc-members', 'xprivate-members',
+                   'show-inheritance', 'show-module-summary', 'xspecial-members', 'ximported-members']
 autoapi_python_class_content = 'both'
 autoapi_keep_files = True
 
@@ -139,6 +137,7 @@ SKIP_FULL = {'databay.link.Link._run',
              }
 SKIP_SUFFIXES = {"_LOGGER"}
 
+
 def maybe_skip_member(app, what, name, obj, skip, options):
     should_skip = skip
     for s in SKIP_SUFFIXES:
@@ -154,7 +153,6 @@ def maybe_skip_member(app, what, name, obj, skip, options):
     return should_skip
 
 
-
 def find_modules(path):
     package_name = path.replace('../', '').replace('\\', '.')
     modules = set()
@@ -163,7 +161,6 @@ def find_modules(path):
         if not info.ispkg:
             modules.add(package_name + '.' + info.name)
 
-
     for pkg in find_packages(path):
         ms = find_modules(os.path.join(path, pkg))
         modules.update(ms)
@@ -171,6 +168,7 @@ def find_modules(path):
     return modules
 
 # modules = find_modules('../../databay')
+
 
 this_filedir = os.path.dirname(os.path.abspath(__file__))
 
@@ -188,8 +186,9 @@ Source Code
 
 modules_complete = {}
 
+
 def populate_modules(_, fqp):
-    if len(modules_complete) == 0 :
+    if len(modules_complete) == 0:
         # init the index file
         with open(source_code_filepath, 'w') as f:
             f.write(source_code_contents)
@@ -202,8 +201,9 @@ def populate_modules(_, fqp):
     chunks = fqp.split('.')
     dirs = chunks[:-1]
     module = chunks[-1]
-    filename =  module+'.rst'
-    filepath = os.path.abspath(os.path.join(this_filedir, '_modules', *dirs, filename))
+    filename = module+'.rst'
+    filepath = os.path.abspath(os.path.join(
+        this_filedir, '_modules', *dirs, filename))
     dir = os.path.dirname(filepath)
     os.makedirs(dir, exist_ok=True)
     with open(filepath, 'w') as f:
@@ -214,6 +214,7 @@ def populate_modules(_, fqp):
         f.write(f'  {module} <{fqp.replace(".", "/")}>\n')
 
     return None
+
 
 extensions.append('sphinx_copybutton')
 

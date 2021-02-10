@@ -23,7 +23,7 @@ class ISO8601Formatter(logging.Formatter):
         self.pretty = pretty
         self.make_time_format()
 
-    def formatTime(self, record, datefmt=None): # pragma: no cover
+    def formatTime(self, record, datefmt=None):  # pragma: no cover
         ct = self.converter(record.created)
         t = time.strftime(self.time_format, ct)
         tz = time.strftime('%z', ct)
@@ -34,6 +34,3 @@ class ISO8601Formatter(logging.Formatter):
         msecs = record.msecs * self.precision_mult
         s = self.str_format % (t, msecs, tz)
         return s
-
-
-

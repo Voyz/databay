@@ -7,31 +7,35 @@ class FileOutlet(Outlet):
     Outlet that writes records to a file.
     """
 
-    FILEPATH:MetadataKey = 'FileOutlet.FILEPATH'
+    FILEPATH: MetadataKey = 'FileOutlet.FILEPATH'
     """Filepath of the file to write to."""
 
-    FILE_MODE:MetadataKey = 'FileOutlet.FILE_MODE'
+    FILE_MODE: MetadataKey = 'FileOutlet.FILE_MODE'
     """Write mode to use when writing into the file."""
 
-    FILE_ENCODING:MetadataKey = 'FileOutlet.FILE_ENCODING'
+    FILE_ENCODING: MetadataKey = 'FileOutlet.FILE_ENCODING'
     """Encoding to use when writing into the file."""
 
-    def __init__(self, default_filepath:str, default_file_mode:str='a', default_encoding:str='utf-8'):
+    def __init__(self, default_filepath: str, default_file_mode: str = 'a', default_encoding: str = 'utf-8'):
         """
 
-        :param default_filepath: Filepath of the default file to write records to.
         :type default_filepath: str
+        :param default_filepath: Filepath of the default file to write records to.
 
-        :param default_file_mode: Default write mode to use when writing into the file.
         :type default_file_mode: str
+        :param default_file_mode: Default write mode to use when writing into the file.
+
+        :type default_encoding: str
+        :param default_encoding: Default file encoding when writing into a file.
+            |default| :code:`utf-8`
+
         """
         super().__init__()
         self.default_filepath = default_filepath
         self.default_file_mode = default_file_mode
         self.default_encoding = default_encoding
 
-
-    def push(self, records:[Record], update):
+    def push(self, records: [Record], update):
         """
         Writes records to a file.
 
@@ -42,9 +46,12 @@ class FileOutlet(Outlet):
         :param update: Update object representing the particular Link transfer.
         """
         for record in records:
-            filepath = record.metadata.get(self.FILEPATH, self.default_filepath)
-            file_mode = record.metadata.get(self.FILE_MODE, self.default_file_mode)
-            file_encoding = record.metadata.get(self.FILE_ENCODING, self.default_encoding)
+            filepath = record.metadata.get(
+                self.FILEPATH, self.default_filepath)
+            file_mode = record.metadata.get(
+                self.FILE_MODE, self.default_file_mode)
+            file_encoding = record.metadata.get(
+                self.FILE_ENCODING, self.default_encoding)
 
             with open(filepath, file_mode, encoding=file_encoding) as f:
                 f.write(str(record.payload)+'\n')

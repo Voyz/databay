@@ -19,20 +19,24 @@ class DummyInlet(Inlet):
     async def pull(self, count):
         return [self.record]
 
+
 class DummyOutlet(Outlet):
     async def push(self, records, count):
         self.records = records
+
 
 class DummyInletInvalid(Inlet):
     def pull(self, count):
         return [None]
 
+
 class DummyOutletInvalid(Outlet):
     def push(self, records, count):
         self.records = records
 
+
 class DummyAwaitInlet(Inlet):
-    def __init__(self, asynchronous:bool=True, *args, **kwargs):
+    def __init__(self, asynchronous: bool = True, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.record = self.new_record({'test': 10})
         self.asynchronous = asynchronous
@@ -45,6 +49,7 @@ class DummyAwaitInlet(Inlet):
             time.sleep(self.wait_time)
         return [self.record]
 
+
 class TestLink(TestCase):
 
     def __init__(self, *args, **kwargs):
@@ -54,7 +59,8 @@ class TestLink(TestCase):
     def test_update_single(self):
         inlet1 = DummyInlet()
         outlet1 = DummyOutlet()
-        link = Link([inlet1], [outlet1], timedelta(seconds=1), copy_records=False)
+        link = Link([inlet1], [outlet1], timedelta(
+            seconds=1), copy_records=False)
 
         link.transfer()
 
@@ -65,13 +71,13 @@ class TestLink(TestCase):
         inlet2 = DummyInlet()
         outlet1 = DummyOutlet()
         outlet2 = DummyOutlet()
-        link = Link([inlet1, inlet2], [outlet1, outlet2], timedelta(seconds=1), copy_records=False)
+        link = Link([inlet1, inlet2], [outlet1, outlet2],
+                    timedelta(seconds=1), copy_records=False)
 
         link.transfer()
 
         self.assertEqual(outlet1.records, [inlet1.record, inlet2.record])
         self.assertEqual(outlet2.records, [inlet1.record, inlet2.record])
-
 
     def test_metadata_global(self):
         inlet1 = DummyInlet(metadata={'secret': 'global'})
@@ -80,27 +86,31 @@ class TestLink(TestCase):
 
         link.transfer()
 
-        self.assertEqual(outlet1.records[0].metadata['secret'], inlet1.metadata['secret'])
+        self.assertEqual(
+            outlet1.records[0].metadata['secret'], inlet1.metadata['secret'])
 
     # test if overriding global metadata with local metadata works
     def test_metadata_local(self):
         inlet1 = DummyInlet(metadata={'secret': 'global'})
-        inlet1.record = inlet1.new_record({'test':20}, metadata={'secret':'local', 'key':'value'})
+        inlet1.record = inlet1.new_record(
+            {'test': 20}, metadata={'secret': 'local', 'key': 'value'})
         outlet1 = DummyOutlet()
         link = Link([inlet1], [outlet1], timedelta(seconds=1))
 
         link.transfer()
 
-        self.assertEqual(outlet1.records[0].metadata['secret'], inlet1.record.metadata['secret'])
-        self.assertEqual(outlet1.records[0].metadata['key'], inlet1.record.metadata['key'])
-        self.assertNotEqual(outlet1.records[0].metadata['secret'], inlet1.metadata['secret'])
-
-
+        self.assertEqual(
+            outlet1.records[0].metadata['secret'], inlet1.record.metadata['secret'])
+        self.assertEqual(
+            outlet1.records[0].metadata['key'], inlet1.record.metadata['key'])
+        self.assertNotEqual(
+            outlet1.records[0].metadata['secret'], inlet1.metadata['secret'])
 
     def test_await_pull_single(self):
         inlet1 = DummyAwaitInlet()
         outlet1 = DummyOutlet()
-        link = Link([inlet1], [outlet1], timedelta(seconds=1), copy_records=False)
+        link = Link([inlet1], [outlet1], timedelta(
+            seconds=1), copy_records=False)
 
         link.transfer()
 
@@ -112,7 +122,8 @@ class TestLink(TestCase):
         inlet2 = DummyAwaitInlet()
         inlet3 = DummyAwaitInlet()
         outlet1 = DummyOutlet()
-        link = Link([inlet1, inlet2, inlet3], [outlet1], timedelta(seconds=1), copy_records=False)
+        link = Link([inlet1, inlet2, inlet3], [outlet1],
+                    timedelta(seconds=1), copy_records=False)
 
         start_time = datetime.now()
 
@@ -121,9 +132,10 @@ class TestLink(TestCase):
         end_time = datetime.now()
         diff = end_time - start_time
 
-        self.assertEqual(outlet1.records, [inlet1.record, inlet2.record, inlet3.record])
+        self.assertEqual(outlet1.records, [
+                         inlet1.record, inlet2.record, inlet3.record])
         total_wait_time = inlet1.wait_time + inlet2.wait_time + inlet3.wait_time
-        total_wait_time *= 1.2 # add a little buffer
+        total_wait_time *= 1.2  # add a little buffer
         self.assertLess(diff.total_seconds(), total_wait_time)
 
     # test if synchronous calls indeed run synchronously
@@ -132,7 +144,8 @@ class TestLink(TestCase):
         inlet2 = DummyAwaitInlet(False)
         inlet3 = DummyAwaitInlet(False)
         outlet1 = DummyOutlet()
-        link = Link([inlet1, inlet2, inlet3], [outlet1], timedelta(seconds=0.), copy_records=False)
+        link = Link([inlet1, inlet2, inlet3], [outlet1],
+                    timedelta(seconds=0.), copy_records=False)
 
         start_time = datetime.now()
 
@@ -141,11 +154,10 @@ class TestLink(TestCase):
         end_time = datetime.now()
         diff = end_time - start_time
 
-        self.assertEqual(outlet1.records, [inlet1.record, inlet2.record, inlet3.record])
+        self.assertEqual(outlet1.records, [
+                         inlet1.record, inlet2.record, inlet3.record])
         total_wait_time = inlet1.wait_time + inlet2.wait_time + inlet3.wait_time
         self.assertGreaterEqual(diff.total_seconds(), total_wait_time)
-
-
 
     def test_on_start(self):
         inlet1 = DummyInlet()
@@ -204,7 +216,6 @@ class TestLink(TestCase):
     #
     # def test_outlet_invalid(self):
     #     self.assertRaises(ImplementationError, DummyOutletInvalid)
-
 
     def test_add_inlet_same(self):
         inlet1 = DummyInlet()

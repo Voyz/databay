@@ -5,11 +5,7 @@
         <img src="https://github.com/Voyz/databay/blob/master/media/databay_title.png" alt="Databay title" title="Databay title" width="600"/>
     </a>
 </p>
-<p align="center">
-    <a href="https://app.circleci.com/pipelines/github/Voyz/databay">
-        <img src="https://circleci.com/gh/Voyz/databay.svg?style=shield&circle-token=e5671b4d01ac416b0857d024f2ba8b5df907d4b0">
-    </a>
-</p>
+
 
 <p align="center">
     <a href="https://opensource.org/licenses/Apache-2.0">
@@ -17,6 +13,9 @@
     </a>
     <a href="https://github.com/Voyz/databay/releases">
         <img src="https://img.shields.io/pypi/v/databay?label=version"/> 
+    </a>
+    <a href="https://app.circleci.com/pipelines/github/Voyz/databay">
+        <img src="https://circleci.com/gh/Voyz/databay.svg?style=shield&circle-token=e5671b4d01ac416b0857d024f2ba8b5df907d4b0">
     </a>
 </p>
 
@@ -136,10 +135,12 @@ The following are inlets and outlets that others would like to see implemented. 
 
 ## <a name="roadmap"></a>Roadmap
 
+See full [Databay Roadmap][databay_roadmap]. Bare in mind this a live document that is shared to give you an idea of what can be expected in the future releases, rather than a locked schedule. Priorities and order of implementation may change without warning.
+
 #### v1.0
 1. Beta test the pre-release.
 1. ~~Complete 100% test coverage.~~
-1. Add more advanced examples.
+1. ~~Add more advanced examples.~~
 1. Release v1.0.
 1. Buy a carrot cake and celebrate.
 
@@ -175,3 +176,4 @@ See [LICENSE](https://github.com/Voyz/databay/blob/master/LICENSE)
   [voy1982_email]: mailto:voy1982@yahoo.co.uk
   [issues]: https://github.com/Voyz/databay/issues
   [community_docs]: https://databay.readthedocs.io/en/latest/extending/community_contributions.html
+  [databay_roadmap]: http://bit.ly/databay-roadmap

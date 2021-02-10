@@ -12,7 +12,7 @@ import urllib.request
 
 
 class WeatherInlet(Inlet):
-    def __init__(self, api_key:str, city_name:str, *args, **kwargs):
+    def __init__(self, api_key: str, city_name: str, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.api_key = api_key

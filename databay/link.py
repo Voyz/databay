@@ -16,7 +16,8 @@ class Update():
     """
     Data structure representing one Link transfer. When converted to string returns :code:`{tags}.{transfer_number}`
     """
-    def __init__(self, tags:List[str], transfer_number:int):
+
+    def __init__(self, tags: List[str], transfer_number: int):
         """
 
         :type tags: List[str]
@@ -35,10 +36,10 @@ class Update():
         :returns: "{tags}.{transfer_number}"
         """
         s = ''
-        if self.tags != []: s += f'{".".join(self.tags)}.'
+        if self.tags != []:
+            s += f'{".".join(self.tags)}.'
         s += f'{self.transfer_number}'
         return s
-
 
 from databay import Inlet, Outlet
 
@@ -49,12 +50,13 @@ class Link():
 
     def __init__(self,
                  inlets: Union[Inlet, List[Inlet]],
-                 outlets: Union[Outlet, List[Outlet]], 
+                 outlets: Union[Outlet, List[Outlet]],
                  interval: Union[datetime.timedelta, int, float],
-                 tags:Union[str, List[str]]=None,
-                 copy_records:bool=True,
-                 ignore_exceptions:bool=False,
-                 catch_exceptions:bool=None,
+                 tags: Union[str, List[str]] = None,
+                 copy_records: bool = True,
+                 ignore_exceptions: bool = False,
+                 catch_exceptions: bool = None,
+                 inlet_concurrency : int = 9999,
                  name=None):
         """
         :type inlets: :any:`Inlet` or list[:any:`Inlet`]
@@ -64,8 +66,7 @@ class Link():
         :param outlets: outlets to add to this link.
 
         :type interval: Union[datetime.timedelta, int, float]
-        :param interval: Expects :code:datetime.timedelta. Alternatively, you can provide :code:int or
-        :code:float which will be coerced explicitly to :code:datetime.timedelta.seconds.
+        :param interval: Expects :code:`datetime.timedelta`. Alternatively, you can provide :code:`int` or :code:`float` which will be coerced explicitly to :code:`datetime.timedelta.seconds`.
 
         :type tags: Union[str, List[str]]
         :param tags: List of tags of this link. |default| :code:`[]`
@@ -75,6 +76,9 @@ class Link():
 
         :type ignore_exceptions: bool
         :param ignore_exceptions: Whether exceptions in inlets and outlets should be logged and ignored, or raised. |default| :code:`True`
+
+        :type inlet_concurrency: int
+        :param inlet_concurrency: How many inlets are allowed to execute concurrently. |default| :code:`9999`
         """
 
         self._inlets = []
@@ -88,18 +92,21 @@ class Link():
         self._transfer_number = -1
         self._job = None
         if name != None:
-            warnings.warn('\'name\' parameter was deprecated in 0.2.0 and will be removed in version 1.0. Use \'tags\' instead.')
+            warnings.warn(
+                '\'name\' parameter was deprecated in 0.2.0 and will be removed in version 1.0. Use \'tags\' instead.')
             tags = [name]
 
-        if isinstance(tags, str): tags = [tags]
+        if isinstance(tags, str):
+            tags = [tags]
         self._tags = tags if tags is not None else []
         self._copy_records = copy_records
         self._ignore_exceptions = ignore_exceptions
-        if catch_exceptions is not None: # pragma: no cover
+        if catch_exceptions is not None:  # pragma: no cover
             self._ignore_exceptions = catch_exceptions
-            warnings.warn('\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
+            warnings.warn(
+                '\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
 
-
+        self.inlet_concurrency = inlet_concurrency
 
     @property
     def inlets(self) -> List[Inlet]:
@@ -231,7 +238,7 @@ class Link():
     @property
     def name(self) -> str:
         """
-        Deprecated in 0.1.8, will be removed in 1.0. Use :any:`Link.tags` instead.
+        Deprecated in 0.2.0, will be removed in 1.0. Use :any:`Link.tags` instead.
 
         Name of this Link, equivalent to first tag of this link.
 
@@ -264,17 +271,19 @@ class Link():
         """
         Coroutine handling the transfer.
         """
-
+        semaphore = asyncio.Semaphore(self.inlet_concurrency)
         self._transfer_number += 1
         update = Update(tags=self.tags, transfer_number=self._transfer_number)
         _LOGGER.debug(f'{update} transfer')
 
         async def inlet_task(inlet):
             try:
-                return await inlet._pull(update)
+                async with semaphore:
+                    return await inlet._pull(update)
             except Exception as e:
                 if self._ignore_exceptions:
-                    _LOGGER.exception(f'Inlet exception: "{e}" for inlet: {inlet}, in: {self}, during: {update}', exc_info=True)
+                    _LOGGER.exception(
+                        f'Inlet exception: "{e}" for inlet: {inlet}, in: {self}, during: {update}', exc_info=True)
                     return []
                 else:
                     raise e
@@ -288,7 +297,8 @@ class Link():
                 await outlet._push(records_copy, update)
             except Exception as e:
                 if self._ignore_exceptions:
-                    _LOGGER.exception(f'Outlet exception: "{e}" for outlet: {outlet}, in link: {self}, during: {update}', exc_info=True)
+                    _LOGGER.exception(
+                        f'Outlet exception: "{e}" for outlet: {outlet}, in link: {self}, during: {update}', exc_info=True)
                 else:
                     raise e
 
