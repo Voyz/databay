@@ -3,7 +3,7 @@
 
     :ref:`Extending BasePlanner <extending_base_planner>` to learn how to extend this class correctly.
 """
-
+import atexit
 import logging
 from abc import ABC, abstractmethod
 from typing import List, Union
@@ -19,7 +19,8 @@ class BasePlanner(ABC):
     Base abstract class for a job planner. Implementations should handle scheduling link transfers based on :py:class:`datetime.timedelta` intervals.
     """
 
-    def __init__(self, links: Union[Link, List[Link]] = None, ignore_exceptions: bool = False, immediate_transfer: bool = True):
+
+    def __init__(self, links: Union[Link, List[Link]] = None, ignore_exceptions: bool = False, immediate_transfer: bool = True, shutdown_at_exit : bool = False):
         """
         :type links: :any:`Link` or list[:any:`Link`]
         :param links: Links that should be added and scheduled.
@@ -31,6 +32,10 @@ class BasePlanner(ABC):
         :type immediate_transfer: :class:`bool`
         :param immediate_transfer: Whether planner should execute one transfer immediately upon starting.
             |default| :code:`True`
+            
+        :type shutdown_at_exit: bool
+        :param shutdown_at_exit: Whether this planner should attempt to gracefully shutdown if the app exists unexpectedly.
+            |default| :code:`False`
         """
         self._links = []
         if links is not None:
@@ -38,6 +43,9 @@ class BasePlanner(ABC):
 
         self.immediate_transfer = immediate_transfer
         self._ignore_exceptions = ignore_exceptions
+        self.shutdown_at_exit = shutdown_at_exit
+        atexit.register(self._at_exit_callback)
+
 
     @property
     def links(self):
@@ -213,3 +221,16 @@ class BasePlanner(ABC):
         Override this property to indicate when the underlying scheduling functionality is currently running.
         """
         return True
+
+    def __repr__(self):
+        return f"BasePlanner(links={len(self.links)}, shutdown_at_exit={self.shutdown_at_exit})"
+
+
+    def _at_exit_callback(self):
+        """
+        Callback used when the process is exiting, used to attempt a graceful shutdown.
+        """
+        if self.shutdown_at_exit and self.running:
+            _LOGGER.info(f'Attempting to shutdown planner "{self}" gracefully.')
+            self.shutdown(True)
+

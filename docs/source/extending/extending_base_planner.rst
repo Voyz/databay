@@ -101,6 +101,11 @@ Immediate transfer on start
 By default BasePlanner will execute :any:`Link.transfer` function on all its links once upon calling :any:`BasePlanner.start`. This is to avoid having to wait for the link's interval to expire before the first transfer. You can disable this behaviour by passing :code:`immediate=False` parameter on construction.
 
 
+Shutdown atexit
+---------------
+
+Each :any:`BasePlanner` registers an :any:`atexit` callback, which will attempt to gracefully shut the planner down if it is created with :any:`shutdown_at_exit <BasePlanner>` parameter set to :code:`True`.
+
 ----
 
 .. rubric:: Next Steps
