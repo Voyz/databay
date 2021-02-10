@@ -50,7 +50,7 @@ class BasePlanner(ABC):
 
         for link in links:
             if not isinstance(link, Link):
-                raise TypeError("link is not an instance of Link()")
+                raise TypeError(f"Provided link is not an instance of Link(), found: {link}")
 
             self._links.append(link)
             self._schedule(link)

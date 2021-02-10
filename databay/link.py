@@ -124,7 +124,7 @@ class Link():
 
         for inl in inlets:
             if not isinstance(inl, Inlet):
-                raise TypeError("inl is not an instance of Inlet()")
+                raise TypeError(f"Provided inlet is not an instance of Inlet(), found: {inl}")
 
             if inl in self._inlets:
                 raise InvalidNodeError(
@@ -174,7 +174,7 @@ class Link():
 
         for outl in outlets:
             if not isinstance(outl, Outlet):
-                raise TypeError("outl is not an instance of Outlet()")
+                raise TypeError(f"Provided outlet is not an instance of Outlet(), found: {outl}")
 
             if outl in self._outlets:
                 raise InvalidNodeError(
