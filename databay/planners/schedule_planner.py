@@ -32,9 +32,8 @@ class SchedulePlanner(BasePlanner):
 
     """
 
-    def __init__(self, links: Union[Link, List[Link]] = None, threads: int = 30, refresh_interval: float = 1.0, ignore_exceptions: bool = False, catch_exceptions: bool = None):
+    def __init__(self, links: Union[Link, List[Link]] = None, threads: int = 30, refresh_interval: float = 1.0, ignore_exceptions: bool = False, catch_exceptions: bool = None, immediate_transfer: bool = True):
         """
-
         :type links: :any:`Link` or list[:any:`Link`]
         :param links: Links that should be added and scheduled.
             |default| :code:`None`
@@ -49,18 +48,21 @@ class SchedulePlanner(BasePlanner):
             links with intervals smaller than this value will raise a :any:`ScheduleIntervalError`.
             |default| :code:`1.0`
 
-        :type ignore_exceptions: bool
+        :type ignore_exceptions: :class:`bool`
         :param ignore_exceptions: Whether exceptions should be ignored, or halt the planner.
             |default| :code:`False`
+
+        :type immediate_transfer: :class:`bool`
+        :param immediate_transfer: Whether planner should execute one transfer immediately upon starting. |default| :code:`True`
         """
+
         self._refresh_interval = refresh_interval
-        super().__init__(links)
+        super().__init__(links=links, ignore_exceptions=ignore_exceptions, immediate_transfer=immediate_transfer)
         self._running = False
         self._threads = threads
         self._thread_pool = None
         self._exc_info = []
         self._exc_lock = threading.Lock()
-        self._ignore_exceptions = ignore_exceptions
         if catch_exceptions is not None:  # pragma: no cover
             self._ignore_exceptions = catch_exceptions
             warnings.warn(
@@ -167,28 +169,13 @@ class SchedulePlanner(BasePlanner):
             if len(self._exc_info) > 0:
                 with self._exc_lock:
                     for exc_info in self._exc_info:
-                        try:  # weird try/catch in order to get whole traceback into logger
-                            ex = exc_info[0][1]
-                            extra_info = f'\n\nRaised when executing {exc_info[1]}'
-                            exception_message = str(ex) + f'{extra_info}'
-                            traceback = ex.__traceback__
-
-                            try:
-                                raise type(ex)(
-                                    exception_message).with_traceback(traceback)
-                            except TypeError as type_exception:
-                                # Some custom exceptions won't let you use the common constructor and will throw an error on initialisation. We catch these and just throw a generic RuntimeError.
-                                raise RuntimeError(exception_message).with_traceback(
-                                    traceback) from None
-                        except Exception as e:
-                            _LOGGER.exception(e)
-                            if not self._ignore_exceptions and self.running:
-                                self.shutdown(wait=False)
+                        self._on_exception(exc_info[0][1])
 
                     self._exc_info = []
 
             # TODO: adjust interval to avoid drift - look how APS does it in BlockingScheduler
             time.sleep(self._refresh_interval)
+
 
     def shutdown(self, wait: bool = True):
         """

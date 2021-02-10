@@ -7,7 +7,7 @@ from unittest.mock import patch, MagicMock
 import databay
 from databay import BasePlanner, Link
 from databay.errors import MissingLinkError
-from test_utils import fqname
+from test_utils import fqname, DummyException
 
 
 class TestBasePlanner(TestCase):
@@ -133,6 +133,47 @@ class TestBasePlanner(TestCase):
         self.assertEqual(self.planner.links, [])
 
         self.planner.shutdown()
+
+
+    @patch(fqname(Link), spec=Link)
+    def test_immediate_transfer(self, link):
+        self.planner.add_links(link)
+        self.planner.start()
+        link.transfer.assert_called()
+        self.planner.shutdown()
+
+    @patch(fqname(Link), spec=Link)
+    def test_immediate_transfer_exception(self, link):
+        link.transfer.side_effect = DummyException('First transfer exception!')
+        self.planner.add_links(link)
+        with self.assertLogs(logging.getLogger('databay.BasePlanner'), level='WARNING') as cm:
+            self.planner.start()
+            self.assertTrue(
+                'First transfer exception!' in ';'.join(cm.output))
+        link.transfer.assert_called()
+        self.planner.shutdown()
+
+    @patch(fqname(Link), spec=Link)
+    def test_link_on_start_exception(self, link):
+        link.on_start.side_effect = DummyException('First transfer exception!')
+        self.planner.add_links(link)
+        with self.assertLogs(logging.getLogger('databay.BasePlanner'), level='WARNING') as cm:
+            self.planner.start()
+            self.assertTrue(
+                'First transfer exception!' in ';'.join(cm.output))
+        # self.assertRaises(RuntimeError, self.planner.start)
+        link.on_start.assert_called()
+        self.planner.shutdown()
+
+
+    @patch(fqname(Link), spec=Link)
+    def test_immediate_transfer_off(self, link):
+        self.planner.immediate_transfer = False
+        self.planner.add_links(link)
+        self.planner.start()
+        link.transfer.assert_not_called()
+        self.planner.shutdown()
+
     @patch('atexit._run_exitfuncs')
     @patch(fqname(Link), spec=Link)
     def test_shutdown_at_exit(self, link, atexit_run_exitfuncs):
