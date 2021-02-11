@@ -7,6 +7,7 @@ import logging
 import warnings
 from typing import Any, List, Union
 
+from databay import Inlet, Outlet
 from databay.errors import InvalidNodeError
 _LOGGER = logging.getLogger('databay.Link')
 
@@ -129,7 +130,8 @@ class Link():
             inlets = [inlets]
 
         for inl in inlets:
-            assert isinstance(inl, Inlet), f"Requires Inlet, found {inl}"
+            if not isinstance(inl, Inlet):
+                raise TypeError(f"Provided inlet is not an instance of Inlet(), found: {inl}")
 
             if inl in self._inlets:
                 raise InvalidNodeError(
@@ -178,7 +180,8 @@ class Link():
             outlets = [outlets]
 
         for outl in outlets:
-            assert isinstance(outl, Outlet)
+            if not isinstance(outl, Outlet):
+                raise TypeError(f"Provided outlet is not an instance of Outlet(), found: {outl}")
 
             if outl in self._outlets:
                 raise InvalidNodeError(

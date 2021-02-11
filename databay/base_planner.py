@@ -20,6 +20,7 @@ class BasePlanner(ABC):
     """
 
 
+
     def __init__(self, links: Union[Link, List[Link]] = None, ignore_exceptions: bool = False, immediate_transfer: bool = True, shutdown_at_exit : bool = False):
         """
         :type links: :any:`Link` or list[:any:`Link`]
@@ -67,7 +68,9 @@ class BasePlanner(ABC):
             links = [links]
 
         for link in links:
-            assert isinstance(link, Link)
+            if not isinstance(link, Link):
+                raise TypeError(f"Provided link is not an instance of Link(), found: {link}")
+
             self._links.append(link)
             self._schedule(link)
             _LOGGER.info('Added link: %s', link)
@@ -233,4 +236,3 @@ class BasePlanner(ABC):
         if self.shutdown_at_exit and self.running:
             _LOGGER.info(f'Attempting to shutdown planner "{self}" gracefully.')
             self.shutdown(True)
-
