@@ -206,6 +206,12 @@ class TestLink(TestCase):
 
         self.assertEqual(link.inlets, [inlet1])
 
+
+    def test_add_inlet_invalid(self):
+        link = Link([], [], timedelta(seconds=1), tags='test_add_inlet')
+        self.assertRaises(TypeError, link.add_inlets, "invalid_inlet")
+
+
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock())
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock())
     def test_add_inlet_multiple(self, inlet1, inlet2):
@@ -253,6 +259,10 @@ class TestLink(TestCase):
         link.add_outlets(outlet1)
 
         self.assertEqual(link.outlets, [outlet1])
+
+    def test_add_outlet_invalid(self):
+        link = Link([], [], timedelta(seconds=1), tags='test_add_outlet')
+        self.assertRaises(TypeError, link.add_outlets, "invalid_outlet")
 
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Outlet), spec=Outlet)

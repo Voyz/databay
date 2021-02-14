@@ -75,11 +75,14 @@ class HttpInlet(Inlet):
         :rtype: :any:`Record` or list[:any:`Record`]
         """
         if self.context is not None: self.tcp_connector = aiohttp.TCPConnector(ssl=self.context)
-        _LOGGER.info(f'{update} pulling {self.url}')
+        _LOGGER.info(f'{update} pulling  {self.url} params={self.params}')
         async with aiohttp.ClientSession(connector=self.tcp_connector, headers=self.headers) as session:
             async with session.get(self.url, params=self.params) as response:
                 payload = await response.read()
-                _LOGGER.info(f'{update} received {self.url}')
+                _LOGGER.info(f'{update} received {self.url} params={self.params}')
+                if payload == b'':
+                    _LOGGER.info(f'{update} no results {self.url} params={self.params}')
+                    return []
                 try:
                     if self.json:
                         return json.loads(payload)
@@ -88,7 +91,7 @@ class HttpInlet(Inlet):
                 except Exception as e:
                     if isinstance(e, JSONDecodeError) and 'Expecting value: line 1 column 1 (char 0)' in str(e):
                         raise ValueError(
-                            f'Response does not contain valid JSON:\n\n{payload}') from e
+                            f'Response does not contain valid JSON:\n\n{payload}')
                     else:
                         raise e
 

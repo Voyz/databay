@@ -38,6 +38,9 @@ class TestBasePlanner(TestCase):
         self.assertTrue(link in self.planner.links,
                         'Planner should contain the link')
 
+    def test_add_links_invalid(self):
+        self.assertRaises(TypeError, self.planner.add_links, "invalid_link")
+
     @patch(fqname(Link), spec=Link)
     def test_add_links_array(self, link):
         def set_job(job):

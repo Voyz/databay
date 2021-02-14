@@ -69,6 +69,16 @@ class TestHttpInlet(inlet_tester.InletTester):
             ValueError, 'Response does not contain valid JSON', asyncio.run, self.inlet._pull(update))
 
     @patch(fqname(Update))
+    def test_empty_response(self, update):
+        set_response(b'')
+
+        with self.assertLogs(logging.getLogger('databay.HttpInlet'), level='INFO') as cm:
+            rv = asyncio.run(self.inlet._pull(update))
+            self.assertEqual(len(rv), 0, 'Should return no records')
+            self.assertTrue(
+                f'no results {_TEST_URL} params=None' in ';'.join(cm.output))
+
+    @patch(fqname(Update))
     def test_invalid_html(self, update):
         set_response(None)
         self.inlet.json = False
