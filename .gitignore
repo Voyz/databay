@@ -7,3 +7,6 @@
 /databay.egg-info/
 /examples/outputs/
 __pycache__
+/build/*
+/dist/databay-*rc*-py3-none-any.whl
+/dist/databay-*rc*.tar.gz
