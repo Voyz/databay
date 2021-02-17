@@ -57,6 +57,7 @@ class Link():
                  ignore_exceptions: bool = False,
                  catch_exceptions: bool = None,
                  inlet_concurrency : int = 9999,
+                 immediate_transfer : bool = True,
                  name=None):
         """
         :type inlets: :any:`Inlet` or list[:any:`Inlet`]
@@ -79,6 +80,9 @@ class Link():
 
         :type inlet_concurrency: int
         :param inlet_concurrency: How many inlets are allowed to execute concurrently. |default| :code:`9999`
+
+        :type immediate_transfer: bool
+        :param immediate_transfer: Whether governing planners that have :code:`BasePlanner.immediate_transfer` set to :code:`True` should execute this link's transfer once immediately upon starting. |default| :code:`True`
         """
 
         self._inlets = []
@@ -107,6 +111,7 @@ class Link():
                 '\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
 
         self.inlet_concurrency = inlet_concurrency
+        self.immediate_transfer = immediate_transfer
 
     @property
     def inlets(self) -> List[Inlet]:

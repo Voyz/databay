@@ -98,7 +98,7 @@ When implementing your planner you should consider that links may raise exceptio
 Immediate transfer on start
 ---------------------------
 
-By default BasePlanner will execute :any:`Link.transfer` function on all its links once upon calling :any:`BasePlanner.start`. This is to avoid having to wait for the link's interval to expire before the first transfer. You can disable this behaviour by passing :code:`immediate=False` parameter on construction.
+By default BasePlanner will execute :any:`Link.transfer` function on all its links once upon calling :any:`BasePlanner.start`. This is to avoid having to wait for the link's interval to expire before the first transfer. You can disable this behaviour by passing :code:`immediate_transfer=False` parameter on construction of the :any:`BasePlanner` to disable it for all governed links or individually for selected links by setting their :code:`immediate_transfer` to :code:`False`.
 
 
 Shutdown atexit
