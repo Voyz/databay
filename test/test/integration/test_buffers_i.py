@@ -1,18 +1,23 @@
+import sys
 import time
 from threading import Thread
 from unittest import TestCase, mock
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from databay import Record, Inlet, Outlet, Link
 from databay.misc.buffers import Buffer
 from databay.planners import SchedulePlanner
-from test_utils import fqname
-from unit.test_link import pull_mock
+from test_utils import fqname, pull_mock
 
+if sys.version_info[0] >= 3 and sys.version_info[1] >= 8:
+    from unittest.mock import AsyncMock, MagicMock
+    CoroutineMock = AsyncMock
+else:
+    from asynctest import CoroutineMock, MagicMock
 
 class TestBuffers(TestCase):
 
-    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Outlet), spec=Outlet, _push=CoroutineMock())
     @patch(fqname(Inlet), spec=Inlet)
     def test_buffer_count(self, inlet, outlet):
         buffer = Buffer(count_threshold=3)
@@ -30,7 +35,7 @@ class TestBuffers(TestCase):
         link.transfer()
         outlet._push.assert_called_with(records, mock.ANY) # all records should be returned here
 
-    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Outlet), spec=Outlet, _push=CoroutineMock())
     @patch(fqname(Inlet), spec=Inlet)
     def test_buffer_time(self, inlet, outlet):
         buffer = Buffer(time_threshold=0.02)
@@ -56,7 +61,7 @@ class TestBuffers(TestCase):
 
 
 
-    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Outlet), spec=Outlet, _push=CoroutineMock())
     @patch(fqname(Inlet), spec=Inlet)
     def test_flush(self, inlet, outlet):
         buffer = Buffer(count_threshold=100, time_threshold=10)
@@ -80,7 +85,7 @@ class TestBuffers(TestCase):
         outlet._push.assert_called_with(records, mock.ANY)  # all records should be flushed
 
 
-    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Outlet), spec=Outlet, _push=CoroutineMock())
     @patch(fqname(Inlet), spec=Inlet)
     def test_flush_after_shutdown(self, inlet, outlet):
         buffer = Buffer(count_threshold=100, time_threshold=10)
