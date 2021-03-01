@@ -57,6 +57,8 @@ class Link():
                  ignore_exceptions: bool = False,
                  catch_exceptions: bool = None,
                  inlet_concurrency : int = 9999,
+                 processors: Union[callable, List[callable]] = None,
+                 splitters: Union[callable, List[callable]] = None,
                  name=None):
         """
         :type inlets: :any:`Inlet` or list[:any:`Inlet`]
@@ -107,6 +109,12 @@ class Link():
                 '\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
 
         self.inlet_concurrency = inlet_concurrency
+
+        processors = [] if processors is None else processors
+        splitters = [] if splitters is None else splitters
+
+        self.processors = processors if isinstance(processors, list) else [processors]
+        self.splitters = splitters if isinstance(splitters, list) else [splitters]
 
     @property
     def inlets(self) -> List[Inlet]:
@@ -292,6 +300,13 @@ class Link():
         results_raw = await asyncio.gather(*inlet_tasks)
         records = list(itertools.chain.from_iterable(results_raw))
 
+        for processor in self.processors:
+            records = processor(records)
+
+        batches = [records]
+        for splitter in self.splitters:
+            batches = splitter(batches)
+
         async def outlet_task(outlet, records_copy):
             try:
                 await outlet._push(records_copy, update)
@@ -302,14 +317,15 @@ class Link():
                 else:
                     raise e
 
-        outlet_tasks = []
-        for outlet in self._outlets:
-            if self._copy_records:
-                task = outlet_task(outlet, copy.deepcopy(records))
-            else:
-                task = outlet_task(outlet, records)
-            outlet_tasks.append(task)
-        await asyncio.gather(*outlet_tasks)
+        for batch in batches:
+            outlet_tasks = []
+            for outlet in self._outlets:
+                if self._copy_records:
+                    task = outlet_task(outlet, copy.deepcopy(batch))
+                else:
+                    task = outlet_task(outlet, batch)
+                outlet_tasks.append(task)
+            await asyncio.gather(*outlet_tasks)
 
         _LOGGER.debug(f'{update} done')
 
