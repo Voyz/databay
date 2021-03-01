@@ -225,6 +225,14 @@ class BasePlanner(ABC):
         """
         return True
 
+    def force_transfer(self):
+        for link in self.links:
+            try:
+                link.transfer()
+            except Exception as e:
+                self._on_exception(e, link)
+
+
     def __repr__(self):
         return f"BasePlanner(links={len(self.links)}, shutdown_at_exit={self.shutdown_at_exit})"
 
