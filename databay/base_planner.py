@@ -31,7 +31,7 @@ class BasePlanner(ABC):
             |default| :code:`False`
 
         :type immediate_transfer: :class:`bool`
-        :param immediate_transfer: Whether planner should execute one transfer immediately upon starting.
+        :param immediate_transfer: Whether this planner should execute transfer once immediately upon starting for all links that have :code:`Link.immediate_transfer` set to :code:`True`.
             |default| :code:`True`
             
         :type shutdown_at_exit: bool
@@ -143,6 +143,9 @@ class BasePlanner(ABC):
 
         if self.immediate_transfer:
             for link in self.links:
+                if not link.immediate_transfer:
+                    continue
+
                 try:
                     link.transfer()
                 except Exception as e:

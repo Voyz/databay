@@ -31,6 +31,7 @@ class TestApsPlanner(TestCase):
         link.interval.total_seconds.return_value = 0.02
         link.set_job.side_effect = set_job
         link.job = None
+        link.immediate_transfer = True
         self.link = link
 
     def test__schedule(self):
