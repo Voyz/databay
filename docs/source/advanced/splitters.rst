@@ -3,9 +3,19 @@
 Splitters
 =========
 
-Splitters are a middleware that splits the records into batches. Each batch is then fed into outlets separately, allowing for outlets to process an entire batch at the same time, instead of processing each record one by one.
+.. contents::
+    :local:
+    :backlinks: entry
 
-For example:
+
+By default outlets will be given all produced records at the same time. Splitters are a middleware which allows you to break that list of records into batches. Each batch is then fed into outlets separately, allowing outlets to process an entire batch individually at the same time, instead of processing each record one by one.
+
+
+
+Simple example
+--------------
+
+Following splitter will split the records into batches based on their payload 'name' attribute.
 
 .. code-block:: python
 
@@ -14,20 +24,53 @@ For example:
         for batch in batches:
             split = {}
             for record in batch:
-                split[record.payload.name] = record
+                split[record.payload['name']] = record
 
-            result += list(split.values())
+            result.append(list(split.values()))
 
     link = Link(..., splitters=splitter_by_name)
 
-A splitter is a :any:`callable` function that accepts a list batches and returns a list of batches.
+.. rst-class:: mb-s
 
-Batches
--------
+    Which will turn the following list of records:
 
-A *batch* is a sub-list of records.
+.. rst-class:: highlight-small
+.. code-block:: python
 
-A *list of batches* is a list containing the records divided into sub-lists.
+    [
+        {'name': 'a', 'value': 1},
+        {'name': 'a', 'value': 2},
+        {'name': 'b', 'value': 3},
+        {'name': 'b', 'value': 4}
+    ]
+
+.. rst-class:: mb-s
+
+    into the following list of batches:
+
+.. rst-class:: highlight-small
+.. code-block:: python
+
+    [
+        [
+            {'name': 'a', 'value': 1},
+            {'name': 'a', 'value': 2}
+        ],
+        [
+            {'name': 'b', 'value': 3},
+            {'name': 'b', 'value': 4}
+        ]
+    ]
+
+
+Splitters explained
+-------------------
+
+A splitter is a :any:`callable` function that accepts a list of batches and returns a list of batches.
+
+A *list of batches* is a two-dimensional list containing the records divided into sub-lists.
+
+Each of these sub-lists is called a *batch*.
 
 * Consider an inlet that produces six records with the following payload:
 
@@ -46,6 +89,8 @@ The first list is a *list of records*, as all records are contained in that list
 The second list is a *list of batches*, as it contains the records split into three sub-lists.
 
 Each element of the list of batches is a *batch*, as it represents one sub-list containing the records. All records contained in all batches should equal to the list of records.
+
+Note that first splitter is always provided with one batch containing all records. This is due to the fact that splitters are order-agnostic, allowing you to swap them around expecting consistent behaviour.
 
 After splitting
 ---------------
@@ -113,3 +158,11 @@ Note that you should only use splitters' functionality to subdivide the records 
     # do both list contain same elements regardless of the order?
     print(set(records) == set(flat_batches))
     # True
+
+.. rubric:: Adhere to correct structure
+
+Databay expects to work with either one- or two-dimensional data, depending on whether splitters are used. One-dimensional being a list of records (ie. without splitting), two-dimensional being a list of batches (ie. with splitting). In either case, outlets will be provided with a list (or sub-list) of records and are expected to process these as a one-dimensional list.
+
+Introducing further sub-list breakdowns - eg. batches containing batches - is not expected and such subsequent subdivisions will not be indefinitely iterated. If you choose to introduce further subdivisions ensure the outlets you use are familiar with such data structure and are able to process it accordingly.
+
+

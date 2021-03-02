@@ -3,53 +3,63 @@
 Processors
 ==========
 
+.. contents::
+    :local:
+    :backlinks: entry
+
 Processors are a middleware pipeline that alters the records transferred from inlets to outlets. Two most common usages of these would be:
 
 * Filtering - removing some or all records before feeding them to outlets.
 * Transforming - altering the records before feeding them to outlets.
 
-For example:
+Simple example
+--------------
 
 .. code-block:: python
 
-    def processorA(records):
-        # process the records
-        ...
-        return records
-
-    def processorB(records):
-        # process the records
-        ...
-        return records
-
-    link = Link(..., processors=[processorA, processorB])
-
-A processor is a :any:`callable` function that accepts a list of records and returns a list of records. Processors are called in the order in which they are passed, after all inlets finish producing their data. The result of each processor is given to the next one, until finally the resulting records continue the transfer normally.
-
-Processor examples
-------------------
-
-Example filtering:
-
-.. code-block:: python
-
+    # Example filtering
     def only_large_numbers(records: List[Records]):
         result = []
         for record in records:
-            if record.payload > 10000:
+            if record.payload >= 100:
                 result.push(record)
         return result
 
-
-Example transforming:
-
-.. code-block:: python
-
-    def strip_https(records: List[Records]):
+    # Example transforming:
+    def round_to_integers(records: List[Records]):
         for record in records:
-            record.payload = record.payload.replace('https://', '')
+            record.payload = round(record.payload)
         return records
 
+    # pass to a link
+    link = Link(..., processors=[only_large_numbers, round_to_integers])
+
+.. rst-class:: mb-s
+
+    The processor pipeline used in the above example will turn the following list:
+
+    .. rst-class:: highlight-small
+    .. code-block:: python
+
+        [99.999, 200, 333.333]
+
+.. rst-class:: mb-s
+
+    into:
+
+    .. rst-class:: highlight-small
+    .. code-block:: python
+
+        [200, 333]
+
+Note that :code:`99.999` got filtered out given the order of processors. If we were to swap the processors, the rounding would occur before filtering, allowing all three results through the filter.
+
+Processors explained
+--------------------
+
+A processor is a :any:`callable` function that accepts a list of records and returns a (potentially altered) list of records.
+
+Processors are called in the order in which they are passed, after all inlets finish producing their data. The result of each processor is given to the next one, until finally the resulting records continue the transfer normally.
 
 .. _link-outlet-processors:
 
