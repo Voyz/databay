@@ -26,7 +26,10 @@ class Outlet(ABC):
     """
 
     def __init__(self, processors: Union[callable, List[callable]] = None):
-        ""
+        """
+        :type processors: :any:`callable` or list[:any:`callable`]
+        :param processors: :any:`Processors <processors>` of this outlet. |default| :code:`None`
+        """
         self._active = False
 
         self._uses_coroutine = asyncio.iscoroutinefunction(self.push)

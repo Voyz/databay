@@ -85,6 +85,12 @@ class Link():
 
         :type immediate_transfer: bool
         :param immediate_transfer: Whether governing planners that have :code:`BasePlanner.immediate_transfer` set to :code:`True` should execute this link's transfer once immediately upon starting. |default| :code:`True`
+
+        :type processors: :any:`callable` or list[:any:`callable`]
+        :param processors: :any:`Processors <processors>` of this link. |default| :code:`None`
+
+        :type splitters: :any:`callable` or list[:any:`callable`]
+        :param splitters: :any:`Splitters <splitters>` of this link. |default| :code:`None`
         """
 
         self._inlets = []

@@ -127,7 +127,7 @@ class BasePlanner(ABC):
 
         This will also loop over all links and call the on_start callback before starting the planner.
 
-        If :any:`BasePlanner.immediate_transfer` is set to True, this function will additionally call :any:`Link.transfer` once for each link managed by this planner before starting.
+        If :code:`BasePlanner.immediate_transfer` is set to True, this function will additionally call :any:`Link.transfer` once for each link managed by this planner before starting.
 
         See :ref:`Start and Shutdown <start_shutdown>` to learn more about starting and shutdown.
         """
