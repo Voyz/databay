@@ -312,11 +312,25 @@ class Link():
         records = list(itertools.chain.from_iterable(results_raw))
 
         for processor in self.processors:
-            records = processor(records)
+            try:
+                records = processor(records)
+            except Exception as e:
+                if self._ignore_exceptions:
+                    _LOGGER.exception(
+                        f'Processor exception: "{e}" for processor: {processor}, in: {self}, during: {update}')
+                else:
+                    raise e
 
         batches = [records]
         for splitter in self.splitters:
-            batches = splitter(batches)
+            try:
+                batches = splitter(batches)
+            except Exception as e:
+                if self._ignore_exceptions:
+                    _LOGGER.exception(
+                        f'Splitter exception: "{e}" for splitter: {splitter}, in: {self}, during: {update}')
+                else:
+                    raise e
 
         async def outlet_task(outlet, records_copy):
             try:
@@ -407,4 +421,4 @@ class Link():
         :returns: Link(tags:%s, inlets:%s, outlets:%s, interval:%s)
         """
 
-        return 'Link(tags:%s, inlets:%s, outlets:%s, interval:%s)' % (self.tags, self.inlets, self.outlets, self.interval)
+        return 'Link(tags:%s, interval:%s, inlets:%s, outlets:%s)' % (self.tags, self.interval, self.inlets, self.outlets)

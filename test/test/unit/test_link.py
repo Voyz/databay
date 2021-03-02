@@ -600,3 +600,62 @@ class TestLink(TestCase):
                   call([records[3]], mock.ANY)]
         outlet._push.assert_has_calls(callsB) # expects [[1], [2], [3], [4]]
 
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_processor_exception(self, inlet, outlet):
+        records = [2, 3]
+        inlet._pull = pull_mock(records)
+        processor = MagicMock(side_effect = DummyException('Processor exception'))
+        link = Link(inlet, outlet, interval=0.01, processors=processor)
+        self.assertRaises(DummyException, link.transfer)
+        processor.assert_called_with(records)
+        outlet._push.assert_not_called()
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_processor_exception_ignored(self, inlet, outlet):
+        records = [2, 3]
+        inlet._pull = pull_mock(records)
+        processorA = MagicMock(side_effect = DummyException('Processor exception'))
+        processorB = MagicMock(side_effect = lambda r: list(map(lambda y: y*y, r)))
+        link = Link(inlet, outlet, interval=0.01, processors=[processorA, processorB], ignore_exceptions=True)
+
+        with self.assertLogs(logging.getLogger('databay.Link'), level='ERROR') as cm:
+            link.transfer()
+            self.assertTrue('Processor exception:' in ';'.join(
+                cm.output), cm.output)
+
+        processorA.assert_called_with(records)
+        processorB.assert_called_with(records)
+        outlet._push.assert_called_with([4,9], mock.ANY)
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_splitter_exception(self, inlet, outlet):
+        records = [2, 3]
+        inlet._pull = pull_mock(records)
+        splitter = MagicMock(side_effect = DummyException('Splitter exception'))
+        link = Link(inlet, outlet, interval=0.01, splitters=splitter)
+        self.assertRaises(DummyException, link.transfer)
+        splitter.assert_called_with([records])
+        outlet._push.assert_not_called()
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_splitter_exception_ignored(self, inlet, outlet):
+        records = [1, 2, 3, 4]
+        inlet._pull = pull_mock(records)
+        splitterA = MagicMock(side_effect = DummyException('Splitter exception'))
+        splitterB = MagicMock(side_effect=lambda r: [r[0][:2], r[0][2:]])
+        link = Link(inlet, outlet, interval=0.01, splitters=[splitterA, splitterB], ignore_exceptions=True)
+
+        with self.assertLogs(logging.getLogger('databay.Link'), level='ERROR') as cm:
+            link.transfer()
+            self.assertTrue('Splitter exception:' in ';'.join(
+                cm.output), cm.output)
+
+        splitterA.assert_called_with([records])
+        splitterB.assert_called_with([records])
+        calls = [call(records[:2], mock.ANY), call(records[2:], mock.ANY)]
+        outlet._push.assert_has_calls(calls)  # expects [[1,2], [3,4]]
+
