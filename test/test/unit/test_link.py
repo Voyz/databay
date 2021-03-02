@@ -550,7 +550,7 @@ class TestLink(TestCase):
 
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Inlet), spec=Inlet)
-    def test_filters_one_passive(self, inlet, outlet):
+    def test_splitters_one_passive(self, inlet, outlet):
         records = [1, 2, 3, 4]
         inlet._pull = pull_mock(records)
         splitter = MagicMock(side_effect=lambda r: r) # does nothing on purpose
@@ -561,7 +561,7 @@ class TestLink(TestCase):
 
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Inlet), spec=Inlet)
-    def test_filters_one_active(self, inlet, outlet):
+    def test_splitters_one_active(self, inlet, outlet):
         records = [1, 2, 3, 4]
         inlet._pull = pull_mock(records)
 
@@ -576,7 +576,7 @@ class TestLink(TestCase):
 
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Inlet), spec=Inlet)
-    def test_filters_many_active(self, inlet, outlet):
+    def test_splitters_many_active(self, inlet, outlet):
         records = [1, 2, 3, 4]
         inlet._pull = pull_mock(records)
 

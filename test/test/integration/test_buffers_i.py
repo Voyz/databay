@@ -96,7 +96,6 @@ class TestBuffers(TestCase):
         planner = SchedulePlanner(link, refresh_interval=0.01)
 
         async def pull_coro(_):
-            # counter += 1
             counter_dict['counter'] += 1
             record = Record(payload=counter_dict['counter'])
             counter_dict['records'].append(record)
