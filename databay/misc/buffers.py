@@ -4,7 +4,7 @@ from typing import List, Union
 from databay import Record
 
 
-class Buffer(callable):
+class Buffer():
     def __init__(self,
                  count_threshold : int = None,
                  time_threshold: float = None,
