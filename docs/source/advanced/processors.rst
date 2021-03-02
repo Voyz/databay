@@ -50,14 +50,10 @@ Example transforming:
             record.payload = record.payload.replace('https://', '')
         return records
 
-Responsibility
---------------
 
-Databay doesn't make any further assumptions about processors - you can implement any type of processors that may suit your needs. This also means Databay will not ensure the records aren't corrupted by the processors, therefore you need to be conscious of what each processor do to the data.
+.. _link-outlet-processors:
 
-If you wish to verify the integrity of your records after processing, attach an additional processor at the end of your processor pipeline that will validate the correctness of your processed records before sending it off to the outlets.
-
-Link vs Outlet Processors
+Link vs Outlet processors
 --------------------------
 
 Databay supports two types of processors, depending on the scope at which they operate. This distinction can be used to determine at which level a particular processor is to be applied.
@@ -102,3 +98,13 @@ For example:
     link = Link(inlets, csv_outlet, ...)
 
 Link processors are used before :any:`Splitters <splitters>`, while Outlet processors are used after.
+
+
+Best practices
+--------------
+
+.. rubric:: Responsibility
+
+Databay doesn't make any further assumptions about processors - you can implement any type of processors that may suit your needs. This also means Databay will not ensure the records aren't corrupted by the processors, therefore you need to be conscious of what each processor do to the data.
+
+If you wish to verify the integrity of your records after processing, attach an additional processor at the end of your processor pipeline that will validate the correctness of your processed records before sending it off to the outlets.

@@ -47,7 +47,7 @@ The second list is a *list of batches*, as it contains the records split into th
 
 Each element of the list of batches is a *batch*, as it represents one sub-list containing the records. All records contained in all batches should equal to the list of records.
 
-After Splitting
+After splitting
 ---------------
 
 Once records are split into batches, each batch is fed into the outlets as if it was an individual list of records. Depending on the particular implementation, outlets may expect that and process the entire batch at the same time. If a particular outlet doesn't support batch processing, the result of splitting will effectively be nullified except for the order in which the records will be consumed.
@@ -88,10 +88,14 @@ In this case :code:`outlet.push` is called three times, each time receiving a di
 
 Observe that when no splitters are provided, there is only one batch containing all records. This will provide all outlets with all records at the same time, effectively nullifying the batches' functionality described in this section.
 
-Responsibility
+Best practices
 --------------
 
-Databay doesn't make any further assumptions about splitters - you can implement any type of splitters that may suit your needs. This also means Databay will not ensure the records aren't corrupted by the splitters, therefore you need to be conscious of what each splitter do to the data.
+.. rubric:: Responsibility
+
+Databay doesn't make any assumptions about splitters - you can implement any type of splitters that may suit your needs. This also means Databay will not ensure the records aren't corrupted by the splitters. Therefore you need to be conscious of what each splitter do to the data.
+
+.. rubric:: Only split
 
 Note that you should only use splitters' functionality to subdivide the records into batches. Do not transform or filter the records using splitters - you can use :any:`Processors <processors>` for that instead. If a list of batches was to be flattened it should return the list of records as originally produced by the inlets, except for the order of records.
 
