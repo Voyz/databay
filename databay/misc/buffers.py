@@ -8,10 +8,13 @@ class Buffer():
     def __init__(self,
                  count_threshold : int = None,
                  time_threshold: float = None,
-                 custom_controllers: Union[callable, List[callable]] = None):
+                 custom_controllers: Union[callable, List[callable]] = None,
+                 controller_conjunction: bool = False
+                 ):
         self.count_threshold = count_threshold
         self.time_threshold = time_threshold
         self.custom_controllers = custom_controllers
+        self.controller_conjunction = controller_conjunction
 
         if self.custom_controllers is None:
             self.custom_controllers = []
@@ -43,11 +46,11 @@ class Buffer():
 
     def get_controllers(self):
         controllers = []
+        controllers = controllers + self.custom_controllers
         if self.count_threshold is not None:
             controllers.append(self.count_controller)
         if self.time_threshold is not None:
             controllers.append(self.time_controller)
-        controllers = controllers + self.custom_controllers
         return controllers
 
 
@@ -57,9 +60,19 @@ class Buffer():
         if self.flush:
             rv =  self.records
         else:
-            for controller in self.get_controllers():
-                if controller(self.records):
+            if self.controller_conjunction:
+                controllers_passing = True
+                for controller in self.get_controllers():
+                    controllers_passing &= controller(self.records)
+                    if not controllers_passing:
+                        break # one controller returned False, skip the rest
+                if controllers_passing:
                     rv = self.records
+            else:
+                for controller in self.get_controllers():
+                    if controller(self.records):
+                        rv = self.records
+                        break # one controller returned True, skip the rest
 
         if rv != []:
             self.reset()

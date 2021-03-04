@@ -53,7 +53,7 @@ class TestBuffers(TestCase):
         self.assertEqual(buffer.records, [], 'Buffer.records should be reset to []')
         self.assertIsNone(buffer.time_start, 'Buffer.time_start should be reset to None')
 
-    def test_execute(self):
+    def test_execute_disjoint(self):
         custom_controller = MagicMock(side_effect= lambda x: False)
         buffer = Buffer(count_threshold=1, time_threshold=1, custom_controllers=custom_controller)
         buffer.count_controller = MagicMock(side_effect= lambda x: False)
@@ -64,6 +64,31 @@ class TestBuffers(TestCase):
         buffer.count_controller.assert_called_with(records)
         buffer.time_controller.assert_called_with(records)
         custom_controller.assert_called_with(records)
+
+    def test_execute_conjoint_false(self):
+        custom_controller = MagicMock(side_effect= lambda x: True)
+        buffer = Buffer(count_threshold=1, time_threshold=1, custom_controllers=custom_controller, controller_conjunction=True)
+        buffer.count_controller = MagicMock(side_effect= lambda x: True)
+        buffer.time_controller = MagicMock(side_effect= lambda x: False)
+        payload = [1,2,3]
+        records = [Record(payload=p) for p in payload]
+        buffer.execute(records)
+        buffer.count_controller.assert_called_with(records)
+        buffer.time_controller.assert_called_with(records)
+        custom_controller.assert_not_called()
+
+    def test_execute_conjoint_true(self):
+        custom_controller = MagicMock(side_effect= lambda x: True)
+        buffer = Buffer(count_threshold=1, time_threshold=1, custom_controllers=custom_controller, controller_conjunction=True)
+        buffer.count_controller = MagicMock(side_effect= lambda x: True)
+        buffer.time_controller = MagicMock(side_effect= lambda x: True)
+        payload = [1,2,3]
+        records = [Record(payload=p) for p in payload]
+        result = buffer.execute(records)
+        buffer.count_controller.assert_called_with(records)
+        buffer.time_controller.assert_called_with(records)
+        custom_controller.assert_called_with(records)
+        self.assertEqual(result, records)
 
 
 
