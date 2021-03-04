@@ -1,6 +1,6 @@
 import time
 from unittest import TestCase
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, call
 
 from databay import Record
 from databay.misc.buffers import Buffer
@@ -12,8 +12,8 @@ class TestBuffers(TestCase):
         buffer = Buffer(count_threshold=10)
         payload = [1,2,3,4,5,6,7,8,9,10,11]
         records = [Record(payload=p) for p in payload]
-        result_false = buffer.count_controller(records[:6])
-        result_true = buffer.count_controller(records)
+        result_false = buffer._count_controller(records[:6])
+        result_true = buffer._count_controller(records)
         self.assertFalse(result_false, 'Count controller should return False with 6 records')
         self.assertTrue(result_true, 'Count controller should return True with 11 records')
 
@@ -21,9 +21,9 @@ class TestBuffers(TestCase):
         buffer = Buffer(time_threshold=0.01)
         payload = [1,2,3]
         records = [Record(payload=p) for p in payload]
-        result_false = buffer.time_controller(records)
+        result_false = buffer._time_controller(records)
         time.sleep(0.01)
-        result_true = buffer.time_controller(records)
+        result_true = buffer._time_controller(records)
         self.assertFalse(result_false, 'Time controller should return False after less than 0.01 seconds')
         self.assertTrue(result_true, 'Time controller should return True after sleeping for 0.01 seconds')
 
@@ -34,16 +34,16 @@ class TestBuffers(TestCase):
         self.assertEqual(buffer.get_controllers(), [], 'Should not have any controllers')
 
         buffer = Buffer(time_threshold=1)
-        self.assertEqual(buffer.get_controllers(), [buffer.time_controller], 'Should have only time controller')
+        self.assertEqual(buffer.get_controllers(), [buffer._time_controller], 'Should have only time controller')
 
         buffer = Buffer(count_threshold=1)
-        self.assertEqual(buffer.get_controllers(), [buffer.count_controller], 'Should have only count controller')
+        self.assertEqual(buffer.get_controllers(), [buffer._count_controller], 'Should have only count controller')
 
         buffer = Buffer(custom_controllers = [custom_controller])
         self.assertEqual(buffer.get_controllers(), [custom_controller], 'Should have only custom controller')
 
         buffer = Buffer(time_threshold=1, count_threshold=1, custom_controllers = [custom_controller])
-        self.assertEqual(buffer.get_controllers(), [buffer.count_controller, buffer.time_controller, custom_controller], 'Should have all controllers')
+        self.assertEqual(buffer.get_controllers(), [custom_controller, buffer._count_controller, buffer._time_controller], 'Should have all controllers')
 
     def test_reset(self):
         buffer = Buffer()
@@ -56,37 +56,37 @@ class TestBuffers(TestCase):
     def test_execute_disjoint(self):
         custom_controller = MagicMock(side_effect= lambda x: False)
         buffer = Buffer(count_threshold=1, time_threshold=1, custom_controllers=custom_controller)
-        buffer.count_controller = MagicMock(side_effect= lambda x: False)
-        buffer.time_controller = MagicMock(side_effect= lambda x: False)
+        buffer._count_controller = MagicMock(side_effect= lambda x: False)
+        buffer._time_controller = MagicMock(side_effect= lambda x: False)
         payload = [1,2,3]
         records = [Record(payload=p) for p in payload]
-        buffer.execute(records)
-        buffer.count_controller.assert_called_with(records)
-        buffer.time_controller.assert_called_with(records)
+        buffer._execute(records)
+        buffer._count_controller.assert_called_with(records)
+        buffer._time_controller.assert_called_with(records)
         custom_controller.assert_called_with(records)
 
     def test_execute_conjoint_false(self):
         custom_controller = MagicMock(side_effect= lambda x: True)
         buffer = Buffer(count_threshold=1, time_threshold=1, custom_controllers=custom_controller, controller_conjunction=True)
-        buffer.count_controller = MagicMock(side_effect= lambda x: True)
-        buffer.time_controller = MagicMock(side_effect= lambda x: False)
+        buffer._count_controller = MagicMock(side_effect= lambda x: False)
+        buffer._time_controller = MagicMock(side_effect= lambda x: True)
         payload = [1,2,3]
         records = [Record(payload=p) for p in payload]
-        buffer.execute(records)
-        buffer.count_controller.assert_called_with(records)
-        buffer.time_controller.assert_called_with(records)
-        custom_controller.assert_not_called()
+        buffer._execute(records)
+        custom_controller.assert_called_with(records)
+        buffer._count_controller.assert_called_with(records)
+        buffer._time_controller.assert_not_called()
 
     def test_execute_conjoint_true(self):
         custom_controller = MagicMock(side_effect= lambda x: True)
         buffer = Buffer(count_threshold=1, time_threshold=1, custom_controllers=custom_controller, controller_conjunction=True)
-        buffer.count_controller = MagicMock(side_effect= lambda x: True)
-        buffer.time_controller = MagicMock(side_effect= lambda x: True)
+        buffer._count_controller = MagicMock(side_effect= lambda x: True)
+        buffer._time_controller = MagicMock(side_effect= lambda x: True)
         payload = [1,2,3]
         records = [Record(payload=p) for p in payload]
-        result = buffer.execute(records)
-        buffer.count_controller.assert_called_with(records)
-        buffer.time_controller.assert_called_with(records)
+        result = buffer._execute(records)
+        buffer._count_controller.assert_called_with(records)
+        buffer._time_controller.assert_called_with(records)
         custom_controller.assert_called_with(records)
         self.assertEqual(result, records)
 
@@ -163,4 +163,19 @@ class TestBuffers(TestCase):
         rvB = buffer(records[6:])
         self.assertEqual(rvA, [], 'Should not contain any records yet')
         self.assertEqual(rvB, records, 'Should contain all records')
+
+
+    def test_on_reset(self):
+        custom_controller = MagicMock()
+        on_reset = MagicMock()
+        buffer = Buffer(custom_controllers=custom_controller, on_reset=on_reset)
+        payload = [1,2]
+        records = [Record(payload=p) for p in payload]
+        buffer(records)
+        custom_controller.assert_called_with(records)
+        self.assertEqual(on_reset.call_count, 1)
+        buffer.reset()
+        self.assertEqual(on_reset.call_count, 2)
+
+
 

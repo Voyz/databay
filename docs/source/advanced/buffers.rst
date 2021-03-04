@@ -78,6 +78,8 @@ Buffer reset
 
 Every time the records are released, the buffer will reset the counters of its default controllers and empty the list of records stored.
 
+You can pass a :any:`callable` as an optional :any:`on_reset <Buffer>` parameter, which will be invoked every time :any:`Buffer.reset` is called.
+
 Combining controllers
 ---------------------
 
