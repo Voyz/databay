@@ -81,18 +81,39 @@ Every time the records are released, the buffer will reset the counters of its d
 Combining controllers
 ---------------------
 
-You can use any combination of default and custom controllers. The buffer will release the records if any controller returns :code:`True` (ie. boolean :code:`OR`).
+You can use any combination of default and custom controllers. :any:`Buffer` allows you to use two types of boolean logic when evaluating whether records should be released:
 
-.. code-block:: python
+ * conjunction (AND) - releasing records only when **all** controllers return True.
+ * disjunction (OR) - releasing records as soon as **any** controller returns True (default).
 
-    buffer = Buffer(count_threshold=10, time_threshold=60)
+For example:
 
-This buffer will release records once 10 records were produced or 60 seconds have elapsed - whichever comes first.
+    .. rst-class:: highlight-small, mb-s
+    .. code-block:: python
 
-Once any controller returns :code:`True`, the :any:`buffer will reset<buffer-reset>`.
+        buffer = Buffer(count_threshold=10, time_threshold=60, controller_conjunction=False) # OR
+
+    This buffer will release records once 10 records were produced or 60 seconds have elapsed - whichever comes first.
+
+    .. rst-class:: highlight-small, mb-s
+    .. code-block:: python
+
+        buffer = Buffer(count_threshold=10, time_threshold=60, controller_conjunction=True) # AND
+
+    This buffer will release records once 10 records were produced and 60 seconds have elapsed.
+
+The order of execution of controllers is as follows:
+
+#. Custom controllers, in order they are passed to the :any:`Buffer`.
+#. Count controller.
+#. Time controller.
+
+:any:`Buffer` uses short-circuit logic to stop evaluation of controllers as soon as the decision to release or store is known, therefore not all controllers may be called each time the :any:`Buffer` is executed.
+
+Once the records are released, the :any:`buffer will reset<buffer-reset>`.
 
 Flush
--------------
+-----
 
 :any:`Buffer` contains a boolean field called :code:`flush`, which if set to :code:`True` will enforce release of records, independently of what the controllers may decide. Such flushing will only take place next time the buffer is called during the upcoming transfer. Flushing will also :any:`reset the buffer<buffer-reset>`.
 
@@ -113,7 +134,7 @@ Note that in several scenarios a buffer may never release its records, therefore
 * Planner is stopped before records are released.
 * Thresholds are set to unreachable numbers
 
-Databay does not automatically handle such occasions, however you may expect these and ensure that records are released manually by combining the buffer's :any:`flush` functionality with planners' :any:`force_transfer` method.
+Databay does not automatically handle such occasions, however you may preempt these and ensure that records are released manually by combining the buffer's :any:`flush` functionality with planners' :any:`force_transfer` method.
 
 .. code-block:: python
 

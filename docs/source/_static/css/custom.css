@@ -218,6 +218,10 @@ html.writer-html5 .rst-content dl.py p + dl.field-list.simple{
     padding-bottom: 4px;
 }
 
+.rst-content .highlight-small.mb-s {
+    margin-bottom:4px;
+}
+
 .rst-content .text-block p + p{
     margin-top: -24px;
 }
