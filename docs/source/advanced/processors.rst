@@ -71,6 +71,8 @@ Databay supports two types of processors, depending on the scope at which they o
 * :any:`Link processor <Link>` - passed to links and applied to all records transferred by that link.
 * :any:`Outlet processor <Outlet>` - passed to outlets and applied only to records passed to the particular outlet.
 
+.. image:: /_static/images/databay_processors.png
+
 For example:
 
 * :any:`Link processor <Link>` - A filtering processor that removes duplicate records produced by an inlet could be applied to all records at link level.
