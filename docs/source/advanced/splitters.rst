@@ -66,31 +66,48 @@ Following splitter will split the records into batches based on their payload 'n
 Splitters explained
 -------------------
 
-A splitter is a :any:`callable` function that accepts a list of batches and returns a list of batches.
+.. rst-class:: mb-s
 
-A *list of batches* is a two-dimensional list containing the records divided into sub-lists.
+    A **splitter** is a :any:`callable` function that accepts a list of batches and returns a list of batches with a different shape.
 
-Each of these sub-lists is called a *batch*.
+    A **list of batches** is a two-dimensional list containing :any:`Records <Record>` divided into sub-lists.
 
-* Consider an inlet that produces six records with the following payload:
+Each of these sub-lists is called a **batch**.
 
-    :code:`[0,1,2,3,4,5]`
 
-* When split by a pairing splitter, that list may be turned into the following:
+Fox example:
 
-    :code:`[[0,1], [2,3], [3,4]]`
+.. container:: tutorial-block
 
-* The first batch in this list is the following:
+    #. Consider an inlet that produces six records with a simple payload. This first list is a **list of records**, as all records are contained within it.
 
-    :code:`[0,1]`
+        .. rst-class:: highlight-small
+        .. code-block:: python
 
-The first list is a *list of records*, as all records are contained in that list.
+            [0,1,2,3,4,5]
 
-The second list is a *list of batches*, as it contains the records split into three sub-lists.
+    #. When split by a pairing splitter, that list may be turned into the following two-dimensional list. This second list is a **list of batches**, as it contains the records split into three sub-lists.
 
-Each element of the list of batches is a *batch*, as it represents one sub-list containing the records. All records contained in all batches should equal to the list of records.
+        .. rst-class:: highlight-small
+        .. code-block:: python
 
-Note that first splitter is always provided with one batch containing all records. This is due to the fact that splitters are order-agnostic, allowing you to swap them around expecting consistent behaviour.
+            [[0,1], [2,3], [3,4]]
+
+
+
+
+    #. Each element of the list of batches is a **batch**, as it represents one sub-list containing the records.
+
+
+        .. rst-class:: highlight-small
+        .. code-block:: python
+
+            [0,1]
+
+Note that:
+
+ * All records contained in all batches should equal to the list of records.
+ * First splitter is always provided with one batch containing all records. This is due to the fact that splitters are order-agnostic, allowing you to swap them around expecting consistent behaviour.
 
 After splitting
 ---------------
