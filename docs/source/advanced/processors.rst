@@ -66,12 +66,16 @@ Processors are called in the order in which they are passed, after all inlets fi
 Link vs Outlet processors
 --------------------------
 
-Databay supports two types of processors, depending on the scope at which they operate. This distinction can be used to determine at which level a particular processor is to be applied.
+Databay supports two types of processors, depending on the scope at which they operate.
 
-* :any:`Link processor <Link>` - passed to links and applied to all records transferred by that link.
-* :any:`Outlet processor <Outlet>` - passed to outlets and applied only to records passed to the particular outlet.
+* :any:`Link processor <Link>` - applied to all records transferred by that link.
+* :any:`Outlet processor <Outlet>` - applied only to records consumed by the particular outlet.
+
+This distinction can be used to determine at which level a particular processor is to be applied.
 
 .. image:: /_static/images/databay_processors.png
+
+Observe in the diagram above that the *Outlet A* will receive records modified only by the Link Processor. At the same time, the *Outlet B* will receive records modified first by the Link Processor, then by the Outlet Processor.
 
 For example:
 
