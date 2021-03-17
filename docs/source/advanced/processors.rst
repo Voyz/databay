@@ -113,7 +113,7 @@ For example:
     csv_outlet = CsvOutlet(..., processors=filter_existing)
     link = Link(inlets, csv_outlet, ...)
 
-Link processors are used before :any:`Splitters <splitters>`, while Outlet processors are used after.
+Link processors are used before :any:`Batchers <batchers>`, while Outlet processors are used after.
 
 
 Best practices

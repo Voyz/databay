@@ -8,7 +8,7 @@ Explore advanced concepts of Databay. These sections assume you're already famil
     :maxdepth: 5
 
     advanced/processors
-    advanced/splitters
+    advanced/batchers
     advanced/buffers
 
 ..

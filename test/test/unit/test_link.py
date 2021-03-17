@@ -550,49 +550,49 @@ class TestLink(TestCase):
 
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Inlet), spec=Inlet)
-    def test_splitters_one_passive(self, inlet, outlet):
+    def test_batchers_one_passive(self, inlet, outlet):
         records = [1, 2, 3, 4]
         inlet._pull = pull_mock(records)
-        splitter = MagicMock(side_effect=lambda r: r) # does nothing on purpose
-        link = Link(inlet, outlet, interval=0.01, splitters=splitter)
+        batcher = MagicMock(side_effect=lambda r: r) # does nothing on purpose
+        link = Link(inlet, outlet, interval=0.01, batchers=batcher)
         link.transfer()
-        splitter.assert_called_with([records])
+        batcher.assert_called_with([records])
         outlet._push.assert_called_with(records, mock.ANY)
 
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Inlet), spec=Inlet)
-    def test_splitters_one_active(self, inlet, outlet):
+    def test_batchers_one_active(self, inlet, outlet):
         records = [1, 2, 3, 4]
         inlet._pull = pull_mock(records)
 
         # makes [[1,2], [3,4]]
-        splitter = MagicMock(side_effect=lambda r: [r[0][:2], r[0][2:]])
+        batcher = MagicMock(side_effect=lambda r: [r[0][:2], r[0][2:]])
 
-        link = Link(inlet, outlet, interval=0.01, splitters=splitter)
+        link = Link(inlet, outlet, interval=0.01, batchers=batcher)
         link.transfer()
-        splitter.assert_called_with([records])
+        batcher.assert_called_with([records])
         calls = [call(records[:2], mock.ANY), call(records[2:], mock.ANY)]
         outlet._push.assert_has_calls(calls) # expects [[1,2], [3,4]]
 
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Inlet), spec=Inlet)
-    def test_splitters_many_active(self, inlet, outlet):
+    def test_batchers_many_active(self, inlet, outlet):
         records = [1, 2, 3, 4]
         inlet._pull = pull_mock(records)
 
         # makes [[1,2], [3,4]]
-        splitterA = MagicMock(side_effect=lambda r: [r[0][:2], r[0][2:]])
+        batcherA = MagicMock(side_effect=lambda r: [r[0][:2], r[0][2:]])
 
         # makes [[1], [2], [3], [4]]
-        splitterB = MagicMock(side_effect=lambda r: [[sub] for sub in r[0]] + [[sub] for sub in r[1]])
+        batcherB = MagicMock(side_effect=lambda r: [[sub] for sub in r[0]] + [[sub] for sub in r[1]])
 
-        link = Link(inlet, outlet, interval=0.01, splitters=[splitterA, splitterB])
+        link = Link(inlet, outlet, interval=0.01, batchers=[batcherA, batcherB])
         link.transfer()
 
-        splitterA.assert_called_with([records])
+        batcherA.assert_called_with([records])
 
         callsA = [call([records[:2], records[2:]])] # expects [[1,2], [3,4]]
-        splitterB.assert_has_calls(callsA)
+        batcherB.assert_has_calls(callsA)
 
         callsB = [call([records[0]], mock.ANY),
                   call([records[1]], mock.ANY),
@@ -631,31 +631,31 @@ class TestLink(TestCase):
 
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Inlet), spec=Inlet)
-    def test_splitter_exception(self, inlet, outlet):
+    def test_batcher_exception(self, inlet, outlet):
         records = [2, 3]
         inlet._pull = pull_mock(records)
-        splitter = MagicMock(side_effect = DummyException('Splitter exception'))
-        link = Link(inlet, outlet, interval=0.01, splitters=splitter)
+        batcher = MagicMock(side_effect = DummyException('Batcher exception'))
+        link = Link(inlet, outlet, interval=0.01, batchers=batcher)
         self.assertRaises(DummyException, link.transfer)
-        splitter.assert_called_with([records])
+        batcher.assert_called_with([records])
         outlet._push.assert_not_called()
 
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Inlet), spec=Inlet)
-    def test_splitter_exception_ignored(self, inlet, outlet):
+    def test_batcher_exception_ignored(self, inlet, outlet):
         records = [1, 2, 3, 4]
         inlet._pull = pull_mock(records)
-        splitterA = MagicMock(side_effect = DummyException('Splitter exception'))
-        splitterB = MagicMock(side_effect=lambda r: [r[0][:2], r[0][2:]])
-        link = Link(inlet, outlet, interval=0.01, splitters=[splitterA, splitterB], ignore_exceptions=True)
+        batcherA = MagicMock(side_effect = DummyException('Batcher exception'))
+        batcherB = MagicMock(side_effect=lambda r: [r[0][:2], r[0][2:]])
+        link = Link(inlet, outlet, interval=0.01, batchers=[batcherA, batcherB], ignore_exceptions=True)
 
         with self.assertLogs(logging.getLogger('databay.Link'), level='ERROR') as cm:
             link.transfer()
-            self.assertTrue('Splitter exception:' in ';'.join(
+            self.assertTrue('Batcher exception:' in ';'.join(
                 cm.output), cm.output)
 
-        splitterA.assert_called_with([records])
-        splitterB.assert_called_with([records])
+        batcherA.assert_called_with([records])
+        batcherB.assert_called_with([records])
         calls = [call(records[:2], mock.ANY), call(records[2:], mock.ANY)]
         outlet._push.assert_has_calls(calls)  # expects [[1,2], [3,4]]
 
