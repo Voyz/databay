@@ -59,7 +59,7 @@ class Link():
                  inlet_concurrency : int = 9999,
                  immediate_transfer : bool = True,
                  processors: Union[callable, List[callable]] = None,
-                 batchers: Union[callable, List[callable]] = None,
+                 groupers: Union[callable, List[callable]] = None,
                  name=None):
         """
         :type inlets: :any:`Inlet` or list[:any:`Inlet`]
@@ -89,8 +89,8 @@ class Link():
         :type processors: :any:`callable` or list[:any:`callable`]
         :param processors: :any:`Processors <processors>` of this link. |default| :code:`None`
 
-        :type batchers: :any:`callable` or list[:any:`callable`]
-        :param batchers: :any:`batchers <batchers>` of this link. |default| :code:`None`
+        :type groupers: :any:`callable` or list[:any:`callable`]
+        :param groupers: :any:`groupers <groupers>` of this link. |default| :code:`None`
         """
 
         self._inlets = []
@@ -122,10 +122,10 @@ class Link():
         self.immediate_transfer = immediate_transfer
 
         processors = [] if processors is None else processors
-        batchers = [] if batchers is None else batchers
+        groupers = [] if groupers is None else groupers
 
         self.processors = processors if isinstance(processors, list) else [processors]
-        self.batchers = batchers if isinstance(batchers, list) else [batchers]
+        self.groupers = groupers if isinstance(groupers, list) else [groupers]
 
     @property
     def inlets(self) -> List[Inlet]:
@@ -322,13 +322,13 @@ class Link():
                     raise e
 
         batches = [records]
-        for batcher in self.batchers:
+        for grouper in self.groupers:
             try:
-                batches = batcher(batches)
+                batches = grouper(batches)
             except Exception as e:
                 if self._ignore_exceptions:
                     _LOGGER.exception(
-                        f'Batcher exception: "{e}" for batcher: {batcher}, in: {self}, during: {update}')
+                        f'Grouper exception: "{e}" for grouper: {grouper}, in: {self}, during: {update}')
                 else:
                     raise e
 

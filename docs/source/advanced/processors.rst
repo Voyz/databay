@@ -113,7 +113,7 @@ For example:
     csv_outlet = CsvOutlet(..., processors=filter_existing)
     link = Link(inlets, csv_outlet, ...)
 
-Link processors are used before :any:`Batchers <batchers>`, while Outlet processors are used after.
+Link processors are used before :any:`Groupers <groupers>`, while Outlet processors are used after.
 
 
 Best practices
@@ -121,6 +121,6 @@ Best practices
 
 .. rubric:: Responsibility
 
-Databay doesn't make any further assumptions about processors - you can implement any type of processors that may suit your needs. This also means Databay will not ensure the records aren't corrupted by the processors, therefore you need to be conscious of what each processor do to the data.
+Databay doesn't make any further assumptions about processors - you can implement any type of processors that may suit your needs. This also means Databay will not ensure the records aren't corrupted by the processors, therefore you need to be conscious of what each processor does to the data.
 
 If you wish to verify the integrity of your records after processing, attach an additional processor at the end of your processor pipeline that will validate the correctness of your processed records before sending it off to the outlets.
