@@ -1,8 +1,10 @@
+import logging
 import time
 from typing import List, Union
 
 from databay import Record
 
+_LOGGER = logging.getLogger('databay.Buffer')
 
 class Buffer():
     """
@@ -104,14 +106,25 @@ class Buffer():
             if self.controller_conjunction:
                 controllers_passing = True
                 for controller in self.get_controllers():
-                    controllers_passing &= controller(self.records)
+                    try:
+                        controllers_passing &= controller(self.records)
+                    except Exception as e:
+                        _LOGGER.exception(f'Exception while running controller {controller} with records {records}. Content: {str(e)}')
+                        continue
+
                     if not controllers_passing:
                         break # one controller returned False, skip the rest
                 if controllers_passing:
                     rv = self.records
             else:
                 for controller in self.get_controllers():
-                    if controller(self.records):
+                    try:
+                        decision = controller(self.records)
+                    except Exception as e:
+                        _LOGGER.exception(f'Exception while running controller {controller} with records {records}. Content: {str(e)}')
+                        continue
+
+                    if decision:
                         rv = self.records
                         break # one controller returned True, skip the rest
 

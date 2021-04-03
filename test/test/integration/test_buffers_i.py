@@ -5,7 +5,7 @@ from unittest import TestCase, mock
 from unittest.mock import patch
 
 from databay import Record, Inlet, Outlet, Link
-from databay.misc.buffers import Buffer
+from databay.support.buffers import Buffer
 from databay.planners import SchedulePlanner
 from test_utils import fqname, pull_mock
 

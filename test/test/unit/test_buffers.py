@@ -1,9 +1,11 @@
+import logging
 import time
 from unittest import TestCase
-from unittest.mock import MagicMock, call
+from unittest.mock import MagicMock
 
 from databay import Record
-from databay.misc.buffers import Buffer
+from databay.support.buffers import Buffer
+from test_utils import DummyException
 
 
 class TestBuffers(TestCase):
@@ -177,5 +179,35 @@ class TestBuffers(TestCase):
         buffer.reset()
         self.assertEqual(on_reset.call_count, 2)
 
+    def test_custom_exception(self):
+        custom_controller = MagicMock(side_effect=DummyException('Custom controller exception!'))
+        payload = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
+        records = [Record(payload=p) for p in payload]
+        buffer = Buffer(count_threshold=10, custom_controllers=custom_controller)
+
+        with self.assertLogs(logging.getLogger('databay.Buffer'), level='DEBUG') as cm:
+            rvA = buffer(records[:6])
+            rvB = buffer(records[6:])
+            self.assertTrue(
+                'Custom controller exception!' in ';'.join(cm.output))
+
+        self.assertEqual(rvA, [], 'Should not contain any records yet')
+        self.assertEqual(rvB, records, 'Should contain all records')
+
+    def test_custom_exception_conjoint(self):
+        custom_controller = MagicMock(side_effect=DummyException('Custom controller exception!'))
+        payload = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+
+        records = [Record(payload=p) for p in payload]
+        buffer = Buffer(count_threshold=10, custom_controllers=custom_controller, controller_conjunction=True)
+
+        with self.assertLogs(logging.getLogger('databay.Buffer'), level='DEBUG') as cm:
+            rvA = buffer(records[:6])
+            rvB = buffer(records[6:])
+            self.assertTrue(
+                'Custom controller exception!' in ';'.join(cm.output))
+
+        self.assertEqual(rvA, [], 'Should not contain any records yet')
+        self.assertEqual(rvB, records, 'Should contain all records')
 
