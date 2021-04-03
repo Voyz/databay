@@ -69,7 +69,7 @@ class TestBuffers(TestCase):
 
     def test_execute_conjoint_false(self):
         custom_controller = MagicMock(side_effect= lambda x: True)
-        buffer = Buffer(count_threshold=1, time_threshold=1, custom_controllers=custom_controller, controller_conjunction=True)
+        buffer = Buffer(count_threshold=1, time_threshold=1, custom_controllers=custom_controller, conjugate_controllers=True)
         buffer._count_controller = MagicMock(side_effect= lambda x: False)
         buffer._time_controller = MagicMock(side_effect= lambda x: True)
         payload = [1,2,3]
@@ -81,7 +81,7 @@ class TestBuffers(TestCase):
 
     def test_execute_conjoint_true(self):
         custom_controller = MagicMock(side_effect= lambda x: True)
-        buffer = Buffer(count_threshold=1, time_threshold=1, custom_controllers=custom_controller, controller_conjunction=True)
+        buffer = Buffer(count_threshold=1, time_threshold=1, custom_controllers=custom_controller, conjugate_controllers=True)
         buffer._count_controller = MagicMock(side_effect= lambda x: True)
         buffer._time_controller = MagicMock(side_effect= lambda x: True)
         payload = [1,2,3]
@@ -200,7 +200,7 @@ class TestBuffers(TestCase):
         payload = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
         records = [Record(payload=p) for p in payload]
-        buffer = Buffer(count_threshold=10, custom_controllers=custom_controller, controller_conjunction=True)
+        buffer = Buffer(count_threshold=10, custom_controllers=custom_controller, conjugate_controllers=True)
 
         with self.assertLogs(logging.getLogger('databay.Buffer'), level='DEBUG') as cm:
             rvA = buffer(records[:6])

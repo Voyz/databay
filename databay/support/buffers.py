@@ -20,7 +20,7 @@ class Buffer():
                  time_threshold: float = None,
                  custom_controllers: Union[callable, List[callable]] = None,
                  on_reset: callable = None,
-                 controller_conjunction: bool = False
+                 conjugate_controllers: bool = False
                  ):
         """
 
@@ -40,8 +40,8 @@ class Buffer():
         :param on_reset: Callback invoked when :any:`reset <Buffer.reset>` is called.
             |default| :code:`None`
 
-        :type controller_conjunction: bool
-        :param controller_conjunction: Whether to release the records when any controller returns :code:`True` or to wait for all of them to complete before releasing records.
+        :type conjugate_controllers: bool
+        :param conjugate_controllers: Whether to release the records when any controller returns :code:`True` or to wait for all of them to complete before releasing records.
             |default| :code:`False`
 
         """
@@ -49,7 +49,7 @@ class Buffer():
         self.count_threshold = count_threshold
         self.time_threshold = time_threshold
         self.custom_controllers = custom_controllers
-        self.controller_conjunction = controller_conjunction
+        self.conjugate_controllers = conjugate_controllers
 
         if self.custom_controllers is None:
             self.custom_controllers = []
@@ -103,7 +103,7 @@ class Buffer():
         if self.flush:
             rv =  self.records
         else:
-            if self.controller_conjunction:
+            if self.conjugate_controllers:
                 controllers_passing = True
                 for controller in self.get_controllers():
                     try:

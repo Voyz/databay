@@ -93,14 +93,14 @@ For example:
     .. rst-class:: highlight-small, mb-s
     .. code-block:: python
 
-        buffer = Buffer(count_threshold=10, time_threshold=60, controller_conjunction=False) # OR
+        buffer = Buffer(count_threshold=10, time_threshold=60, conjugate_controllers=False) # OR
 
     This buffer will release records once 10 records were produced or 60 seconds have elapsed - whichever comes first.
 
     .. rst-class:: highlight-small, mb-s
     .. code-block:: python
 
-        buffer = Buffer(count_threshold=10, time_threshold=60, controller_conjunction=True) # AND
+        buffer = Buffer(count_threshold=10, time_threshold=60, conjugate_controllers=True) # AND
 
     This buffer will release records once 10 records were produced and 60 seconds have elapsed.
 
