@@ -49,7 +49,7 @@ class MongoOutlet(Outlet):
     MONGODB_COLLECTION: MetadataKey = 'MongoOutlet.MONGODB_COLLECTION'
     """ Name of collection to write to. """
 
-    def __init__(self, database_name: str = 'databay', collection: str = 'default_collection', host: str = None, port: str = None):
+    def __init__(self, database_name: str = 'databay', collection: str = 'default_collection', host: str = None, port: str = None, *args, **kwargs):
         """
 
         :type database_name: str
@@ -68,7 +68,7 @@ class MongoOutlet(Outlet):
         :param port: Port of the MongoDB host.
             |default| :code:`None` (PyMongo defaults to :code:`27017`)
         """
-        super().__init__()
+        super().__init__(*args, **kwargs)
 
         self.host = host
         self.port = port

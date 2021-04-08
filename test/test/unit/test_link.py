@@ -3,7 +3,7 @@ import logging
 from asyncio import Future
 from datetime import timedelta
 from unittest import TestCase, mock
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, call
 
 import databay
 from databay import Inlet, Outlet
@@ -497,3 +497,165 @@ class TestLink(TestCase):
             await link._run()
 
         asyncio.run(task())
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_processors_one(self, inlet, outlet):
+        records = [2, 3]
+        inlet._pull = pull_mock(records)
+        processor = MagicMock(side_effect = lambda r: r)
+        link = Link(inlet, outlet, interval=0.01, processors=processor)
+        link.transfer()
+        processor.assert_called_with(records)
+        outlet._push.assert_called_with(records, mock.ANY)
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_processors_many(self, inlet, outlet):
+        records = [2, 3]
+        inlet._pull = pull_mock(records)
+        processorA = MagicMock(side_effect = lambda x: x)
+        processorB = MagicMock(side_effect = lambda x: x)
+        link = Link(inlet, outlet, interval=0.01, processors=[processorA, processorB])
+        link.transfer()
+        processorA.assert_called_with(records)
+        processorB.assert_called_with(records)
+        outlet._push.assert_called_with(records, mock.ANY)
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_processors_change_records(self, inlet, outlet):
+        records = [2, 3]
+        inlet._pull = pull_mock(records)
+        processorA = MagicMock(side_effect = lambda r: list(map(lambda y: y*y, r)))
+        processorB = MagicMock(side_effect = lambda r: list(map(lambda y: -y, r)))
+        link = Link(inlet, outlet, interval=0.01, processors=[processorA, processorB])
+        link.transfer()
+        processorA.assert_called_with(records)
+        processorB.assert_called_with([4, 9])
+        outlet._push.assert_called_with([-4, -9], mock.ANY)
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_processors_filter_records(self, inlet, outlet):
+        records = [2, 3, 4]
+        inlet._pull = pull_mock(records)
+        processorA = MagicMock(side_effect = lambda r: list(filter(lambda y: y>2, r)))
+        processorB = MagicMock(side_effect = lambda r: list(filter(lambda y: y%2==0, r)))
+        link = Link(inlet, outlet, interval=0.01, processors=[processorA, processorB])
+        link.transfer()
+        processorA.assert_called_with(records)
+        processorB.assert_called_with([3, 4])
+        outlet._push.assert_called_with([4], mock.ANY)
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_groupers_one_passive(self, inlet, outlet):
+        records = [1, 2, 3, 4]
+        inlet._pull = pull_mock(records)
+        grouper = MagicMock(side_effect=lambda r: r) # does nothing on purpose
+        link = Link(inlet, outlet, interval=0.01, groupers=grouper)
+        link.transfer()
+        grouper.assert_called_with([records])
+        outlet._push.assert_called_with(records, mock.ANY)
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_groupers_one_active(self, inlet, outlet):
+        records = [1, 2, 3, 4]
+        inlet._pull = pull_mock(records)
+
+        # makes [[1,2], [3,4]]
+        grouper = MagicMock(side_effect=lambda r: [r[0][:2], r[0][2:]])
+
+        link = Link(inlet, outlet, interval=0.01, groupers=grouper)
+        link.transfer()
+        grouper.assert_called_with([records])
+        calls = [call(records[:2], mock.ANY), call(records[2:], mock.ANY)]
+        outlet._push.assert_has_calls(calls) # expects [[1,2], [3,4]]
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_groupers_many_active(self, inlet, outlet):
+        records = [1, 2, 3, 4]
+        inlet._pull = pull_mock(records)
+
+        # makes [[1,2], [3,4]]
+        grouperA = MagicMock(side_effect=lambda r: [r[0][:2], r[0][2:]])
+
+        # makes [[1], [2], [3], [4]]
+        grouperB = MagicMock(side_effect=lambda r: [[sub] for sub in r[0]] + [[sub] for sub in r[1]])
+
+        link = Link(inlet, outlet, interval=0.01, groupers=[grouperA, grouperB])
+        link.transfer()
+
+        grouperA.assert_called_with([records])
+
+        callsA = [call([records[:2], records[2:]])] # expects [[1,2], [3,4]]
+        grouperB.assert_has_calls(callsA)
+
+        callsB = [call([records[0]], mock.ANY),
+                  call([records[1]], mock.ANY),
+                  call([records[2]], mock.ANY),
+                  call([records[3]], mock.ANY)]
+        outlet._push.assert_has_calls(callsB) # expects [[1], [2], [3], [4]]
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_processor_exception(self, inlet, outlet):
+        records = [2, 3]
+        inlet._pull = pull_mock(records)
+        processor = MagicMock(side_effect = DummyException('Processor exception'))
+        link = Link(inlet, outlet, interval=0.01, processors=processor)
+        self.assertRaises(DummyException, link.transfer)
+        processor.assert_called_with(records)
+        outlet._push.assert_not_called()
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_processor_exception_ignored(self, inlet, outlet):
+        records = [2, 3]
+        inlet._pull = pull_mock(records)
+        processorA = MagicMock(side_effect = DummyException('Processor exception'))
+        processorB = MagicMock(side_effect = lambda r: list(map(lambda y: y*y, r)))
+        link = Link(inlet, outlet, interval=0.01, processors=[processorA, processorB], ignore_exceptions=True)
+
+        with self.assertLogs(logging.getLogger('databay.Link'), level='ERROR') as cm:
+            link.transfer()
+            self.assertTrue('Processor exception:' in ';'.join(
+                cm.output), cm.output)
+
+        processorA.assert_called_with(records)
+        processorB.assert_called_with(records)
+        outlet._push.assert_called_with([4,9], mock.ANY)
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_grouper_exception(self, inlet, outlet):
+        records = [2, 3]
+        inlet._pull = pull_mock(records)
+        grouper = MagicMock(side_effect = DummyException('Grouper exception'))
+        link = Link(inlet, outlet, interval=0.01, groupers=grouper)
+        self.assertRaises(DummyException, link.transfer)
+        grouper.assert_called_with([records])
+        outlet._push.assert_not_called()
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_grouper_exception_ignored(self, inlet, outlet):
+        records = [1, 2, 3, 4]
+        inlet._pull = pull_mock(records)
+        grouperA = MagicMock(side_effect = DummyException('Grouper exception'))
+        grouperB = MagicMock(side_effect=lambda r: [r[0][:2], r[0][2:]])
+        link = Link(inlet, outlet, interval=0.01, groupers=[grouperA, grouperB], ignore_exceptions=True)
+
+        with self.assertLogs(logging.getLogger('databay.Link'), level='ERROR') as cm:
+            link.transfer()
+            self.assertTrue('Grouper exception:' in ';'.join(
+                cm.output), cm.output)
+
+        grouperA.assert_called_with([records])
+        grouperB.assert_called_with([records])
+        calls = [call(records[:2], mock.ANY), call(records[2:], mock.ANY)]
+        outlet._push.assert_has_calls(calls)  # expects [[1,2], [3,4]]
+

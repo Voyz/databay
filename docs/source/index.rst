@@ -88,12 +88,9 @@ Every 5 seconds this snippet will pull data from a test URL, and write it to Mon
     :maxdepth: 1
 
     introduction
+    advanced
     extending
     examples
     api/databay/index
     _modules/index
     GitHub Page <https://github.com/Voyz/databay>
-
-
-.. todo: add filters
-.. todo: add translators

@@ -264,6 +264,7 @@ class TestApsPlanner(TestCase):
         self.planner.add_links(self.link)
         th = Thread(target=self.planner.start, daemon=True)
         th.start()
+        time.sleep(0.01)
         self.planner.shutdown()
         self.planner.purge()
 

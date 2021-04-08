@@ -127,7 +127,7 @@ class BasePlanner(ABC):
 
         This will also loop over all links and call the on_start callback before starting the planner.
 
-        If :any:`BasePlanner.immediate_transfer` is set to True, this function will additionally call :any:`Link.transfer` once for each link managed by this planner before starting.
+        If :code:`BasePlanner.immediate_transfer` is set to True, this function will additionally call :any:`Link.transfer` once for each link managed by this planner before starting.
 
         See :ref:`Start and Shutdown <start_shutdown>` to learn more about starting and shutdown.
         """
@@ -227,6 +227,14 @@ class BasePlanner(ABC):
         Override this property to indicate when the underlying scheduling functionality is currently running.
         """
         return True
+
+    def force_transfer(self):
+        for link in self.links:
+            try:
+                link.transfer()
+            except Exception as e:
+                self._on_exception(e, link)
+
 
     def __repr__(self):
         return f"BasePlanner(links={len(self.links)}, shutdown_at_exit={self.shutdown_at_exit})"

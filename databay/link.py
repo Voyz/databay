@@ -58,6 +58,8 @@ class Link():
                  catch_exceptions: bool = None,
                  inlet_concurrency : int = 9999,
                  immediate_transfer : bool = True,
+                 processors: Union[callable, List[callable]] = None,
+                 groupers: Union[callable, List[callable]] = None,
                  name=None):
         """
         :type inlets: :any:`Inlet` or list[:any:`Inlet`]
@@ -83,6 +85,12 @@ class Link():
 
         :type immediate_transfer: bool
         :param immediate_transfer: Whether governing planners that have :code:`BasePlanner.immediate_transfer` set to :code:`True` should execute this link's transfer once immediately upon starting. |default| :code:`True`
+
+        :type processors: :any:`callable` or list[:any:`callable`]
+        :param processors: :any:`Processors <processors>` of this link. |default| :code:`None`
+
+        :type groupers: :any:`callable` or list[:any:`callable`]
+        :param groupers: :any:`groupers <groupers>` of this link. |default| :code:`None`
         """
 
         self._inlets = []
@@ -112,6 +120,12 @@ class Link():
 
         self.inlet_concurrency = inlet_concurrency
         self.immediate_transfer = immediate_transfer
+
+        processors = [] if processors is None else processors
+        groupers = [] if groupers is None else groupers
+
+        self.processors = processors if isinstance(processors, list) else [processors]
+        self.groupers = groupers if isinstance(groupers, list) else [groupers]
 
     @property
     def inlets(self) -> List[Inlet]:
@@ -297,6 +311,27 @@ class Link():
         results_raw = await asyncio.gather(*inlet_tasks)
         records = list(itertools.chain.from_iterable(results_raw))
 
+        for processor in self.processors:
+            try:
+                records = processor(records)
+            except Exception as e:
+                if self._ignore_exceptions:
+                    _LOGGER.exception(
+                        f'Processor exception: "{e}" for processor: {processor}, in: {self}, during: {update}')
+                else:
+                    raise e
+
+        batches = [records]
+        for grouper in self.groupers:
+            try:
+                batches = grouper(batches)
+            except Exception as e:
+                if self._ignore_exceptions:
+                    _LOGGER.exception(
+                        f'Grouper exception: "{e}" for grouper: {grouper}, in: {self}, during: {update}')
+                else:
+                    raise e
+
         async def outlet_task(outlet, records_copy):
             try:
                 await outlet._push(records_copy, update)
@@ -307,14 +342,15 @@ class Link():
                 else:
                     raise e
 
-        outlet_tasks = []
-        for outlet in self._outlets:
-            if self._copy_records:
-                task = outlet_task(outlet, copy.deepcopy(records))
-            else:
-                task = outlet_task(outlet, records)
-            outlet_tasks.append(task)
-        await asyncio.gather(*outlet_tasks)
+        for batch in batches:
+            outlet_tasks = []
+            for outlet in self._outlets:
+                if self._copy_records:
+                    task = outlet_task(outlet, copy.deepcopy(batch))
+                else:
+                    task = outlet_task(outlet, batch)
+                outlet_tasks.append(task)
+            await asyncio.gather(*outlet_tasks)
 
         _LOGGER.debug(f'{update} done')
 
@@ -385,4 +421,4 @@ class Link():
         :returns: Link(tags:%s, inlets:%s, outlets:%s, interval:%s)
         """
 
-        return 'Link(tags:%s, inlets:%s, outlets:%s, interval:%s)' % (self.tags, self.inlets, self.outlets, self.interval)
+        return 'Link(tags:%s, interval:%s, inlets:%s, outlets:%s)' % (self.tags, self.interval, self.inlets, self.outlets)

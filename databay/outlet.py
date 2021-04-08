@@ -9,7 +9,7 @@
 import asyncio
 import threading
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Union
 
 from databay import Record
 import databay as da
@@ -25,15 +25,24 @@ class Outlet(ABC):
     Abstract class representing an output of the data stream.
     """
 
-    def __init__(self):
-        ""
+    def __init__(self, processors: Union[callable, List[callable]] = None):
+        """
+        :type processors: :any:`callable` or list[:any:`callable`]
+        :param processors: :any:`Processors <processors>` of this outlet. |default| :code:`None`
+        """
         self._active = False
 
         self._uses_coroutine = asyncio.iscoroutinefunction(self.push)
 
         self._thread_lock = threading.Lock()
 
+        processors = [] if processors is None else processors
+        self.processors = processors if isinstance(processors, list) else [processors]
+
     async def _push(self, records: List[Record], update: 'da.Update'):
+        for processor in self.processors:
+            records = processor(records)
+
         if self._uses_coroutine:
             rv = await self.push(records, update)
         else:

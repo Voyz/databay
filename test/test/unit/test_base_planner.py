@@ -216,3 +216,20 @@ class TestBasePlanner(TestCase):
 
         self.planner._shutdown_planner.assert_called()
         link.on_shutdown.assert_called()
+
+    @patch(fqname(Link), spec=Link, immediate_transfer=False)
+    def test_force_transfer(self, link):
+        self.planner.add_links(link)
+        self.planner.force_transfer()
+        link.transfer.assert_called()
+
+    @patch(fqname(Link), spec=Link, immediate_transfer=False)
+    def test_force_transfer_exception(self, link):
+        link.transfer.side_effect = DummyException('First transfer exception!')
+        self.planner.add_links(link)
+        with self.assertLogs(logging.getLogger('databay.BasePlanner'), level='WARNING') as cm:
+            self.planner.force_transfer()
+            self.assertTrue(
+                'First transfer exception!' in ';'.join(cm.output))
+
+        link.transfer.assert_called()

@@ -17,6 +17,7 @@ Source Code
   http_inlet <databay/inlets/http_inlet>
   null_inlet <databay/inlets/null_inlet>
   random_int_inlet <databay/inlets/random_int_inlet>
+  buffers <databay/misc/buffers>
   inlet_tester <databay/misc/inlet_tester>
   csv_outlet <databay/outlets/csv_outlet>
   file_outlet <databay/outlets/file_outlet>
