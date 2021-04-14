@@ -4,17 +4,16 @@
 
 <!--- Describe the changes your PR makes in detail -->
 
-References issue: # (ISSUE)
 
 ## Motivation and Context
 
 <!--- Why is this change required? What problem does it solve? -->
 <!--- If it fixes an open issue, please link to the issue here. -->
+References issue: # (ISSUE)
 
 ## Tests and Coverage
 
 <!--- Please describe in detail how you tested your changes. -->
-<!--- Include details of your testing environment, tests ran to see how your change affects other areas of the code, etc. -->
 
 ## Types of changes
 
@@ -33,3 +32,4 @@ References issue: # (ISSUE)
 - [ ] I have updated the documentation accordingly.
 - [ ] I have added tests to cover my changes.
 - [ ] All new and existing tests passed.
+- [ ] I've run coverage on the project and the coverage is: {INPUT COVERAGE PERCENTAGE}%
