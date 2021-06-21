@@ -21,7 +21,7 @@ class CsvOutlet(Outlet):
     FILE_MODE: MetadataKey = 'CsvOutlet.FILE_MODE'
     """Write mode to use when writing into the csv file."""
 
-    def __init__(self, default_filepath: str, default_file_mode: str = 'a'):
+    def __init__(self, default_filepath: str, default_file_mode: str = 'a', *args, **kwargs):
         """
 
         :param default_filepath: Filepath of the default csv file to write records to.
@@ -30,7 +30,7 @@ class CsvOutlet(Outlet):
         :param default_file_mode: Default write mode to use when writing into the csv file.
         :type default_file_mode: str
         """
-        super().__init__()
+        super().__init__(*args, **kwargs)
         self.default_filepath = default_filepath
         self.default_file_mode = default_file_mode
 

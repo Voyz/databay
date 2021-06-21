@@ -3,7 +3,7 @@ import logging
 from asyncio import Future
 from datetime import timedelta
 from unittest import TestCase, mock
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, call
 
 import databay
 from databay import Inlet, Outlet
@@ -93,14 +93,18 @@ class TestLink(TestCase):
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock())
     def test_exception_caught(self, inlet, outlet):
-        logging.getLogger('databay.Link').setLevel(logging.CRITICAL)
         inlet._pull.side_effect = DummyException('Test inlet exception')
         outlet._push.side_effect = DummyException('Test outlet exception')
         link = Link([inlet], [outlet], timedelta(seconds=1),
                     tags='test_exception_caught', ignore_exceptions=True)
 
         try:
-            link.transfer()
+            with self.assertLogs(logging.getLogger('databay.Link'), level='WARNING') as cm:
+                link.transfer()
+                self.assertTrue(
+                    'Test inlet exception' in ';'.join(cm.output))
+                self.assertTrue(
+                    'Test outlet exception' in ';'.join(cm.output))
         except Exception as e:
             self.fail(f'Should not raise exception: {e}')
 
@@ -113,7 +117,6 @@ class TestLink(TestCase):
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock())
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock())
     def test_ignore_partial_exception(self, inlet1, inlet2, outlet1, outlet2):
-        logging.getLogger('databay.Link').setLevel(logging.CRITICAL)
 
         async def task():
             # inlet_future = Future()
@@ -129,7 +132,12 @@ class TestLink(TestCase):
             results = await inlet2._pull(None)
             # inlet_future.set_result(results)
 
-            await link._run()
+            with self.assertLogs(logging.getLogger('databay.Link'), level='WARNING') as cm:
+                await link._run()
+                self.assertTrue(
+                    'Test inlet1 exception' in ';'.join(cm.output))
+                self.assertTrue(
+                    'Test outlet1 exception' in ';'.join(cm.output))
 
             inlet1._pull.assert_called()
             inlet2._pull.assert_called()
@@ -198,6 +206,12 @@ class TestLink(TestCase):
 
         self.assertEqual(link.inlets, [inlet1])
 
+
+    def test_add_inlet_invalid(self):
+        link = Link([], [], timedelta(seconds=1), tags='test_add_inlet')
+        self.assertRaises(TypeError, link.add_inlets, "invalid_inlet")
+
+
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock())
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock())
     def test_add_inlet_multiple(self, inlet1, inlet2):
@@ -245,6 +259,10 @@ class TestLink(TestCase):
         link.add_outlets(outlet1)
 
         self.assertEqual(link.outlets, [outlet1])
+
+    def test_add_outlet_invalid(self):
+        link = Link([], [], timedelta(seconds=1), tags='test_add_outlet')
+        self.assertRaises(TypeError, link.add_outlets, "invalid_outlet")
 
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Outlet), spec=Outlet)
@@ -298,7 +316,6 @@ class TestLink(TestCase):
     # this rv will raise DummyException
     @patch(fqname(Inlet), spec=Inlet, _pull=pull_mock(DummyIterable()))
     def test_generic_error_raised(self, inlet1):
-        logging.getLogger('databay.Link').setLevel(logging.ERROR)
         link = Link([inlet1], [], timedelta(seconds=1),
                     tags='test_generic_error_raised')
         # with self.assertRaisesRegex(TypeError, databay.link._ITERABLE_EXCEPTION):
@@ -327,15 +344,14 @@ class TestLink(TestCase):
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Inlet), spec=Inlet)
     def test_on_start_inlet_exception_catch(self, inlet1, outlet1):
-        logging.getLogger('databay.Link').setLevel(logging.WARNING)
         inlet1.try_start.side_effect = lambda: exec('raise(RuntimeError())')
         link = Link([inlet1], [outlet1], timedelta(seconds=1),
                     tags='test_on_start', ignore_exceptions=True)
 
         with self.assertLogs(logging.getLogger('databay.Link'), level='ERROR') as cm:
             link.on_start()
-        self.assertTrue(
-            'on_start inlet exception: "" for inlet:' in ';'.join(cm.output))
+            self.assertTrue(
+                'on_start inlet exception: "" for inlet:' in ';'.join(cm.output))
 
         inlet1.try_start.assert_called()
         outlet1.try_start.assert_called()
@@ -358,15 +374,14 @@ class TestLink(TestCase):
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Inlet), spec=Inlet)
     def test_on_start_outlet_exception_catch(self, inlet1, outlet1, outlet2):
-        logging.getLogger('databay.Link').setLevel(logging.WARNING)
         outlet1.try_start.side_effect = lambda: exec('raise(RuntimeError())')
         link = Link([inlet1], [outlet1, outlet2], timedelta(
             seconds=1), tags='test_on_start', ignore_exceptions=True)
 
         with self.assertLogs(logging.getLogger('databay.Link'), level='ERROR') as cm:
             link.on_start()
-        self.assertTrue(
-            'on_start outlet exception: "" for outlet:' in ';'.join(cm.output), cm.output)
+            self.assertTrue(
+                'on_start outlet exception: "" for outlet:' in ';'.join(cm.output), cm.output)
 
         inlet1.try_start.assert_called()
         outlet1.try_start.assert_called()
@@ -387,15 +402,14 @@ class TestLink(TestCase):
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Inlet), spec=Inlet)
     def test_on_shutdown_inlet_exception_catch(self, inlet1, outlet1):
-        logging.getLogger('databay.Link').setLevel(logging.WARNING)
         inlet1.try_shutdown.side_effect = lambda: exec('raise(RuntimeError())')
         link = Link([inlet1], [outlet1], timedelta(seconds=1),
                     tags='test_on_shutdown', ignore_exceptions=True)
 
         with self.assertLogs(logging.getLogger('databay.Link'), level='ERROR') as cm:
             link.on_shutdown()
-        self.assertTrue(
-            'on_shutdown inlet exception: "" for inlet:' in ';'.join(cm.output), cm.output)
+            self.assertTrue(
+                'on_shutdown inlet exception: "" for inlet:' in ';'.join(cm.output), cm.output)
 
         inlet1.try_shutdown.assert_called()
         outlet1.try_shutdown.assert_called()
@@ -419,7 +433,6 @@ class TestLink(TestCase):
     @patch(fqname(Outlet), spec=Outlet)
     @patch(fqname(Inlet), spec=Inlet)
     def test_on_shutdown_outlet_exception_catch(self, inlet1, outlet1, outlet2):
-        logging.getLogger('databay.Link').setLevel(logging.WARNING)
         outlet1.try_shutdown.side_effect = lambda: exec(
             'raise(RuntimeError())')
         link = Link([inlet1], [outlet1, outlet2], timedelta(
@@ -427,8 +440,8 @@ class TestLink(TestCase):
 
         with self.assertLogs(logging.getLogger('databay.Link'), level='ERROR') as cm:
             link.on_shutdown()
-        self.assertTrue('on_shutdown outlet exception: "" for outlet:' in ';'.join(
-            cm.output), cm.output)
+            self.assertTrue('on_shutdown outlet exception: "" for outlet:' in ';'.join(
+                cm.output), cm.output)
 
         inlet1.try_shutdown.assert_called()
         outlet1.try_shutdown.assert_called()
@@ -454,3 +467,195 @@ class TestLink(TestCase):
         link_name = 'link_name'
         link = Link([], [], timedelta(seconds=1), tags=[link_name])
         self.assertEqual(link.name, link.tags[0])
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_inlet_concurrency(self, inlet1, inlet2, inlet3, outlet):
+        counter = {'value': 0}
+
+        # this will increment the counter on each async call, and check if they exceed the concurrency value
+        async def slow_pull(_):
+            counter['value'] += 1
+            self.assertLessEqual(counter['value'], 2, "Only 2 inlets should pull at a time")
+            await asyncio.sleep(0.01)
+            counter['value'] -= 1
+            return [123]
+
+        inlet1._pull = slow_pull
+        inlet2._pull = slow_pull
+        inlet3._pull = slow_pull
+
+        async def task():
+            link = Link([inlet1, inlet2, inlet3], [outlet],
+                        timedelta(seconds=1),
+                        tags='test_inlet_concurrency',
+                        copy_records=False,
+                        inlet_concurrency=2)
+
+            await link._run()
+
+        asyncio.run(task())
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_processors_one(self, inlet, outlet):
+        records = [2, 3]
+        inlet._pull = pull_mock(records)
+        processor = MagicMock(side_effect = lambda r: r)
+        link = Link(inlet, outlet, interval=0.01, processors=processor)
+        link.transfer()
+        processor.assert_called_with(records)
+        outlet._push.assert_called_with(records, mock.ANY)
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_processors_many(self, inlet, outlet):
+        records = [2, 3]
+        inlet._pull = pull_mock(records)
+        processorA = MagicMock(side_effect = lambda x: x)
+        processorB = MagicMock(side_effect = lambda x: x)
+        link = Link(inlet, outlet, interval=0.01, processors=[processorA, processorB])
+        link.transfer()
+        processorA.assert_called_with(records)
+        processorB.assert_called_with(records)
+        outlet._push.assert_called_with(records, mock.ANY)
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_processors_change_records(self, inlet, outlet):
+        records = [2, 3]
+        inlet._pull = pull_mock(records)
+        processorA = MagicMock(side_effect = lambda r: list(map(lambda y: y*y, r)))
+        processorB = MagicMock(side_effect = lambda r: list(map(lambda y: -y, r)))
+        link = Link(inlet, outlet, interval=0.01, processors=[processorA, processorB])
+        link.transfer()
+        processorA.assert_called_with(records)
+        processorB.assert_called_with([4, 9])
+        outlet._push.assert_called_with([-4, -9], mock.ANY)
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_processors_filter_records(self, inlet, outlet):
+        records = [2, 3, 4]
+        inlet._pull = pull_mock(records)
+        processorA = MagicMock(side_effect = lambda r: list(filter(lambda y: y>2, r)))
+        processorB = MagicMock(side_effect = lambda r: list(filter(lambda y: y%2==0, r)))
+        link = Link(inlet, outlet, interval=0.01, processors=[processorA, processorB])
+        link.transfer()
+        processorA.assert_called_with(records)
+        processorB.assert_called_with([3, 4])
+        outlet._push.assert_called_with([4], mock.ANY)
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_groupers_one_passive(self, inlet, outlet):
+        records = [1, 2, 3, 4]
+        inlet._pull = pull_mock(records)
+        grouper = MagicMock(side_effect=lambda r: r) # does nothing on purpose
+        link = Link(inlet, outlet, interval=0.01, groupers=grouper)
+        link.transfer()
+        grouper.assert_called_with([records])
+        outlet._push.assert_called_with(records, mock.ANY)
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_groupers_one_active(self, inlet, outlet):
+        records = [1, 2, 3, 4]
+        inlet._pull = pull_mock(records)
+
+        # makes [[1,2], [3,4]]
+        grouper = MagicMock(side_effect=lambda r: [r[0][:2], r[0][2:]])
+
+        link = Link(inlet, outlet, interval=0.01, groupers=grouper)
+        link.transfer()
+        grouper.assert_called_with([records])
+        calls = [call(records[:2], mock.ANY), call(records[2:], mock.ANY)]
+        outlet._push.assert_has_calls(calls) # expects [[1,2], [3,4]]
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_groupers_many_active(self, inlet, outlet):
+        records = [1, 2, 3, 4]
+        inlet._pull = pull_mock(records)
+
+        # makes [[1,2], [3,4]]
+        grouperA = MagicMock(side_effect=lambda r: [r[0][:2], r[0][2:]])
+
+        # makes [[1], [2], [3], [4]]
+        grouperB = MagicMock(side_effect=lambda r: [[sub] for sub in r[0]] + [[sub] for sub in r[1]])
+
+        link = Link(inlet, outlet, interval=0.01, groupers=[grouperA, grouperB])
+        link.transfer()
+
+        grouperA.assert_called_with([records])
+
+        callsA = [call([records[:2], records[2:]])] # expects [[1,2], [3,4]]
+        grouperB.assert_has_calls(callsA)
+
+        callsB = [call([records[0]], mock.ANY),
+                  call([records[1]], mock.ANY),
+                  call([records[2]], mock.ANY),
+                  call([records[3]], mock.ANY)]
+        outlet._push.assert_has_calls(callsB) # expects [[1], [2], [3], [4]]
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_processor_exception(self, inlet, outlet):
+        records = [2, 3]
+        inlet._pull = pull_mock(records)
+        processor = MagicMock(side_effect = DummyException('Processor exception'))
+        link = Link(inlet, outlet, interval=0.01, processors=processor)
+        self.assertRaises(DummyException, link.transfer)
+        processor.assert_called_with(records)
+        outlet._push.assert_not_called()
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_processor_exception_ignored(self, inlet, outlet):
+        records = [2, 3]
+        inlet._pull = pull_mock(records)
+        processorA = MagicMock(side_effect = DummyException('Processor exception'))
+        processorB = MagicMock(side_effect = lambda r: list(map(lambda y: y*y, r)))
+        link = Link(inlet, outlet, interval=0.01, processors=[processorA, processorB], ignore_exceptions=True)
+
+        with self.assertLogs(logging.getLogger('databay.Link'), level='ERROR') as cm:
+            link.transfer()
+            self.assertTrue('Processor exception:' in ';'.join(
+                cm.output), cm.output)
+
+        processorA.assert_called_with(records)
+        processorB.assert_called_with(records)
+        outlet._push.assert_called_with([4,9], mock.ANY)
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_grouper_exception(self, inlet, outlet):
+        records = [2, 3]
+        inlet._pull = pull_mock(records)
+        grouper = MagicMock(side_effect = DummyException('Grouper exception'))
+        link = Link(inlet, outlet, interval=0.01, groupers=grouper)
+        self.assertRaises(DummyException, link.transfer)
+        grouper.assert_called_with([records])
+        outlet._push.assert_not_called()
+
+    @patch(fqname(Outlet), spec=Outlet)
+    @patch(fqname(Inlet), spec=Inlet)
+    def test_grouper_exception_ignored(self, inlet, outlet):
+        records = [1, 2, 3, 4]
+        inlet._pull = pull_mock(records)
+        grouperA = MagicMock(side_effect = DummyException('Grouper exception'))
+        grouperB = MagicMock(side_effect=lambda r: [r[0][:2], r[0][2:]])
+        link = Link(inlet, outlet, interval=0.01, groupers=[grouperA, grouperB], ignore_exceptions=True)
+
+        with self.assertLogs(logging.getLogger('databay.Link'), level='ERROR') as cm:
+            link.transfer()
+            self.assertTrue('Grouper exception:' in ';'.join(
+                cm.output), cm.output)
+
+        grouperA.assert_called_with([records])
+        grouperB.assert_called_with([records])
+        calls = [call(records[:2], mock.ANY), call(records[2:], mock.ANY)]
+        outlet._push.assert_has_calls(calls)  # expects [[1,2], [3,4]]
+

@@ -16,16 +16,21 @@ class FileOutlet(Outlet):
     FILE_ENCODING: MetadataKey = 'FileOutlet.FILE_ENCODING'
     """Encoding to use when writing into the file."""
 
-    def __init__(self, default_filepath: str, default_file_mode: str = 'a', default_encoding: str = 'utf-8'):
+    def __init__(self, default_filepath: str, default_file_mode: str = 'a', default_encoding: str = 'utf-8', *args, **kwargs):
         """
 
-        :param default_filepath: Filepath of the default file to write records to.
         :type default_filepath: str
+        :param default_filepath: Filepath of the default file to write records to.
 
-        :param default_file_mode: Default write mode to use when writing into the file.
         :type default_file_mode: str
+        :param default_file_mode: Default write mode to use when writing into the file.
+
+        :type default_encoding: str
+        :param default_encoding: Default file encoding when writing into a file.
+            |default| :code:`utf-8`
+
         """
-        super().__init__()
+        super().__init__(*args, **kwargs)
         self.default_filepath = default_filepath
         self.default_file_mode = default_file_mode
         self.default_encoding = default_encoding

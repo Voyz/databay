@@ -7,6 +7,7 @@ import logging
 import warnings
 from typing import Any, List, Union
 
+from databay import Inlet, Outlet
 from databay.errors import InvalidNodeError
 _LOGGER = logging.getLogger('databay.Link')
 
@@ -55,6 +56,10 @@ class Link():
                  copy_records: bool = True,
                  ignore_exceptions: bool = False,
                  catch_exceptions: bool = None,
+                 inlet_concurrency : int = 9999,
+                 immediate_transfer : bool = True,
+                 processors: Union[callable, List[callable]] = None,
+                 groupers: Union[callable, List[callable]] = None,
                  name=None):
         """
         :type inlets: :any:`Inlet` or list[:any:`Inlet`]
@@ -74,6 +79,18 @@ class Link():
 
         :type ignore_exceptions: bool
         :param ignore_exceptions: Whether exceptions in inlets and outlets should be logged and ignored, or raised. |default| :code:`True`
+
+        :type inlet_concurrency: int
+        :param inlet_concurrency: How many inlets are allowed to execute concurrently. |default| :code:`9999`
+
+        :type immediate_transfer: bool
+        :param immediate_transfer: Whether governing planners that have :code:`BasePlanner.immediate_transfer` set to :code:`True` should execute this link's transfer once immediately upon starting. |default| :code:`True`
+
+        :type processors: :any:`callable` or list[:any:`callable`]
+        :param processors: :any:`Processors <processors>` of this link. |default| :code:`None`
+
+        :type groupers: :any:`callable` or list[:any:`callable`]
+        :param groupers: :any:`groupers <groupers>` of this link. |default| :code:`None`
         """
 
         self._inlets = []
@@ -101,6 +118,15 @@ class Link():
             warnings.warn(
                 '\'catch_exceptions\' was renamed to \'ignore_exceptions\' in version 0.2.0 and will be permanently changed in version 1.0.0', DeprecationWarning)
 
+        self.inlet_concurrency = inlet_concurrency
+        self.immediate_transfer = immediate_transfer
+
+        processors = [] if processors is None else processors
+        groupers = [] if groupers is None else groupers
+
+        self.processors = processors if isinstance(processors, list) else [processors]
+        self.groupers = groupers if isinstance(groupers, list) else [groupers]
+
     @property
     def inlets(self) -> List[Inlet]:
         """
@@ -123,7 +149,8 @@ class Link():
             inlets = [inlets]
 
         for inl in inlets:
-            assert isinstance(inl, Inlet)
+            if not isinstance(inl, Inlet):
+                raise TypeError(f"Provided inlet is not an instance of Inlet(), found: {inl}")
 
             if inl in self._inlets:
                 raise InvalidNodeError(
@@ -172,7 +199,8 @@ class Link():
             outlets = [outlets]
 
         for outl in outlets:
-            assert isinstance(outl, Outlet)
+            if not isinstance(outl, Outlet):
+                raise TypeError(f"Provided outlet is not an instance of Outlet(), found: {outl}")
 
             if outl in self._outlets:
                 raise InvalidNodeError(
@@ -229,7 +257,7 @@ class Link():
     @property
     def name(self) -> str:
         """
-        Deprecated in 0.1.8, will be removed in 1.0. Use :any:`Link.tags` instead.
+        Deprecated in 0.2.0, will be removed in 1.0. Use :any:`Link.tags` instead.
 
         Name of this Link, equivalent to first tag of this link.
 
@@ -262,14 +290,15 @@ class Link():
         """
         Coroutine handling the transfer.
         """
-
+        semaphore = asyncio.Semaphore(self.inlet_concurrency)
         self._transfer_number += 1
         update = Update(tags=self.tags, transfer_number=self._transfer_number)
         _LOGGER.debug(f'{update} transfer')
 
         async def inlet_task(inlet):
             try:
-                return await inlet._pull(update)
+                async with semaphore:
+                    return await inlet._pull(update)
             except Exception as e:
                 if self._ignore_exceptions:
                     _LOGGER.exception(
@@ -282,6 +311,27 @@ class Link():
         results_raw = await asyncio.gather(*inlet_tasks)
         records = list(itertools.chain.from_iterable(results_raw))
 
+        for processor in self.processors:
+            try:
+                records = processor(records)
+            except Exception as e:
+                if self._ignore_exceptions:
+                    _LOGGER.exception(
+                        f'Processor exception: "{e}" for processor: {processor}, in: {self}, during: {update}')
+                else:
+                    raise e
+
+        batches = [records]
+        for grouper in self.groupers:
+            try:
+                batches = grouper(batches)
+            except Exception as e:
+                if self._ignore_exceptions:
+                    _LOGGER.exception(
+                        f'Grouper exception: "{e}" for grouper: {grouper}, in: {self}, during: {update}')
+                else:
+                    raise e
+
         async def outlet_task(outlet, records_copy):
             try:
                 await outlet._push(records_copy, update)
@@ -292,14 +342,15 @@ class Link():
                 else:
                     raise e
 
-        outlet_tasks = []
-        for outlet in self._outlets:
-            if self._copy_records:
-                task = outlet_task(outlet, copy.deepcopy(records))
-            else:
-                task = outlet_task(outlet, records)
-            outlet_tasks.append(task)
-        await asyncio.gather(*outlet_tasks)
+        for batch in batches:
+            outlet_tasks = []
+            for outlet in self._outlets:
+                if self._copy_records:
+                    task = outlet_task(outlet, copy.deepcopy(batch))
+                else:
+                    task = outlet_task(outlet, batch)
+                outlet_tasks.append(task)
+            await asyncio.gather(*outlet_tasks)
 
         _LOGGER.debug(f'{update} done')
 
@@ -370,4 +421,4 @@ class Link():
         :returns: Link(tags:%s, inlets:%s, outlets:%s, interval:%s)
         """
 
-        return 'Link(tags:%s, inlets:%s, outlets:%s, interval:%s)' % (self.tags, self.inlets, self.outlets, self.interval)
+        return 'Link(tags:%s, interval:%s, inlets:%s, outlets:%s)' % (self.tags, self.interval, self.inlets, self.outlets)

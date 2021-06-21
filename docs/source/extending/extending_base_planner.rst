@@ -5,7 +5,7 @@ Extending BasePlanner
 
 Databay comes with two implementations of BasePlanner - :any:`ApsPlanner` and :any:`SchedulePlanner`. If you require custom scheduling functionality outside of these two interfaces, you can create your own implementation of :any:`BasePlanner`. Have a look at the two existing implementations for reference: `ApsPlanner <../_modules/databay/planners/aps_planner.html>`_ and `SchedulePlanner <../_modules/databay/planners/schedule_planner.html>`_.
 
-To extend the :any:`BasePlanner` you need to provide a way of executing :any:`Link.transfer` method repeatedly by implementing the following four methods. Note that all of these methods are private since they are called internally by BasePlanner and should not be executed directly.
+To extend the :any:`BasePlanner` you need to provide a way of executing :any:`Link.transfer` method repeatedly by implementing the following methods. Note that some of these methods are private since they are called internally by BasePlanner and should not be executed directly.
 
 .. container:: contents local topic
 
@@ -13,6 +13,7 @@ To extend the :any:`BasePlanner` you need to provide a way of executing :any:`Li
     * `_unschedule <extending_base_planner.html#unschedule>`__
     * `_start_planner <extending_base_planner.html#start-planner>`__
     * `_shutdown_planner <extending_base_planner.html#shutdown-planner>`__
+    * `running <extending_base_planner.html#running-property>`__
 
 
 _schedule
@@ -83,16 +84,27 @@ Example from :code:`ApsPlanner._shutdown_planner`:
         self._scheduler.shutdown(wait=wait)
 
 
-Exceptions
-----------
-
-When implementing your planner you should consider that links may raise exceptions when executing. Your planner should anticipate this and allow handling the exceptions appropriately to ensure continuous execution. Both :any:`ApsPlanner` and :any:`SchedulePlanner` allow catching exceptions when :code:`ignore_exceptions=True` is passed on construction, otherwise they will log the exception and shutdown. See :ref:`Exception handling <exception_handling>` for more.
-
 Running property
 ----------------
 
-Apart from extending the necessary methods described above, you may optionally implement the :any:`running <BasePlanner.running>` property. It should return a boolean value indicating whether the scheduler is currently running. This property is exposed for your convenience and is not used by Databay.
+:any:`BasePlanner.running <BasePlanner.running>` property should return a boolean value indicating whether the scheduler is currently running. By default this property always returns True.
 
+Exceptions
+----------
+
+When implementing your planner you should consider that links may raise exceptions when executing. Your planner should anticipate this and allow handling the exceptions appropriately to ensure continuous execution. BasePlanner exposes a protected :code:`BasePlanner._on_exception` method that can be called to handle the exception, allowing to ignore exceptions when :code:`ignore_exceptions=True` is passed on construction. Otherwise the exceptions will be logged and the planner will attempt a graceful shutdown. Both :any:`ApsPlanner` and :any:`SchedulePlanner` support this behaviour by default. See :ref:`Exception handling <exception_handling>` for more.
+
+
+Immediate transfer on start
+---------------------------
+
+By default BasePlanner will execute :any:`Link.transfer` function on all its links once upon calling :any:`BasePlanner.start`. This is to avoid having to wait for the link's interval to expire before the first transfer. You can disable this behaviour by passing :code:`immediate_transfer=False` parameter on construction of the :any:`BasePlanner` to disable it for all governed links or individually for selected links by setting their :code:`immediate_transfer` to :code:`False`.
+
+
+Shutdown atexit
+---------------
+
+Each :any:`BasePlanner` registers an :any:`atexit` callback, which will attempt to gracefully shut the planner down if it is created with :any:`shutdown_at_exit <BasePlanner>` parameter set to :code:`True`.
 
 ----
 

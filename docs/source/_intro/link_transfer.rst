@@ -17,6 +17,8 @@ One quantity of data handled by Databay is represented with a :any:`Record`.
 
 Both pulling and pushing is executed asynchronously, yet pushing only starts once all inlets have finished returning their data.
 
+There's a lot more you can do to your data during a transfer - such as filtering, buffering, grouping and transforming. Head over to :any:`Advanced Concepts <advanced>` to learn more.
+
 .. _transfer-update:
 
 .. rubric:: Transfer Update

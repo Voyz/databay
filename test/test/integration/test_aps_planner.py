@@ -31,6 +31,7 @@ class TestApsPlanner(TestCase):
         link.interval.total_seconds.return_value = 0.02
         link.set_job.side_effect = set_job
         link.job = None
+        link.immediate_transfer = True
         self.link = link
 
     def test__schedule(self):
@@ -189,27 +190,30 @@ class TestApsPlanner(TestCase):
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')
 
     def _with_exception(self, link, ignore_exceptions):
-        logging.getLogger('databay').setLevel(logging.CRITICAL)
-        # logging.getLogger('databay').setLevel(logging.INFO)
         self.planner = ApsPlanner(ignore_exceptions=ignore_exceptions)
+        self.planner.immediate_transfer = False # otherwise planner will never start
 
         link.transfer.side_effect = DummyException()
         link.interval.total_seconds.return_value = 0.02
         self.planner.add_links(link)
 
-        th = Thread(target=self.planner.start, daemon=True)
-        th.start()
-        time.sleep(0.04)
-        link.transfer.assert_called()
+        with self.assertLogs(logging.getLogger('databay.BasePlanner'), level='WARNING') as cm:
+            th = Thread(target=self.planner.start, daemon=True)
+            th.start()
+            time.sleep(0.04)
+            link.transfer.assert_called()
 
-        if ignore_exceptions:
-            self.assertTrue(self.planner.running,
-                            'Scheduler should be running')
-            self.planner.shutdown(wait=False)
-            th.join(timeout=2)
-            self.assertFalse(th.is_alive(), 'Thread should be stopped.')
+            if ignore_exceptions:
+                self.assertTrue(self.planner.running,
+                                'Scheduler should be running')
+                self.planner.shutdown(wait=False)
+                th.join(timeout=2)
+                self.assertFalse(th.is_alive(), 'Thread should be stopped.')
 
-        self.assertFalse(self.planner.running, 'Scheduler should be stopped')
+            self.assertFalse(self.planner.running, 'Scheduler should be stopped')
+            self.assertTrue(
+                'I\'m a dummy exception' in ';'.join(cm.output))
+
 
     def test_ignore_exception(self):
         self._with_exception(self.link, True)
@@ -218,18 +222,21 @@ class TestApsPlanner(TestCase):
         self._with_exception(self.link, False)
 
     def test_uncommon_exception(self):
-        logging.getLogger('databay').setLevel(logging.CRITICAL)
-
         self.link.transfer.side_effect = DummyUnusualException(123, True)
         self.link.interval.total_seconds.return_value = 0.02
         self.planner.add_links(self.link)
 
-        th = Thread(target=self.planner.start, daemon=True)
-        th.start()
-        time.sleep(0.04)
-        self.link.transfer.assert_called()
+        with self.assertLogs(logging.getLogger('databay.BasePlanner'), level='WARNING') as cm:
 
-        self.assertFalse(self.planner.running, 'Scheduler should be stopped')
+            th = Thread(target=self.planner.start, daemon=True)
+            th.start()
+            time.sleep(0.04)
+            self.link.transfer.assert_called()
+
+            self.assertFalse(self.planner.running, 'Scheduler should be stopped')
+            self.assertTrue(
+                '123, True, I\'m an unusual dummy exception' in ';'.join(cm.output))
+
 
     def test_purge(self):
         self.link.interval.total_seconds.return_value = 0.02
@@ -257,6 +264,7 @@ class TestApsPlanner(TestCase):
         self.planner.add_links(self.link)
         th = Thread(target=self.planner.start, daemon=True)
         th.start()
+        time.sleep(0.01)
         self.planner.shutdown()
         self.planner.purge()
 
@@ -264,5 +272,44 @@ class TestApsPlanner(TestCase):
         self.assertEqual([], self.planner.links)
         self.assertEqual([], self.planner._scheduler.get_jobs())
 
+        th.join(timeout=2)
+        self.assertFalse(th.is_alive(), 'Thread should be stopped.')
+
+    def test_immediate_transfer(self):
+        self.link.interval.total_seconds.return_value = 10
+        self.planner.add_links(self.link)
+        th = Thread(target=self.planner.start, daemon=True)
+        th.start()
+        time.sleep(0.01)
+        self.link.transfer.assert_called_once()
+        self.planner.shutdown()
+        th.join(timeout=2)
+        self.assertFalse(th.is_alive(), 'Thread should be stopped.')
+
+    def test_immediate_transfer_exception(self):
+        self.link.interval.total_seconds.return_value = 10
+        self.planner._ignore_exceptions = False
+        self.link.transfer.side_effect = DummyException('First transfer exception!')
+        self.planner.add_links(self.link)
+
+        with self.assertLogs(logging.getLogger('databay.BasePlanner'), level='WARNING') as cm:
+            th = Thread(target=self.planner.start, daemon=True)
+            th.start()
+            self.link.transfer.assert_called_once()
+            self.assertFalse(self.planner.running, 'Planner should not have started')
+            th.join(timeout=2)
+            self.assertFalse(th.is_alive(), 'Thread should be stopped.')
+            self.assertTrue(
+                'First transfer exception!' in ';'.join(cm.output))
+
+    def test_immediate_transfer_off(self):
+        self.link.interval.total_seconds.return_value = 10
+        self.planner.immediate_transfer = False
+        self.planner.add_links(self.link)
+        th = Thread(target=self.planner.start, daemon=True)
+        th.start()
+        time.sleep(0.01)
+        self.link.transfer.assert_not_called()
+        self.planner.shutdown()
         th.join(timeout=2)
         self.assertFalse(th.is_alive(), 'Thread should be stopped.')

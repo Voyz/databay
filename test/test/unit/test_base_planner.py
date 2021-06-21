@@ -1,3 +1,4 @@
+import atexit
 import logging
 from datetime import timedelta
 from unittest import TestCase, mock
@@ -6,7 +7,7 @@ from unittest.mock import patch, MagicMock
 import databay
 from databay import BasePlanner, Link
 from databay.errors import MissingLinkError
-from test_utils import fqname
+from test_utils import fqname, DummyException
 
 
 class TestBasePlanner(TestCase):
@@ -16,8 +17,8 @@ class TestBasePlanner(TestCase):
         logging.getLogger('databay').setLevel(logging.WARNING)
 
     @patch.multiple(BasePlanner,  __abstractmethods__=set())
-    def setUp(self):
-        self.planner = BasePlanner()
+    def setUp(self, *args, **kwargs):
+        self.planner = BasePlanner(*args, **kwargs)
         self.planner._schedule = MagicMock(
             side_effect=lambda link: link.set_job(object()))
         self.planner._unschedule = MagicMock(
@@ -36,6 +37,9 @@ class TestBasePlanner(TestCase):
         self.assertIsNotNone(link.job, 'Link should contain a job')
         self.assertTrue(link in self.planner.links,
                         'Planner should contain the link')
+
+    def test_add_links_invalid(self):
+        self.assertRaises(TypeError, self.planner.add_links, "invalid_link")
 
     @patch(fqname(Link), spec=Link)
     def test_add_links_array(self, link):
@@ -74,7 +78,7 @@ class TestBasePlanner(TestCase):
         self.assertTrue(link not in self.planner.links,
                         'Planner should not contain the link')
 
-    @patch(fqname(Link), spec=Link)
+    @patch(fqname(Link), spec=Link, immediate_transfer=True)
     def test_start(self, link):
         self.planner.add_links(link)
         self.planner.start()
@@ -88,7 +92,7 @@ class TestBasePlanner(TestCase):
         link.on_shutdown.assert_called()
         self.planner._shutdown_planner.assert_called()
 
-    @patch(fqname(Link), spec=Link)
+    @patch(fqname(Link), spec=Link, immediate_transfer=True)
     def test_start_order(self, link):
         # on_start should be called before _start_planner
         link.on_start.side_effect = lambda: self.planner._start_planner.assert_not_called()
@@ -108,6 +112,8 @@ class TestBasePlanner(TestCase):
         self.planner.add_links(link)
         self.planner.shutdown()
 
+        self.planner._shutdown_planner.side_effect = None
+
         # finally both should be called
         link.on_shutdown.assert_called()
         self.planner._shutdown_planner.assert_called()
@@ -120,7 +126,7 @@ class TestBasePlanner(TestCase):
         self.planner._unschedule.assert_called_with(link)
         self.assertEqual(self.planner.links, [])
 
-    @patch(fqname(Link), spec=Link)
+    @patch(fqname(Link), spec=Link, immediate_transfer=True)
     def test_purge_while_running(self, link):
         self.planner.add_links(link)
         self.planner.start()
@@ -130,3 +136,100 @@ class TestBasePlanner(TestCase):
         self.assertEqual(self.planner.links, [])
 
         self.planner.shutdown()
+
+
+    @patch(fqname(Link), spec=Link, immediate_transfer=True)
+    def test_immediate_transfer(self, link):
+        self.planner.add_links(link)
+        self.planner.start()
+        link.transfer.assert_called()
+        self.planner.shutdown()
+
+    @patch(fqname(Link), spec=Link, immediate_transfer=True)
+    def test_immediate_transfer_exception(self, link):
+        link.transfer.side_effect = DummyException('First transfer exception!')
+        self.planner.add_links(link)
+        with self.assertLogs(logging.getLogger('databay.BasePlanner'), level='WARNING') as cm:
+            self.planner.start()
+            self.assertTrue(
+                'First transfer exception!' in ';'.join(cm.output))
+        link.transfer.assert_called()
+        self.planner.shutdown()
+
+    @patch(fqname(Link), spec=Link, immediate_transfer=True)
+    def test_link_on_start_exception(self, link):
+        link.on_start.side_effect = DummyException('First transfer exception!')
+        self.planner.add_links(link)
+        with self.assertLogs(logging.getLogger('databay.BasePlanner'), level='WARNING') as cm:
+            self.planner.start()
+            self.assertTrue(
+                'First transfer exception!' in ';'.join(cm.output))
+        # self.assertRaises(RuntimeError, self.planner.start)
+        link.on_start.assert_called()
+        self.planner.shutdown()
+
+
+    @patch(fqname(Link), spec=Link)
+    def test_immediate_transfer_off(self, link):
+        self.planner.immediate_transfer = False
+        self.planner.add_links(link)
+        self.planner.start()
+        link.transfer.assert_not_called()
+        self.planner.shutdown()
+
+    @patch(fqname(Link), spec=Link, immediate_transfer=False)
+    def test_immediate_transfer_link_off(self, link):
+        self.planner.add_links(link)
+        self.planner.start()
+        link.transfer.assert_not_called()
+        self.planner.shutdown()
+
+    @patch(fqname(Link), spec=Link, immediate_transfer=True)
+    def test_immediate_transfer_override_link(self, link):
+        self.planner.immediate_transfer = False
+        self.planner.add_links(link)
+        self.planner.start()
+        link.transfer.assert_not_called()
+        self.planner.shutdown()
+
+    @patch(fqname(Link), spec=Link, immediate_transfer=True)
+    @patch(fqname(Link), spec=Link, immediate_transfer=False)
+    def test_immediate_transfer_two_link_off(self, link1, link2):
+        self.planner.add_links([link1, link2])
+        self.planner.start()
+        link1.transfer.assert_not_called()
+        link2.transfer.assert_called()
+        self.planner.shutdown()
+
+    @patch('atexit._run_exitfuncs')
+    @patch(fqname(Link), spec=Link, immediate_transfer=True)
+    def test_shutdown_at_exit(self, link, atexit_run_exitfuncs):
+        self.setUp(shutdown_at_exit=True)
+        self.planner.add_links(link)
+        self.planner.start()
+        atexit_run_exitfuncs.side_effect = lambda: self.planner._at_exit_callback()
+
+        with self.assertLogs(logging.getLogger('databay'), level='INFO') as cm:
+            atexit_run_exitfuncs()
+
+            self.assertTrue('Attempting to shutdown planner' in ';'.join(cm.output))
+
+        self.planner._shutdown_planner.assert_called()
+        link.on_shutdown.assert_called()
+
+    @patch(fqname(Link), spec=Link, immediate_transfer=False)
+    def test_force_transfer(self, link):
+        self.planner.add_links(link)
+        self.planner.force_transfer()
+        link.transfer.assert_called()
+
+    @patch(fqname(Link), spec=Link, immediate_transfer=False)
+    def test_force_transfer_exception(self, link):
+        link.transfer.side_effect = DummyException('First transfer exception!')
+        self.planner.add_links(link)
+        with self.assertLogs(logging.getLogger('databay.BasePlanner'), level='WARNING') as cm:
+            self.planner.force_transfer()
+            self.assertTrue(
+                'First transfer exception!' in ';'.join(cm.output))
+
+        link.transfer.assert_called()
