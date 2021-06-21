@@ -155,7 +155,7 @@ class SchedulePlanner(BasePlanner):
         super().start()
 
     def _start_planner(self):
-        if self._running:
+        if self._running: #pragma: no cover
             return
         self._running = True
 
