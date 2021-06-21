@@ -9,7 +9,7 @@ setup(
     name='databay',
     packages=find_packages(exclude=[
         "*.tests", "*.tests.*", "tests.*", "tests", "examples", "docs", "out", "dist"]),
-    version='0.2.0',
+    version='0.3.0',
     license='Apache-2.0',
     description='Databay is a Python interface for scheduled data transfer. It facilitates transfer of (any) data from A to B, on a scheduled interval.',
     long_description=long_description,
