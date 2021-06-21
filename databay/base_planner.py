@@ -229,6 +229,9 @@ class BasePlanner(ABC):
         return True
 
     def force_transfer(self):
+        """
+        Immediately force a transfer on all Links governed by this planner.
+        """
         for link in self.links:
             try:
                 link.transfer()
